@@ -1,0 +1,271 @@
+import React from 'react'
+import CRUDTree from './d3/CRUDTreeComponent'
+import NodeDetails from './d3/NodeDetailsComponent'
+import ProjectService from './d3/ProjectServices'
+import EditObserver from './EditObserver'
+import { browserHistory, Link } from 'react-router'
+import AlertContainer from 'react-alert'
+import {AlertOptions, showAlert} from './utils/AlertActions'
+import {showDetails, addNode, deleteNode, updateTreeData, updateProjectHeaders, addEmptySketch, loadProjectDetails, createSketch, updateSketch, updatePath, exportDesign, importDesign} from './utils/TreeActions';
+var component;
+
+export default class extends React.Component{
+
+  constructor(props) {
+    super(props);
+    component = this;
+    // add an observer for the child edit view
+    this.alertOptions = AlertOptions;
+    let observer = new EditObserver();
+    observer.nullifyObserver();
+
+    let addObserver = function(event) {
+      if(event.id === "export") {
+        if(component.state && component.state.projectSaved) {
+          browserHistory.push('/export');
+        } else {
+          component.showAlertMessage("Please save the sketch details to Export ")
+          setTimeout(function(){
+            this.msg.removeAll()
+          }.bind(component), 3000);
+        }
+      }
+    }
+    observer.addObserver(addObserver)
+  }
+
+  /* Component Initialisation */
+  componentWillMount() {
+
+    let sketchId = sessionStorage.getItem('sketchId');
+    let vocabularyData;
+    let storedVocabulary = JSON.parse(sessionStorage.getItem('vocabularyInfo'));
+    if(storedVocabulary) {
+      vocabularyData = storedVocabulary;
+    } else {
+      vocabularyData = []
+    }
+    if(sketchId === 'null') {
+      addEmptySketch(this, vocabularyData)
+    } else {
+      loadProjectDetails(ProjectService, this, sketchId)
+    }
+  }
+
+  /* Tree Click Handler */
+  onClick(event, eventData) {
+    if( event.name === "detail" ) {
+      showDetails(component, event);
+    } else if (event.name === "add") {
+      addNode(component, event)
+    } else if (event.name === "delete") {
+      deleteNode(component, event);
+    } else if(event.name === "updatePath") {
+      updatePath(component, event)
+    }
+  }
+
+  /* Method to update Active state for Tree */
+  setActiveStatus(activeObj) {
+    component.fetchChild(activeObj, function(d) {
+      d.active = false;
+      if (d.children) {
+        d.children.forEach((item, index) => {
+          item.pId = d.pId + (index+1);
+          item.active = false;
+        })
+      }
+    },
+    function(d) {
+       return d.children && d.children.length > 0 ? d.children : null;
+    });
+  }
+
+  /* Method to show selected node details */
+  showDetailsSection(nodeData) {
+    if(nodeData.rootNode) {
+      component.setState({
+        treeEditDetails: {
+          rootNodeData: nodeData,
+          vocabulary: component.state.vocabulary
+        }
+      })
+    } else {
+      component.setState({
+        treeEditDetails: {
+          childNodeData: nodeData,
+          vocabulary: component.state.vocabulary,
+          apiExportData: component.state.apidetails
+        }
+      })
+    }
+  }
+
+  /* Method to fetch child upon tree selection */
+  fetchChild(parent, fetch, childrenFn) {
+    if (!parent) return;
+    fetch(parent);
+    var children = childrenFn(parent);
+    if (children) {
+      var count = children.length;
+      for (var i = 0; i < count; i++) {
+        component.fetchChild(children[i], fetch, childrenFn);
+      }
+    }
+  }
+
+  /* Method to Submit Sketch Details */
+  submitSketchDetails() {
+    component.setActiveStatus(component.state.treedata);
+    let savedVocabulary;
+    let userDetails = JSON.parse(sessionStorage.getItem('userInfo'));
+    let VocabularyStored = sessionStorage.getItem('vocabularyInfo')
+    if(VocabularyStored) {
+      savedVocabulary = JSON.parse(VocabularyStored);
+    } else {
+      savedVocabulary = []
+    }
+    createSketch(component, savedVocabulary, ProjectService, browserHistory)
+  }
+
+  /* Method to Update Sketch Details */
+  updateSketchDetails() {
+    component.setActiveStatus(component.state.treedata);
+    let savedVocabulary;
+    let userDetails = JSON.parse(sessionStorage.getItem('userInfo'));
+    let VocabularyStored = sessionStorage.getItem('vocabularyInfo')
+    if(VocabularyStored) {
+      savedVocabulary = JSON.parse(VocabularyStored);
+    } else {
+      savedVocabulary = []
+    }
+    updateSketch(component, savedVocabulary, ProjectService, browserHistory)
+  }
+
+  /* Method to Export Sketch Data */
+  exportSketchInfo() {
+    exportDesign(component.state);
+  }
+
+  /* Method to Import Sketch Data */
+  importSketchInfo(data) {
+    return importDesign(data);
+  }
+
+  /* Method to Show Alert Message */
+  showAlertMessage(message){
+    showAlert(this, message)
+    setTimeout(function(){
+      this.msg.removeAll()
+    }.bind(this), 3000);
+  }
+
+  /* Method to navigate to tree Node details */
+  getNodeDetails() {
+    let sketchId = sessionStorage.getItem('sketchId')
+    if(sketchId !== 'null') {
+      browserHistory.push('/nodes/edit');
+    } else {
+      let sketchMode = JSON.parse(sessionStorage.getItem('updateMode'));
+      if(sketchMode) {
+        browserHistory.push('/nodes/edit');
+      } else {
+        browserHistory.push('/nodes/add');
+      }
+    }
+  }
+
+  /* Render Method */
+  render() {
+    var projectHeader, projectNodeDetails, saveSketch, createProjectOption, loadedComponent
+    if(this.state) {
+
+      /* Project Details Section */
+      projectHeader = (this.state.projectDetails) ? <div>
+        <h2>{this.state.projectDetails["projectName"]}</h2>
+        <h3>{this.state.projectDetails["projectDesc"]}</h3>
+        </div> : null;
+      
+      projectNodeDetails = <div className="col-xs-12 node-details-section">
+          <NodeDetails nodeData={this.state.treeEditDetails} updatedData={(val,mode,data)=>updateTreeData(val, mode, this)}/>
+        </div>
+
+      /* Create/Update Project Section */
+      if(this.state.inListDetails) {
+        if( !this.state.isProjectEmpty && !this.state.isNodeEditMode) {
+          createProjectOption = <div>
+              {/* TODO delete project */}
+              <button className="btn btn-default pull-right" onClick={this.updateSketchDetails}> Update Sketch </button>
+            </div>
+        } else {
+          createProjectOption = <div>
+              {/* TODO delete project */}
+              <button className="btn btn-default pull-right disabled"> Update Sketch </button>
+            </div>
+        }
+      } else {
+        if( !this.state.isProjectEmpty && !this.state.isNodeEditMode) {
+          createProjectOption = <button className="btn btn-default pull-right" onClick={this.submitSketchDetails}> Create Project </button> 
+        } else {
+          createProjectOption = <button className="btn btn-default pull-right disabled" > Create Project </button> 
+        }
+      }
+      
+      saveSketch = <div className="col-md-12 col-sm-12 text-right save-sketch-section">
+        {createProjectOption}
+      </div>      
+
+      loadedComponent = 
+        <div className="row">
+          <div className="col-xs-12">
+            {saveSketch}
+            <CRUDTree
+              data={
+                [
+                  this.state.treedata,
+                  this.onClick,
+                  {
+                    x: this.state.offsetX,
+                    y: this.state.offsetY
+                  }
+                ]}
+              width = {400} height = {500}
+              options={ {
+                border: "2px solid black",
+                margin: {
+                    top: 0,
+                    bottom: 0,
+                    left: 50,
+                    right: 0
+                } }
+              }/>
+          </div>
+          {projectNodeDetails}
+          <div>
+            {this.props.children}
+          </div>
+        </div>
+    } else {
+      loadedComponent =  <div className="text-center loading-project-details">Loading...</div>
+    }
+
+
+
+    return (<div>
+      <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
+      <div className="titleContainer sketchPage">
+        {projectHeader}
+      </div>
+      <div className="tabsContainer">
+        <ul className="projectTabs">
+          <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
+          <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
+          <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>
+        </ul>
+      </div>
+      <div className="col-md-12 sketch-list-wrapper">
+        {loadedComponent}
+      </div>
+      </div>)
+  }
+}
