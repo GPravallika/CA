@@ -8,19 +8,19 @@ A project for graphically designing restful apis.
 [rapido-db](rapido-db) : is just a docker container for postgress database, which can be leveraged in case user does not have a separate persistence.
 
 ### Building and running the application
+Usage :
 ``
-Usage ./build.sh <project-name>|all [deploy]
+./build.sh <project-name>|all [deploy]
+``
+
+
+
 
 Examples :
-
 1) ./build.sh rapido-web deploy
-
 2) ./build.sh rapido-backend
-
 3) ./build.sh all deploy
-
 1) ./build.sh all
-``
 
 The above command builds one or more docker container and pushes them to docker registry
 <b>isl-dsdc.ca.com:5000/apim-solutions</b>
