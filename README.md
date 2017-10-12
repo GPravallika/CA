@@ -1,18 +1,32 @@
 # rapido
 A project for graphically designing restful apis.
 
-## Building and running the application
+[rapido-web](rapido-web) : is a the frontend project written in React js for all UX and sketching stuffs.
+[rapido-backend](rapido-backend) : is a nodejs http api server which serves the apis required for the Sketching etc
+[rapido-db](rapido-db) : is just a docker container for postgress database, which can be leveraged in case user does not have a separate persistence.
 
-## Database configurations
-#### If you wish to configure local database
+### Building and running the application
+``
+./build.sh <project-name> | all
+``
 
-sudo -u postgres createdb rapido
-sudo -u postgres createuser rapidoadmin
+The above command builds one or more docker container and pushes them to docker registry 
+<b>isl-dsdc.ca.com:5000/apim-solutions</b>
 
-sudo -u postgres psql
-alter user rapidoadmin with encrypted password 'rapidopass';
-grant all privileges on database rapido to rapidoadmin;
+If you wish to run with the persistence container you could do that using
 
-sudo service postgresql restart
+``
+./run.sh stage
+``
 
-psql -d rapido -f rapido-db/init.sql
+If you wish to run the application with your own postgres database, make sure you run the schema from [init.sql](rapido-db/init.sql) and then set the db credentials in your environment variables and run as below
+
+``
+DB_HOST
+DB_PORT
+DB_USER
+DB_SCHEMA
+DB_PASSWORD
+
+./run.sh
+``
