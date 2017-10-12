@@ -2,7 +2,9 @@
 A project for graphically designing restful apis.
 
 [rapido-web](rapido-web) : is a the frontend project written in React js for all UX and sketching stuffs.
+
 [rapido-backend](rapido-backend) : is a nodejs http api server which serves the apis required for the Sketching etc
+
 [rapido-db](rapido-db) : is just a docker container for postgress database, which can be leveraged in case user does not have a separate persistence.
 
 ### Building and running the application
