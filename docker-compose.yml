@@ -32,7 +32,7 @@ services:
         ports:
             - "8090:8090"
         environment:
-            - RAPIDO_BACKEND=localhost:9001
+            - RAPIDO_BACKEND
         links:
             - rapido-backend
         cpu_shares:     85

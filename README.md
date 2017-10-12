@@ -1,8 +1,10 @@
 # rapido
-A project for graphically designing restful apis
+A project for graphically designing restful apis.
+
+## Building and running the application
 
 ## Database configurations
-### If you wish to configure local database
+#### If you wish to configure local database
 
 sudo -u postgres createdb rapido
 sudo -u postgres createuser rapidoadmin
