@@ -23,7 +23,6 @@ If you wish to run with the persistence container you could do that using
 
 If you wish to run the application with your own postgres database, make sure you run the schema from [init.sql](rapido-db/init.sql) and then set the db credentials in your environment variables and run as below
 
-``
 DB_HOST
 
 DB_PORT
@@ -34,5 +33,6 @@ DB_SCHEMA
 
 DB_PASSWORD
 
+``
 ./run.sh
 ``
