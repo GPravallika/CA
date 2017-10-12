@@ -29,6 +29,7 @@ const RegistrationApiCall = {
         'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify({
+        "oldPassword": userObject.oldPassword,
         "password": userObject.password,
         "email": userObject.email,
         "firstname": userObject.firstname,

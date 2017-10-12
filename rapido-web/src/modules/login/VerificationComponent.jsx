@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import RegistrationService from '../register/RegistrationServices'
 import AlertContainer from 'react-alert'
 import {showAlert, AlertOptions} from '../utils/AlertActions'
@@ -50,7 +50,7 @@ export default class extends React.Component{
   render() {
     let verificationCmp; 
     if(!this.state.verification) {
-      verificationCmp = <div className="verification-section">Verification Failed. Please re-try</div>
+      verificationCmp = <div className="verification-section">Verification Failed. Please re-try or navigate back to <Link to="/home">Home</Link></div>
     } else {
       verificationCmp = <div className="verification-section">Verifying...</div>
     }

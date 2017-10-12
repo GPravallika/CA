@@ -23,7 +23,9 @@ export default class extends React.Component{
     var queryResult=[];
     this.props.sketches.forEach(function(sketch){
       if(sketch.name.toLowerCase().indexOf(event.target.value)!=-1)
-      queryResult.push(sketch);
+        queryResult.push(sketch);
+      if(sketch.description.toLowerCase().indexOf(event.target.value)!=-1)
+        queryResult.push(sketch);
     });
     this.setState({
       query: event.target.value,

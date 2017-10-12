@@ -15,6 +15,7 @@ export default class extends React.Component{
         email: '',
         password: '',
         passwordConfirm: '',
+        oldPassword: '',
         passwordConfig: PasswordConfig
       };
       this.alertOptions = AlertOptions;
@@ -35,7 +36,8 @@ export default class extends React.Component{
         "lastName": userObj.lastname,
         "email": userObj.email,
         "password": "",
-        passwordConfirm: ""
+        passwordConfirm: "",
+        oldPassword: "",
       })
     }
   }
@@ -62,7 +64,8 @@ export default class extends React.Component{
         "password": this.state.password,
         "email": this.state.email,
         "firstname": this.state.firstName,
-        "lastname": this.state.lastName
+        "lastname": this.state.lastName,
+        "oldPassword": this.state.oldPassword,
       };
       RegistrationService.updateUserDetails(userObj)
       .then((response) => {
@@ -119,6 +122,8 @@ export default class extends React.Component{
       label = "Password";
     } else if (refName == "passwordConfirm") {
       label = "Confirm Password";
+    } else if (refName == "oldPassword") {
+      label = "Old Password";
     }
 
     const error = document.getElementById(`${refName}Error`);
@@ -200,9 +205,20 @@ export default class extends React.Component{
             <div className="form-group">
               <input className="form-control"
                 type="password" 
+                name="oldPassword"
+                ref="oldPassword"
+                placeholder="Old Password *"
+                value={ this.state.oldPassword } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="oldPasswordError" />
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="password" 
                 name="password"
                 ref="password"
-                placeholder="Password *"
+                placeholder="New Password *"
                 value={ this.state.password } 
                 onChange={ this.handleChange }
                 required />
@@ -213,7 +229,7 @@ export default class extends React.Component{
                 type="password" 
                 name="passwordConfirm"
                 ref="passwordConfirm"
-                placeholder="Confirm Password *"
+                placeholder="New Password Confirm *"
                 value={ this.state.passwordConfirm } 
                 onChange={ this.handleChange }
                 required />
