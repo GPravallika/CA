@@ -40,7 +40,7 @@ Alternatively ( read: easy way ),
 ./run.sh local
 ``
 ### From staged containers
-- If you don't want to get into the bread and potatoes of the container building. You could just pull the images using [docker-compose-local.yml](docker-compose-local.yml) and run.
+If you don't want to get into the bread and potatoes of the container building. You could just pull the images using [docker-compose-local.yml](docker-compose-local.yml) and run.
 Alternatively (yes, easy!)
 
 ``
