@@ -1,7 +1,7 @@
 version: '2'
 services:
     rapido-backend:
-        image: isl-dsdc.ca.com:5000/apim-solutions/rapido-backend
+        image: isl-dsdc.ca.com:5001/apim-solutions/rapido-backend
         container_name: rapido-backend
         ports:
             - "9001:9001"
@@ -27,7 +27,7 @@ services:
         memswap_limit:  2g
 
     rapido-web:
-        image: isl-dsdc.ca.com:5000/apim-solutions/rapido-web
+        image: isl-dsdc.ca.com:5001/apim-solutions/rapido-web
         container_name: rapido-web
         ports:
             - "8090:8090"

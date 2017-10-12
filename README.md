@@ -5,64 +5,76 @@ A project for graphically designing restful apis.
 
 [rapido-backend](rapido-backend) : is a nodejs http api server which serves the apis required for the Sketching etc
 
-[rapido-db](rapido-db) : is just a docker container for postgress database, which can be leveraged in case user does not have a separate persistence.
+[rapido-db](rapido-db) : is just a docker container for postgres database, with rapido schemas, which can be leveraged for persistence.
 
-## Building and running the application
+## Build the application
+If you just wish to run the application from already built containers located at <b>isl-dsdc.ca.com:5000/apim-solutions</b>, skip to Run the application section.
+
+
 Prerequisite :
-1. Nodejs
-2. docker
-3. docker compose
+1. docker
+2. docker compose
 Usage :
 ``
 ./build.sh <project-name>|all [deploy]
 ``
 
 Examples :
-1) ./build.sh rapido-web deploy
-2) ./build.sh rapido-backend
-3) ./build.sh all deploy
-1) ./build.sh all
+- ./build.sh rapido-web
+- ./build.sh rapido-backend push
+- ./build.sh all
+- ./build.sh all push
 
-The above command builds one or more docker container and pushes them to docker registry
+The above command builds one or more docker container and pushes (if supplied as argument) them to docker registry
+
 <b>isl-dsdc.ca.com:5000/apim-solutions</b>
 
-### Running the application
-- If you wish to run the application from locally built containers with own persistence database :
+## Run the application
+Rapido is docker containerized application. Current development is already staged at <b>isl-dsdc.ca.com:5000/apim-solutions</b>. In order to run, you could either build all the containers as mentioned in the above section or you could download them from stage repository.
 
-Set the below environment variables and run the schema from [init.sql](rapido-db/init.sql). Then use run command as below.
-
-DB_HOST
-DB_PORT
-DB_USER
-DB_SCHEMA
-DB_PASSWORD
+### Locally built containers
+Since, you have built the containers, you could just run them using docker compose file [docker-compose-local.yml](docker-compose-local.yml)
+Alternatively ( read: easy way ),
 
 ``
-docker-compose -f docker-compose.yml up
+./run.sh local
 ``
-- If you wish to run the application from locally built containers using database in a container
-
-``
-docker-compose -f docker-compose-stage.yml up
-``
-
-- If you wish to pull from repo and run with the persistence container you could do that using
+### From staged containers
+- If you don't want to get into the bread and potatoes of the container building. You could just pull the images using [docker-compose-local.yml](docker-compose-local.yml) and run.
+Alternatively (yes, easy!)
 
 ``
 ./run.sh stage
 ``
 
-- If you wish to pull from repo and run the application with your own postgres database, make sure you run the schema from [init.sql](rapido-db/init.sql) and then set the db credentials in your environment variables and run as below
+### For development purpose
+
+- [rapido-web](rapido-web) is a React js application, which leverages webpack for development purpose and uses a slim node http server to server the SPA in production mode. To run the app in development mode, please modify the [ApiServices.jsx](rapido-web/src/modules/utils/ApiServices.jsx) to point to the backend instance and run
+
+``
+npm install
+npm run dev
+``
+
+- Prepare the database using schema from [init.sql](rapido-db/init.sql)
+
+- [rapido-backend](rapido-backend) is a standard express based node application. And hence, can be run using standard node conventions. Note, you may want to override below environment variables before running
+
+``
+npm install
+npm start
+``
+Environment variables :
 
 DB_HOST
-
 DB_PORT
-
 DB_USER
-
 DB_SCHEMA
-
 DB_PASSWORD
+
+### For Production purpose
+
+Production mode uses RDS as persistence layer. Please set the appropriate environment variables mentioned in [docker-compose.yml](docker-compose.yml) and
 
 ``
 ./run.sh

@@ -3,8 +3,6 @@ services:
     rapido-db:
         image: isl-dsdc.ca.com:5000/apim-solutions/rapido-db
         container_name:   rapido-db
-        ports:
-            - "5432:5432"
         cpu_shares:       85
         mem_limit:        1g
         memswap_limit:    2g

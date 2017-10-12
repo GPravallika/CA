@@ -1,12 +1,12 @@
 show_usage()
 {
     echo "Invalid build arguments ..."
-    echo "Usage ./build.sh <project-name>|all [deploy]"
+    echo "Usage ./build.sh <project-name>|all [push]"
     echo "Examples :"
-    echo "1) ./build.sh rapido-web deploy"
-    echo "2) ./build.sh rapido-backend"
-    echo "3) ./build.sh all deploy"
-    echo "1) ./build.sh all"
+    echo "1) ./build.sh rapido-web"
+    echo "2) ./build.sh rapido-backend push"
+    echo "3) ./build.sh all"
+    echo "1) ./build.sh all push"
     echo ""
 }
 
@@ -19,7 +19,7 @@ echo ""
 
 if [[ $# -eq 2 ]]; then
 
-    if [[ ($1 = "rapido-db" || $1 = "rapido-web"  || $1 = "rapido-backend") && $2 = "deploy" ]] ; then
+    if [[ ($1 = "rapido-db" || $1 = "rapido-web"  || $1 = "rapido-backend") && $2 = "push" ]] ; then
         echo ""
         echo "--------------------------------"
         echo "Building $1 ..."
@@ -28,11 +28,11 @@ if [[ $# -eq 2 ]]; then
         docker build -t "isl-dsdc.ca.com:5000/apim-solutions/$1" $1
         echo ""
         echo "--------------------------------"
-        echo "Deploying the $1 contaier to repo ..."
+        echo "Pushing the $1 contaier to repo ..."
         echo "--------------------------------"
         echo ""
         docker push isl-dsdc.ca.com:5000/apim-solutions/$1
-    elif [[ $1 = "all"  && $2 = "deploy" ]]; then
+    elif [[ $1 = "all"  && $2 = "push" ]]; then
         echo ""
         echo "--------------------------------"
         echo "Building all rapido projects ..."
@@ -44,7 +44,7 @@ if [[ $# -eq 2 ]]; then
 
         echo ""
         echo "--------------------------------"
-        echo "Deploying all containers to repo ..."
+        echo "Pushing all containers to repo ..."
         echo "--------------------------------"
         echo ""
         docker push isl-dsdc.ca.com:5000/apim-solutions/rapido-db

@@ -1,3 +1,9 @@
+/*
+ * Version		: 0.0.1
+ * Description	: Utility to generate export json
+ *
+ */
+
 var _ = require("lodash");
 var exportJson =  function exportJson() {}
 // Create swagger file
