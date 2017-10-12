@@ -9,10 +9,20 @@ A project for graphically designing restful apis.
 
 ### Building and running the application
 ``
-./build.sh <project-name> | all
+Usage ./build.sh <project-name>|all [deploy]
+
+Examples :
+
+1) ./build.sh rapido-web deploy
+
+2) ./build.sh rapido-backend
+
+3) ./build.sh all deploy
+
+1) ./build.sh all
 ``
 
-The above command builds one or more docker container and pushes them to docker registry 
+The above command builds one or more docker container and pushes them to docker registry
 <b>isl-dsdc.ca.com:5000/apim-solutions</b>
 
 If you wish to run with the persistence container you could do that using
