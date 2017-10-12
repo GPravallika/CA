@@ -25,9 +25,13 @@ If you wish to run the application with your own postgres database, make sure yo
 
 ``
 DB_HOST
+
 DB_PORT
+
 DB_USER
+
 DB_SCHEMA
+
 DB_PASSWORD
 
 ./run.sh
