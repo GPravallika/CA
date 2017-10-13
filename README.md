@@ -8,7 +8,7 @@ A project for graphically designing restful apis.
 [rapido-db](rapido-db) : is just a docker container for postgres database, with rapido schemas, which can be leveraged for persistence.
 
 ## Build the application
-If you just wish to run the application from already built containers located at <b>isl-dsdc.ca.com:5000/apim-solutions</b>, skip to Run the application section.
+If you just wish to run the application from already built containers located at <b>isl-dsdc.ca.com:5000/apim-solutions</b>, skip to [Run the application](#run-the-application)
 
 
 Prerequisite :
