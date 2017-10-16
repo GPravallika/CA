@@ -13,6 +13,18 @@ const SketchApiCall = {
     });
   },
 
+  searchSketchProject(searchString) {
+    var token  = sessionStorage.getItem("token");
+    
+    return fetch(apiObj.endPoint + 'project?search=' + searchString, { 
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  },
+
   deleteProject(projectId) {
     var token  = sessionStorage.getItem("token");
     
