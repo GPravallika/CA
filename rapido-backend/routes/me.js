@@ -27,4 +27,9 @@ router.put('/', authService.authenticate(), function(request, response, next) {
     userService.update(request, response, next);
 });
 
+router.put('/security', authService.authenticate(), function(request, response, next) {
+    request.params.id = request.user.id;
+    userService.updateSecurity(request, response, next);
+});
+
 module.exports = router;

@@ -211,6 +211,72 @@ var userService = {
                 response.status(httpCode).json(err);
             });
     },
+    'updateSecurity': function(request, response, next) {
+        var user = {};
+        user.id = request.params.id;
+        user["old-password"] = request.body["old-password"];
+        user["new-password"] = request.body["new-password"];
+
+        var descriptor = {
+            "user": {
+                "type": "object",
+                "required": true,
+                "fields": {
+                    "old-password": {
+                        "required": true,
+                        "message" : "old-password missing"
+                    },
+                    "new-password": {
+                        "required": true,
+                        "message" : "new-password missing"
+                    }
+                }
+            }
+        };
+        var validator = promises.promisifyAll(new schema(descriptor));
+
+        validator.validateAsync({
+                "user": user
+            })
+            .then(function(){
+                return model.readByIdAsync({"id": user.id});
+            })
+            .then(function(userData){
+                var promiseResolutions = [];
+                promiseResolutions.push(bcrypt.compare(user["old-password"], userData.password));
+                promiseResolutions.push(bcrypt.hash(user["new-password"], 5));
+
+                return promises.all(promiseResolutions);
+            })
+            .then(function(passwordHashes) {
+                if(passwordHashes[0]) {
+                    user.password = passwordHashes[1];
+                    delete user["old-password"];
+                    delete user["new-password"];
+
+                    return model.updateAsync(user);
+                } else {
+                    throw new Error("invalid current password for user " + user.id);
+                }
+            })
+            .then(function() {
+                response.status(200).json({
+                    "id": user.id
+                });
+            })
+            .catch(function(err) {
+                logger.error(err);
+                var httpCode = 400;
+                if(err instanceof Error) { // 400 for validation error;
+                    httpCode = 500;
+                    err = {
+                        "code": err.code,
+                        "message": err.message
+                    }
+                }
+                response.status(httpCode).json(err);
+            });
+    },
     'delete': function(request, response, next) {
 
     },
