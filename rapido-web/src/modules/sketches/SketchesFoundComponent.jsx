@@ -4,7 +4,7 @@ import DeleteModal from '../d3/DeleteModal';
 import SketchService from './SketchServices'
 
 export default class extends React.Component{
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,7 +23,8 @@ export default class extends React.Component{
     if(event.target.value.length > 0) {
       let userDetails = JSON.parse(sessionStorage.getItem('user'));
       let sktSrvSerSktPrjRes = null;
-      SketchService.searchSketchProject(event.target.value)
+      let freetext = event.target.value;
+      SketchService.searchSketchProject(freetext)
       .then((response) => {
         sktSrvSerSktPrjRes = response.clone();
         return response.json();
@@ -31,7 +32,7 @@ export default class extends React.Component{
       .then((responseData) => {
         if(sktSrvSerSktPrjRes.ok) {
           this.setState({
-            query: event.target.value,
+            query: freetext,
             filteredData: responseData
           })
         } else {
@@ -50,7 +51,7 @@ export default class extends React.Component{
 
   /* Method to handle search */
   sortSketchCardBy(event) {
-  
+
     let lastActiveId = null;
     if(document.querySelector(".sortByBtn.active")) {
       lastActiveId = document.querySelector(".sortByBtn.active").id;
