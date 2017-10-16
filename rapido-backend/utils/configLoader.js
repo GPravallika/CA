@@ -34,13 +34,13 @@ var _init = function() {
             'prettyPrint': true
         },
         'email': {
-            'from': process.env.EMAIL_FROM || 'parthapratim.mallik@ca.com',
+            'from': process.env.EMAIL_FROM || 'live-api-design@ca.com',
             'host': 'smtp.office365.com',
             'secure': true,
             'port': 587,
             'auth': {
-                'user': process.env.EMAIL_USER || 'malpa07@ca.com',
-                'pass': process.env.EMAIL_PASSWORD || '#Aka5hyapC1'
+                'user': process.env.EMAIL_USER || 'live-api-design@ca.com',
+                'pass': process.env.EMAIL_PASSWORD || 'X>!L?S-h>R]+g9(8'
             },
             'tls': { 'ciphers': 'SSLv3' }
         },
