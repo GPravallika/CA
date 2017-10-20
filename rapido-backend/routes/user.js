@@ -21,12 +21,15 @@ router.post('/', userService.register);
 router.get('/verify/:token', userService.verify);
 
 // CRUD user
-router.get('/:id', authService.authenticate(), userService.get);
-router.put('/:id', authService.authenticate(), userService.update);
-router.delete('/:id', authService.authenticate(), userService.delete);
+router.get('/:id', authService.authenticate, userService.get);
+router.put('/:id', authService.authenticate, userService.update);
+router.delete('/:id', authService.authenticate, userService.delete);
 
 // Password management
 router.post('/forgotpassword', userService.forgotpassword);
 router.post('/resetpassword', userService.resetpassword);
+
+// security
+router.delete('/:id/token/:secret', authService.authenticate, userService.invalidateToken);
 
 module.exports = router;

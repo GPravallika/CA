@@ -16,13 +16,13 @@ var logger = import_utils('logger.js').getLoggerObject(),
  * Perform authentication etc here.
  */
 router.use(authService.initialize());
-router.post('/', authService.authenticate(), projectService.create);
-router.get('/', authService.authenticate(), projectService.fetch);   // Get all matching projects from filters
-router.get('/:id', authService.authenticate(), projectService.get);  // Get project by Id
-router.put('/:id', authService.authenticate(), projectService.update);
-router.delete('/:id', authService.authenticate(), projectService.delete);
+router.post('/', authService.authenticate, projectService.create);
+router.get('/', authService.authenticate, projectService.fetch);   // Get all matching projects from filters
+router.get('/:id', authService.authenticate, projectService.get);  // Get project by Id
+router.put('/:id', authService.authenticate, projectService.update);
+router.delete('/:id', authService.authenticate, projectService.delete);
 
 // Export functionality
-router.get('/:id/export', authService.authenticate(), projectService.export);
+router.get('/:id/export', authService.authenticate, projectService.export);
 
 module.exports = router;

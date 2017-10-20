@@ -17,17 +17,23 @@ var logger = import_utils('logger.js').getLoggerObject(),
  */
 router.use(authService.initialize());
 
-router.get('/', authService.authenticate(), function(request, response, next) {
+router.get('/', authService.authenticate, function(request, response, next) {
     request.params.id = request.user.id;
     userService.get(request, response, next);
 });
 
-router.put('/', authService.authenticate(), function(request, response, next) {
+router.put('/', authService.authenticate, function(request, response, next) {
     request.params.id = request.user.id;
     userService.update(request, response, next);
 });
 
-router.put('/security', authService.authenticate(), function(request, response, next) {
+router.get('/logout', authService.authenticate, function(request, response, next) {
+    request.params.id = request.user.id;
+    request.params.secret = request.user.secret;
+    userService.invalidateToken(request, response, next);
+});
+
+router.put('/security', authService.authenticate, function(request, response, next) {
     request.params.id = request.user.id;
     userService.updateSecurity(request, response, next);
 });
