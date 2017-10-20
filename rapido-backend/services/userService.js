@@ -159,7 +159,6 @@ var userService = {
         var user = {};
         user.id = request.params.id;
         if(request.body.email) user.email = request.body.email;
-        if(request.body.password)  user.password = request.body.password;
         if(request.body.firstname) user.firstname = request.body.firstname;
         if(request.body.lastname) user.lastname = request.body.lastname;
 
@@ -181,16 +180,6 @@ var userService = {
                 "user": user
             })
             .then(function(){
-                if(user.password) {
-                    return bcrypt.hash(user.password, 5);
-                } else {
-                    return ;
-                }
-            })
-            .then(function(pwd) {
-                if(pwd) {
-                    user.password = pwd;
-                }
                 return model.updateAsync(user);
             })
             .then(function() {

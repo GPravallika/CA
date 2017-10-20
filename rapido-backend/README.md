@@ -46,7 +46,6 @@ headers     :
 }
 response    :
 {
-    "status": "success",
     "id": user.id
 }
 ```
@@ -68,7 +67,6 @@ request     :
 }
 response    :
 {
-    "status": "success",
     "token": token,
     "user": {
         "id": userid,
@@ -91,13 +89,32 @@ headers     :
 }
 request     :
 {
-    "password": "xxxxxx",
     "firstname": "xxxx",
     "lastname": "xxxx"
 }
 response    :
 {
-    "status": "success",
+    "id": user.id
+}
+```
+
+## Update user password
+
+```sh
+endPoint    : /me
+HttpMethod  : PUT
+headers     :
+{
+    Authorization: Bearer   {token},
+    content-Type: application/json
+}
+request     :
+{
+    "old-password": "xxxx",
+    "new-password": "xxxx"
+}
+response    :
+{
     "id": user.id
 }
 ```
@@ -115,7 +132,6 @@ headers     :
 }
 response    :
 {
-    "status": "success",
     "user": {
         "id": userid,
         "firstname": firstname,
@@ -140,7 +156,6 @@ request     :
 }
 response    :
 {
-    "status": "success",
     "email": "xxxxxx@yyyy.com"
 }
 ```
@@ -227,7 +242,6 @@ request     :
 }
 response    :
 {
-    "status": "success",
     "id": project.id
 }
 ```
@@ -294,12 +308,13 @@ request     :
 }
 response    :
 {
-    "status": "success",
     "id": project.id
 }
 ```
 
 ## Get projects for current user
+
+Filter supported with ?freetext=query
 
 ```sh
 endPoint    :   /project
@@ -310,24 +325,21 @@ headers     :
     content-Type: application/json
 }
 response    :
-{
-   "status":"success",
-   "projects":[
-      {
-         "id":1,
-         "name":"xxxxxxx",
-         "description":"xxxxxx"
-      },
-      {
-         "id":2,
-         "name":"xxxxxxxxxx",
-         "description":"xxxxxx"
-      },
-      {
-         "id":3,
-         "name":"xxxxxxxxxx",
-         "description":"xxxxxx"
-      }
-   ]
-}
+{[
+   {
+      "id":1,
+      "name":"xxxxxxx",
+      "description":"xxxxxx"
+   },
+   {
+      "id":2,
+      "name":"xxxxxxxxxx",
+      "description":"xxxxxx"
+   },
+   {
+      "id":3,
+      "name":"xxxxxxxxxx",
+      "description":"xxxxxx"
+   }
+]}
 ```
