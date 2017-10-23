@@ -3,9 +3,9 @@ import apiObj from '../utils/ApiServices'
 const SketchApiCall = {
   getProjects(userId) {
     var token  = sessionStorage.getItem("token");
-
-    return fetch(apiObj.endPoint + 'project', {
-      method: 'GET',
+    
+    return fetch(apiObj.endPoint + 'project', { 
+      method: 'GET', 
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -15,9 +15,9 @@ const SketchApiCall = {
 
   searchSketchProject(searchString) {
     var token  = sessionStorage.getItem("token");
-
-    return fetch(apiObj.endPoint + 'project?freetext=' + searchString, { 
-      method: 'GET',
+    
+    return fetch(apiObj.endPoint + 'project?search=' + searchString, { 
+      method: 'GET', 
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -27,9 +27,9 @@ const SketchApiCall = {
 
   deleteProject(projectId) {
     var token  = sessionStorage.getItem("token");
-
-    return fetch(apiObj.endPoint + 'project/'+ projectId, {
-      method: 'DELETE',
+    
+    return fetch(apiObj.endPoint + 'project/'+ projectId, { 
+      method: 'DELETE', 
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
