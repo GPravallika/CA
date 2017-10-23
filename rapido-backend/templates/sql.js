@@ -1,14 +1,16 @@
 exports.user = {
-    "insert": "INSERT INTO users(email, password, firstname, lastname, isactive, isverified) VALUES (?, ?, ?, ?, ?, ?) returning id",
+    "insert": "INSERT INTO users(email, password, firstname, lastname, isverified) VALUES (?, ?, ?, ?, ?) returning id",
     "select": "SELECT * FROM users WHERE email=?",
-    "isactive": "SELECT isactive from users WHERE id=?",
-    "setactive": "UPDATE users SET isactive=? WHERE id=? returning id",
+    "getActiveSecrets": "SELECT secret from tokens WHERE userid=?",
     "selectById": "SELECT * FROM users WHERE id=?",
-    "activate": "UPDATE users SET isverified=? WHERE id=? returning id, firstname, lastname",
+    "setVerified": "UPDATE users SET isverified=? WHERE id=? returning id, firstname, lastname, isverified",
     "insertIntoVerify": "INSERT INTO user_verify(userid, verifytoken) VALUES(?, ?)",
     "selectFromVerify": "SELECT userid FROM user_verify WHERE verifytoken=?",
     "selectFromVerifyByUserId": "SELECT verifytoken FROM user_verify WHERE userid=?",
-    "deleteFromVerify": "DELETE FROM user_verify WHERE userid=?"
+    "deleteFromVerify": "DELETE FROM user_verify WHERE userid=?",
+    "insertIntoTokens": "INSERT INTO tokens(userid,secret) values (?, ?);",
+    "deleteFromTokens": "DELETE FROM tokens where userid=? AND secret=?",
+    "deleteAllSecretsByUserId": "DELETE FROM tokens where userid=?"
 };
 
 exports.project = {

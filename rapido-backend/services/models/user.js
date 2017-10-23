@@ -14,7 +14,7 @@ var logger = import_utils('logger.js').getLoggerObject(),
 
 var model = {
     'create': (user, callback) => {
-        db.executeAsync(queries.insert, [user.email, user.password, user.firstname, user.lastname,  user.isactive, user.isverified])
+        db.executeAsync(queries.insert, [user.email, user.password, user.firstname, user.lastname, user.isverified])
         .then(function(data){
             if(data.rows && data.rows.length > 0) {
                 logger.debug("user record created with Id", data.rows[0].id);
@@ -82,8 +82,28 @@ var model = {
                 callback(err);
             });
     },
-    'delete': (user, callback) => {
-        // ...
+    'deleteFromTokens': (user, callback) => {
+
+        db.executeAsync(queries.deleteFromTokens, [user.id, user.secret])
+            .then(function() {
+                callback(null, true);
+                return;
+            })
+            .catch(function(err) {
+                logger.error("Error removing secret", err.message);
+                callback(err);
+            });
+    },
+    'deleteAllTokens': (user, callback) => {
+        db.executeAsync(queries.deleteAllTokens, [user.id])
+            .then(function() {
+                callback(null, true);
+                return;
+            })
+            .catch(function(err) {
+                logger.error("Error removing secret", err.message);
+                callback(err);
+            });
     },
     'createVerifyRecord': (user, callback) => {
         db.executeAsync(queries.selectFromVerifyByUserId, [user.id])
@@ -110,7 +130,7 @@ var model = {
         .then(function(data){
             if(data.rows && data.rows.length > 0) {
                 logger.debug("User with id", data.rows[0].userid, "being verified");
-                return db.executeAsync(queries.activate, [true, data.rows[0].userid]);
+                return db.executeAsync(queries.setVerified, [true, data.rows[0].userid]);
             } else {
                 throw new Error ("token not found");
             }
@@ -118,6 +138,7 @@ var model = {
         .then(function(data) {
             if(data.rows && data.rows.length > 0) {
                 user.id = data.rows[0].id;
+                user.isverified = data.rows[0].isverified;
                 logger.debug("User with id", user.id, "verified");
                 return db.executeAsync(queries.deleteFromVerify, [user.id]);
             } else {
@@ -133,11 +154,11 @@ var model = {
             callback(err);
         });
     },
-    'isActive': (user, callback) => {
-        db.executeAsync(queries.isactive, [user.id])
+    'getActiveSecrets': (user, callback) => {
+        db.executeAsync(queries.getActiveSecrets, [user.id])
         .then(function(data){
             if(data.rows && data.rows.length > 0) {
-                return callback(null, data.rows[0].isactive);
+                return callback(null, data.rows);
             } else {
                 callback(null, null);
             }
@@ -147,13 +168,13 @@ var model = {
             callback(err);
         });
     },
-    'setActive': (user, callback) => {
-        db.executeAsync(queries.setactive, [true, user.id])
+    'addToken': (user, callback) => {
+        db.executeAsync(queries.insertIntoTokens, [user.id, user.secret])
         .then(function(data){
             return callback(null, true);
         })
         .catch(function(err){
-            logger.error("Error setting user active", err.message);
+            logger.error("Error adding token for user", user.id, err.message);
             callback(err);
         });
     },

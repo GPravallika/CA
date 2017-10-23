@@ -1,3 +1,3 @@
 module.exports = {
-  endPoint: 'http://@RAPIDO_BACKEND@/'
+  endPoint: 'http://localhost:9001/'
 }
