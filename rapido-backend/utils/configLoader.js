@@ -34,7 +34,7 @@ var _init = function() {
             'prettyPrint': true
         },
         'email': {
-            'from': process.env.EMAIL_FROM || 'live-api-design@ca.com',
+            'from': process.env.EMAIL_FROM || 'rapido@ca.com',
             'host': 'smtp.office365.com',
             'secure': true,
             'port': 587,

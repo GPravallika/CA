@@ -8,15 +8,14 @@ Create sequence users_id_seq;
 CREATE TABLE public.users
 (
     id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
-    firstname character varying COLLATE pg_catalog."default",
-    lastname character varying COLLATE pg_catalog."default",
-    password character varying COLLATE pg_catalog."default",
-    email character varying COLLATE pg_catalog."default",
-    isactive boolean,
+    firstname text,
+    lastname text,
+    password text,
+    email text,
     isverified boolean,
-    secretkey text COLLATE pg_catalog."default",
     createdat timestamp with time zone DEFAULT now(),
     modifiedat timestamp with time zone DEFAULT now(),
+    teams text[],
     CONSTRAINT users_pkey PRIMARY KEY (id)
 ) WITHOUT OIDS;
 
@@ -29,8 +28,37 @@ CREATE TABLE public.user_verify
 (
     id integer NOT NULL DEFAULT nextval('user_verify_id_seq'::regclass),
     userid bigint,
-    verifytoken character varying COLLATE pg_catalog."default",
+    verifytoken text,
     CONSTRAINT user_verify_pkey PRIMARY KEY (id)
+) WITHOUT OIDS;
+
+CREATE TABLE public.tokens
+(
+    userid bigint,
+    secret text,
+    issuedat timestamp with time zone DEFAULT now()
+) WITHOUT OIDS;
+
+Create sequence team_id_seq;
+
+CREATE TABLE public.teams
+(
+    id integer NOT NULL DEFAULT nextval('team_id_seq'::regclass),
+    name text,
+    description text,
+    createdat timestamp with time zone DEFAULT now(),
+    owner bigint
+) WITHOUT OIDS;
+
+CREATE TABLE public.user_team_workflow
+(
+    guestid bigint,
+    hostid bigint,
+    teamid bigint,
+    createdat timestamp with time zone DEFAULT now(),
+    createdby bigint,
+    modifiedby bigint,
+    action bigint
 ) WITHOUT OIDS;
 
 -- Create sequence for project table for auto increment.
@@ -40,7 +68,7 @@ Create sequence projects_id_seq;
 CREATE TABLE public.projects
 (
     id integer NOT NULL DEFAULT nextval('projects_id_seq'::regclass),
-    name character varying COLLATE pg_catalog."default",
+    name text,
     description text COLLATE pg_catalog."default",
     userid bigint,
     createdat timestamp with time zone NOT NULL DEFAULT now(),
@@ -50,5 +78,6 @@ CREATE TABLE public.projects
     treedata jsonb,
     vocabulary jsonb,
     apidetails jsonb,
+    teams bigint[],
     CONSTRAINT projects_pkey PRIMARY KEY (id)
 ) WITHOUT OIDS;

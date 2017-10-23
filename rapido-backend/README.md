@@ -35,7 +35,7 @@ response     :
 }
 ```
 
-## Verify user
+## Verify email address of user
 
 ```sh
 endPoint    :   /user/verify/{token}
@@ -72,6 +72,7 @@ response    :
         "id": userid,
         "firstname": firstname,
         "lastname": lastname,
+        "isactive": false,
         "email": email
     }
 }
@@ -91,27 +92,6 @@ request     :
 {
     "firstname": "xxxx",
     "lastname": "xxxx"
-}
-response    :
-{
-    "id": user.id
-}
-```
-
-## Update user password
-
-```sh
-endPoint    : /me
-HttpMethod  : PUT
-headers     :
-{
-    Authorization: Bearer   {token},
-    content-Type: application/json
-}
-request     :
-{
-    "old-password": "xxxx",
-    "new-password": "xxxx"
 }
 response    :
 {
@@ -173,6 +153,59 @@ request     :
 {
     "token": "2#@@#146372ASSA"
     "password": "newpass"
+}
+response    :
+{
+    "id": user.id
+}
+```
+
+## get email verification link
+
+```sh
+endPoint    :   /me/verifyemail
+HttpMethod  :   GET
+headers     :
+{
+    Authorization: Bearer   {token},
+    content-Type: application/json
+}
+response    :
+{
+    "id": user.id
+}
+```
+## Update password
+
+```sh
+endPoint    :   /me/securoty
+HttpMethod  :   PUT
+headers     :
+{
+    Authorization: Bearer   {token},
+    content-Type: application/json
+}
+request     :
+{
+    "old-password": "foo",
+    "new-password": "bar"
+}
+response    :
+{
+    "id": user.id
+}
+```
+
+## Logout
+
+```sh
+endPoint    :   /me/logout
+HttpMethod  :   GET
+query param : ?all      // to logout from all different sessions
+headers     :
+{
+    Authorization: Bearer   {token},
+    content-Type: application/json
 }
 response    :
 {

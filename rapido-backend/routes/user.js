@@ -17,16 +17,22 @@ var logger = import_utils('logger.js').getLoggerObject(),
  */
 router.use(authService.initialize());
 
-router.post('/', userService.register);
-router.get('/verify/:token', userService.verify);
+// Unprotected routes.
+
+router.post('/', userService.register);  // create new user
+router.get('/verify/:token', userService.verify); // activate via email
+router.post('/forgotpassword', userService.forgotpassword); // get password recovery email
+router.post('/resetpassword', userService.resetpassword); // reset password via token
+
+
 
 // CRUD user
-router.get('/:id', authService.authenticate(), userService.get);
-router.put('/:id', authService.authenticate(), userService.update);
-router.delete('/:id', authService.authenticate(), userService.delete);
+router.get('/:id', authService.authenticate, userService.get);
+router.put('/:id', authService.authenticate, userService.update);
+router.delete('/:id', authService.authenticate, userService.delete);
 
-// Password management
-router.post('/forgotpassword', userService.forgotpassword);
-router.post('/resetpassword', userService.resetpassword);
+// security
+router.get('/:id/verifyemail', authService.authenticate, userService.verifyemail); // get email with verification link
+router.delete('/:id/token/:secret', authService.authenticate, userService.invalidateTokenForUser);
 
 module.exports = router;

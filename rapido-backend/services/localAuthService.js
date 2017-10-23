@@ -9,22 +9,22 @@
 var logger = import_utils('logger.js').getLoggerObject(),
     schema = require('async-validator'),
     bcrypt = require('bcrypt'),
-    model = require(__dirname + "/models/user.js"),
+    _ = require('lodash'),
+    uuidv4 = require('uuid/v4'),
+    usermodel = require(__dirname + "/models/user.js"),
     promises = require('bluebird'),
     passport = require("passport"),
     passportJWT = require("passport-jwt"),
     jwt = require("jsonwebtoken"),
-    ExtractJwt = passportJWT.ExtractJwt,
-    Strategy = passportJWT.Strategy,
     opts = {};
 
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = configurations.jwt.secret;
 
-passport.use(new Strategy(opts, function(payload, callback) {
-    model.isActiveAsync(payload)
-        .then(function(active) {
-            if (active) {
+passport.use(new passportJWT.Strategy(opts, function(payload, callback) {
+    usermodel.getActiveSecretsAsync(payload)
+        .then(function(activeSecrets) {
+            if(_.map(activeSecrets, 'secret').indexOf(payload.secret) >= 0) {
                 return callback(null, payload);
             } else {
                 return callback(null, false);
@@ -36,10 +36,19 @@ var authService = {
     'initialize': function() {
         return passport.initialize();
     },
-    'authenticate': function() {
-        return passport.authenticate("jwt", {
+    'authenticate': function(request,response,next) {
+        passport.authenticate("jwt", {
             "session": false
-        });
+        }, function(err, user, info) {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                return response.status(401).json({"error":"unauthorized access"});
+            }
+            request.user = user;
+            next();
+        })(request, response, next);
     },
     'login': function(request, response, next) {
         var user = {};
@@ -69,7 +78,7 @@ var authService = {
                 "user": user
             })
             .then(function() {
-                return model.readAsync(user);
+                return usermodel.readAsync(user);
             })
             .then(function(userData) {
                 if (userData) {
@@ -82,25 +91,27 @@ var authService = {
                     } else {
                         throw new Error("user with email " +  user.email + " not activated");
                     }
-
                 } else {
                     throw new Error("user with email " + user.email + " not resgitered");
                 }
             })
             .then(function(validPassword) {
                 if(validPassword) {
-                    return model.setActiveAsync(user);
+                    delete user.password;
+                    user.secret = uuidv4();
+                    return usermodel.addTokenAsync(user);
                 } else {
                     throw new Error("incorrect password");
                 }
             })
             .then(function() {
                 var token = jwt.sign({
-                    id: user.id
+                    "id": user.id,
+                    "secret": user.secret
                 }, configurations.jwt.secret, {
                     "expiresIn": configurations.jwt.expiry
                 });
-                delete user.password;
+                delete user.secret;
                 response.json({
                     "token": token,
                     "user": user
