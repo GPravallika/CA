@@ -77,6 +77,7 @@ var authService = {
                         user.id = userData.id;
                         user.firstname = userData.firstname;
                         user.lastname = userData.lastname;
+                        user.teams = userData.teams;
                         return bcrypt.compare(user.password, userData.password);
                     } else {
                         throw new Error("user with email " +  user.email + " not activated");
