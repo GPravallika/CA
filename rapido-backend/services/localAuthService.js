@@ -107,6 +107,7 @@ var authService = {
                 }, configurations.jwt.secret, {
                     "expiresIn": configurations.jwt.expiry
                 });
+                delete user.secret;
                 response.json({
                     "token": token,
                     "user": user

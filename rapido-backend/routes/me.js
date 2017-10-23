@@ -27,10 +27,24 @@ router.put('/', authService.authenticate, function(request, response, next) {
     userService.update(request, response, next);
 });
 
+router.delete('/', authService.authenticate, function(request, response, next) {
+    request.params.id = request.user.id;
+    userService.delete(request, response, next);
+});
+
+router.get('/verifyemail', authService.authenticate, function(request, response, next) {
+    request.params.id = request.user.id;
+    userService.verifyemail(request, response, next);
+}); // get email with verification link
+
 router.get('/logout', authService.authenticate, function(request, response, next) {
     request.params.id = request.user.id;
     request.params.secret = request.user.secret;
-    userService.invalidateToken(request, response, next);
+    if (request.query.all) {
+        userService.invalidateAllTokenForUser(request, response, next);
+    } else {
+        userService.invalidateTokenForUser(request, response, next);
+    }
 });
 
 router.put('/security', authService.authenticate, function(request, response, next) {

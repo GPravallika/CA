@@ -84,7 +84,18 @@ var model = {
     },
     'deleteFromTokens': (user, callback) => {
 
-        db.executeAsync(queries.deleteFromTokens, [user.secret])
+        db.executeAsync(queries.deleteFromTokens, [user.id, user.secret])
+            .then(function() {
+                callback(null, true);
+                return;
+            })
+            .catch(function(err) {
+                logger.error("Error removing secret", err.message);
+                callback(err);
+            });
+    },
+    'deleteAllTokens': (user, callback) => {
+        db.executeAsync(queries.deleteAllTokens, [user.id])
             .then(function() {
                 callback(null, true);
                 return;

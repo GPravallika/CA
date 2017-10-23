@@ -244,6 +244,9 @@ var userService = {
                     throw new Error("invalid current password for user " + user.id);
                 }
             })
+            .then(function(){
+                return model.deleteAllTokens({"id": user.id});
+            })
             .then(function() {
                 response.status(200).json({
                     "id": user.id
@@ -263,7 +266,57 @@ var userService = {
             });
     },
     'delete': function(request, response, next) {
-
+        // Delete all projects of user
+        // Teams ?
+        // User tokens ?
+        // profile data
+    },
+    'verifyemail': function(request, response, next) {
+        var user = {};
+        user.id = request.params.id;
+        model.readByIdAsync({"id": user.id})
+        .then(function(data) {
+            user.email = data.email;
+            user.firstname = data.firstname;
+            user.lastname = data.lastname;
+            user.token = uuidv4();
+            return model.createVerifyRecordAsync({
+                "id": user.id,
+                "token": user.token
+            });
+        })
+        .then(function() {
+            response.status(200).json({
+                "id": user.id
+            });
+        })
+        .then(function() {
+            var verifyURL = request.query.link + user.token,
+                options = {
+                    "to": user.email,
+                    "subject": "Email Account Verification",
+                    "verifyingURL": verifyURL,
+                    "name": user.firstname + " " + user.lastname
+                },
+                mailer = promises.promisifyAll(response.mailer);
+            mailer.sendAsync("email", options)
+            .catch(function (err) {
+                logger.error("Error while sending mail", err);
+                // Dont send response. Its already sent.
+            });
+        })
+        .catch(function(err) {
+            logger.error(err);
+            var httpCode = 400;
+            if(err instanceof Error) { // 400 for validation error;
+                httpCode = 500;
+                err = {
+                    "code": err.code,
+                    "message": err.message
+                }
+            }
+            response.status(httpCode).json(err);
+        });
     },
     'forgotpassword': function(request, response, next) {
         var user = {};
@@ -317,12 +370,35 @@ var userService = {
             response.status(httpCode).json(err);
         });
     },
-    'invalidateToken': function(request, response, next) {
+    'invalidateTokenForUser': function(request, response, next) {
         var user = {};
         user.id = request.params.id;
         user.secret =request.params.secret;
 
         model.deleteFromTokensAsync(user)
+        .then(function() {
+            response.status(200).json({
+                "id": user.id
+            });
+        })
+        .catch(function(err) {
+            logger.error(err);
+            var httpCode = 400;
+            if(err instanceof Error) { // 400 for validation error;
+                httpCode = 500;
+                err = {
+                    "code": err.code,
+                    "message": err.message
+                }
+            }
+            response.status(httpCode).json(err);
+        });
+    },
+    'invalidateAllTokenForUser': function(request, response, next) {
+        var user = {};
+        user.id = request.params.id;
+
+        model.deleteAllTokens(user)
         .then(function() {
             response.status(200).json({
                 "id": user.id
@@ -356,6 +432,9 @@ var userService = {
             .then(function(pwd) {
                 user.password = pwd;
                 return model.updateAsync(user);
+            })
+            .then(function(){
+                return model.deleteAllTokens({"id": user.id});
             })
             .then(function() {
                 response.status(200).json({

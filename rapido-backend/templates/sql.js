@@ -9,7 +9,8 @@ exports.user = {
     "selectFromVerifyByUserId": "SELECT verifytoken FROM user_verify WHERE userid=?",
     "deleteFromVerify": "DELETE FROM user_verify WHERE userid=?",
     "insertIntoTokens": "INSERT INTO tokens(userid,secret) values (?, ?);",
-    "deleteFromTokens": "DELETE FROM tokens where secret = ?"
+    "deleteFromTokens": "DELETE FROM tokens where userid=? AND secret=?",
+    "deleteAllSecretsByUserId": "DELETE FROM tokens where userid=?"
 };
 
 exports.project = {
