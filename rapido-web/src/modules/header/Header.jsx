@@ -108,7 +108,7 @@ export default class extends React.Component{
               <div className="user-dropdown-options-arrow" onClick={this.handleClick.bind(this)}>▾</div>
               <NavMenu isOpen={this.state.isOpen}/>
             </div>
-            <div className="text-right pull-right user-name"><span>{this.props.userInfo.firstname}</span></div>
+            <div className="text-right pull-right user-name"><Link className="profile-link" to="/profile"><span>{this.props.userInfo.firstname}</span></Link></div>
           </div>
         </div>
       </div>
