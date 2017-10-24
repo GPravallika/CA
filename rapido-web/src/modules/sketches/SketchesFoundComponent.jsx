@@ -20,32 +20,17 @@ export default class extends React.Component{
 
   /* Method to handle search */
   handleChange(event) {
-    if(event.target.value.length > 0) {
-      let userDetails = JSON.parse(sessionStorage.getItem('user'));
-      let sktSrvSerSktPrjRes = null;
-      SketchService.searchSketchProject(event.target.value)
-      .then((response) => {
-        sktSrvSerSktPrjRes = response.clone();
-        return response.json();
-      })
-      .then((responseData) => {
-        if(sktSrvSerSktPrjRes.ok) {
-          this.setState({
-            query: event.target.value,
-            filteredData: responseData
-          })
-        } else {
-          showAlert(this, (responseData.message) ? responseData.message : "Error occured");
-          if(sktSrvSerSktPrjRes.status == 401) {
-            sessionStorage.removeItem('user')
-            sessionStorage.removeItem('token')
-          }
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    }
+    var queryResult=[];
+    this.props.sketches.forEach(function(sketch){
+      if(sketch.name.toLowerCase().indexOf(event.target.value)!=-1)
+        queryResult.push(sketch);
+      if(sketch.description.toLowerCase().indexOf(event.target.value)!=-1)
+        queryResult.push(sketch);
+    });
+    this.setState({
+      query: event.target.value,
+      filteredData: queryResult
+    });
   }
 
   /* Method to handle search */
