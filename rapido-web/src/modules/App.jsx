@@ -4,6 +4,8 @@ import Header from './header/Header'
 import Login from './login/LoginComponent'
 import { browserHistory } from 'react-router'
 import NavDetail from './header/NavigationDetailsComponent'
+import { createTheme, ThemeProvider } from 'mineral-ui/themes';
+import caApiDesignThemeObj from './theme/ca-api-design-theme';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'react-select/dist/react-select.css'
 import '../css/styles.scss'
@@ -33,13 +35,17 @@ export default class extends React.Component {
     }
     navDetails = <NavDetail pathInfo={this.props.location.pathname} />
 
+    const caApiDesignTheme = createTheme('ca-api-design-theme', caApiDesignThemeObj);
+    
     return (
+      <ThemeProvider theme={caApiDesignTheme}>
       <div className ="container-fluid">
         {header}
         <div className="col-sm-12 main-content">
           {React.cloneElement(this.props.children, { designDetails: this.state.designDetails })}
         </div>
       </div>
+      </ThemeProvider>
     )
   }
 }
