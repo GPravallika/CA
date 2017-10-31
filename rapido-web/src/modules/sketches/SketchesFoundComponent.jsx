@@ -1,5 +1,6 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
+import Button from 'mineral-ui/Button';
 import DeleteModal from '../d3/DeleteModal';
 import SketchService from './SketchServices'
 
@@ -164,7 +165,7 @@ export default class extends React.Component{
 
     return(
       <div className="col-md-12 sketch-list-wrapper">
-        <button onClick={this.addNewSketch.bind(this)} className="rapido-button new-sketch-label">+ Create Project</button>
+        <Button onClick={this.addNewSketch.bind(this)} className="new-sketch-label">+ CREATE PROJECT</Button>
         <div className="col-md-12 sketch-sort-section">
           <input className="search-sketch-input" placeholder="Search" type="text" value={this.state.query} onChange={this.handleChange} />
           <button id="sortByCreatedBtn" className={(this.state.sortType == 'created') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Created</button>
