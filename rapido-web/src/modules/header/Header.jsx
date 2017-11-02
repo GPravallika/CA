@@ -128,6 +128,19 @@ export default class extends React.Component{
       Button_color_text: '#ffffff'
     });
 
+    const profileDropdownItems = [
+      {
+        items: [
+          {
+            text: 'Menu item with onClick'
+          },
+          {
+            text: 'Menu item'
+          }
+        ]
+      }
+    ];
+
     if(loggedIn) {
       
       headerSection = <div className="row rapido-header-wrapper">
@@ -139,8 +152,8 @@ export default class extends React.Component{
         </div>
         <div className="col-md-8 col-sm-9">
           <div className="col-md-12 col-sm-12">
-            <Dropdown className="profileDropdown">
-              <profileDropdownBtn placement="right-end">{this.props.userInfo.firstname} ▾</profileDropdownBtn>
+            <Dropdown placement="bottom-end" className="profileDropdown" data={profileDropdownItems}>
+              <profileDropdownBtn>{this.props.userInfo.firstname} ▾</profileDropdownBtn>
             </Dropdown>
           </div>
         </div>
