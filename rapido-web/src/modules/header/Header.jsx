@@ -2,10 +2,13 @@ import React from 'react'
 import { browserHistory, Link } from 'react-router'
 import cx from 'classnames'
 import NavMenu from './NavigationMenu'
+import Dropdown from 'mineral-ui/Dropdown';
+import Button from 'mineral-ui/Button';
 import EditObserver from '../EditObserver'
 import AlertContainer from 'react-alert'
 import {showAlert, AlertOptions} from '../utils/AlertActions'
 import Icon from 'mineral-ui/Icon';
+import { createThemedComponent } from 'mineral-ui/themes';
 
 export default class extends React.Component{
   
@@ -120,6 +123,11 @@ export default class extends React.Component{
       </svg>
     </Icon>
 
+    const profileDropdownBtn = createThemedComponent(Button, {
+      Button_backgroundColor: 'none',
+      Button_color_text: '#ffffff'
+    });
+
     if(loggedIn) {
       
       headerSection = <div className="row rapido-header-wrapper">
@@ -131,11 +139,9 @@ export default class extends React.Component{
         </div>
         <div className="col-md-8 col-sm-9">
           <div className="col-md-12 col-sm-12">
-            <div className="pull-right user-dropdown-options">
-              <div className="user-dropdown-options-arrow" onClick={this.handleClick.bind(this)}>▾</div>
-              <NavMenu isOpen={this.state.isOpen}/>
-            </div>
-            <div className="text-right pull-right user-name"><Link className="profile-link" to="/profile"><span>{this.props.userInfo.firstname}</span></Link></div>
+            <Dropdown className="profileDropdown">
+              <profileDropdownBtn placement="right-end">{this.props.userInfo.firstname} ▾</profileDropdownBtn>
+            </Dropdown>
           </div>
         </div>
       </div>
