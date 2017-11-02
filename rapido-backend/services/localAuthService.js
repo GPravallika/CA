@@ -82,22 +82,15 @@ var authService = {
             })
             .then(function(userData) {
                 if (userData) {
-                    if(userData.isverified) {
-                        user.id = userData.id;
-                        user.firstname = userData.firstname;
-                        user.lastname = userData.lastname;
-                        user.teams = userData.teams;
-                        return bcrypt.compare(user.password, userData.password);
-                    } else {
-                        throw new Error("user with email " +  user.email + " not activated");
-                    }
+                    var suppliedpassword = user.password;
+                    user = userData;
+                    return bcrypt.compare(suppliedpassword, user.password);
                 } else {
                     throw new Error("user with email " + user.email + " not resgitered");
                 }
             })
             .then(function(validPassword) {
                 if(validPassword) {
-                    delete user.password;
                     user.secret = uuidv4();
                     return usermodel.addTokenAsync(user);
                 } else {
@@ -111,7 +104,10 @@ var authService = {
                 }, configurations.jwt.secret, {
                     "expiresIn": configurations.jwt.expiry
                 });
+                delete user.password;
                 delete user.secret;
+                delete user.createdat;
+                delete user.modifiedat;
                 response.json({
                     "token": token,
                     "user": user

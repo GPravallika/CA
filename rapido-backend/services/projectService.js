@@ -21,7 +21,6 @@ var projectService = {
         project.description = request.body.description || '';
         project.userid = request.user.id;
         project.createdby = request.user.id;
-
         project.treedata = request.body.treedata || {};
         project.vocabulary = request.body.vocabulary || [];
         project.apidetails = request.body.apidetails || {};
@@ -119,7 +118,6 @@ var projectService = {
                     "message": err.message
                 });
             });
-
     },
     'update': function(request, response, next) {
         var project = {};
@@ -212,6 +210,68 @@ var projectService = {
                 });
             });
     },
+    'addTeam': function(request, response, next) {
+        var project = {
+            "id": request.params.id
+        };
+        var team = {
+            "id": request.body.id,
+            "access": request.body.access
+        };
+        model.addTeamAsync(project, team)
+            .then(function(data) {
+                response.status(200).json({"id": request.params.id});
+            })
+            .catch(function(err) {
+                logger.error(err);
+                response.status(500).json({
+                    "code": err.code,
+                    "message": err.message
+                });
+            });
+    },
+    
+    'updateTeam': function(request, response, next) {
+        var project = {
+            "id": request.params.projectid
+        };
+        var team = {
+            "id": request.params.teamid,
+            "access": request.body.access
+        };
+        model.updateTeamAsync(project, team)
+            .then(function(data) {
+                response.status(200).json({"id": request.params.projectid});
+            })
+            .catch(function(err) {
+                logger.error(err);
+                response.status(500).json({
+                    "code": err.code,
+                    "message": err.message
+                });
+            });
+    },
+    'removeTeam': function(request, response, next) {
+        var project = {
+            "id": request.params.projectid
+        };
+        var team = {
+            "id": request.params.teamid,
+            "access": request.body.access
+        };
+        model.removeteamAsync(project, team)
+            .then(function(data) {
+                response.status(200).json({"id": request.params.projectid});
+            })
+            .catch(function(err) {
+                logger.error(err);
+                response.status(500).json({
+                    "code": err.code,
+                    "message": err.message
+                });
+            });
+    },
+
     'export': function(request, response, next) {
 
         if (request.query.type && request.query.type == 'swagger') {

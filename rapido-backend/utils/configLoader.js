@@ -17,7 +17,7 @@ var _init = function() {
                 'max': process.env.DB_POOL_MAX || 20,
                 'min': process.env.DB_POOL_MIN || 1
             },
-            'debug': process.env.DB_DEBUG || true,
+            'debug': process.env.DB_DEBUG || false,
             'client': 'pg',
             'connection': {
                 'host': process.env.DB_HOST || 'localhost',
@@ -28,7 +28,7 @@ var _init = function() {
             }
         },
         'logger' : {
-            'level': process.env.LOG_LEVEL || 'debug',
+            'level': process.env.LOG_LEVEL || 'info',
             'colorize': true,
             'timestamp': true,
             'prettyPrint': true
@@ -47,6 +47,10 @@ var _init = function() {
         'jwt': {
             'secret': process.env.JWT_SECRET || 'Rap1d0S@cr@t$!c@ntm@k3',
             'expiry': process.env.JWT_EXPIRY || '24h'
+        },
+
+        "team": {
+            "size": 10
         }
     };
     return configurations;

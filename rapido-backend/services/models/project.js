@@ -18,7 +18,6 @@ var model = {
         db.executeAsync(queries.insert, [
                 project.name,
                 project.description,
-                project.userid,
                 project.createdby,
                 project.vocabulary,
                 project.treedata,
@@ -53,11 +52,11 @@ var model = {
     'readById': (project, callback) => {
         db.executeAsync(queries.selectById, [project.id])
             .then(function(data) {
-                logger.debug("Projects with id", project.id, "retrived.");
+                logger.debug("Project with id", project.id, "retrived.");
                 return callback(null, data.rows[0]);
             })
             .catch(function(err) {
-                logger.error("Error retrieving projects with id ", project.id, err.message);
+                logger.error("Error retrieving project with id ", project.id, err.message);
                 callback(err);
             });
     },
@@ -94,7 +93,40 @@ var model = {
                 logger.error("Error deleting projects with id ", project.id, err.message);
                 callback(err);
             });
-    }
+    },
+    'addTeam': function(project, team, callback) {
+        db.executeAsync(queries.addTeam, [team.id, project.id, team.access || 'READ'])
+            .then(function(data) {
+                logger.debug("Team", team.id, "added to project", project.id);
+                return callback(null, true);
+            })
+            .catch(function(err) {
+                logger.error("Error adding team to project", project.id, err.message);
+                callback(err);
+            });
+    },
+    'updateTeam': function(project, team, callback) {
+        db.executeAsync(queries.updateTeam, [team.access  || 'READ' , project.id, team.id])
+            .then(function(data) {
+                logger.debug("Team details for project", project.id, "updated");
+                return callback(null, true);
+            })
+            .catch(function(err) {
+                logger.error("Error updating team for project", project.id, err.message);
+                callback(err);
+            });
+    },
+    'removeTeam': function(project, team, callback) {
+        db.executeAsync(queries.removeTeam, [project.id, team.id])
+            .then(function(data) {
+                logger.debug("team ", team.id, "removed from project", project.id);
+                return callback(null, true);
+            })
+            .catch(function(err) {
+                logger.error("Error removing team for project", project.id, err.message);
+                callback(err);
+            });
+    },
 };
 
 module.exports = promises.promisifyAll(model);

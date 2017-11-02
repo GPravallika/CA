@@ -95,13 +95,13 @@ var model = {
             });
     },
     'deleteAllTokens': (user, callback) => {
-        db.executeAsync(queries.deleteAllTokens, [user.id])
+        db.executeAsync(queries.deleteAllSecretsByUserId, [user.id])
             .then(function() {
                 callback(null, true);
                 return;
             })
             .catch(function(err) {
-                logger.error("Error removing secret", err.message);
+                logger.error("Error removing all secrets", err.message);
                 callback(err);
             });
     },
@@ -177,7 +177,7 @@ var model = {
             logger.error("Error adding token for user", user.id, err.message);
             callback(err);
         });
-    },
+    }
 };
 
 module.exports = promises.promisifyAll(model);

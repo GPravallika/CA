@@ -18,9 +18,14 @@ var logger = import_utils('logger.js').getLoggerObject(),
 router.use(authService.initialize());
 router.post('/', authService.authenticate, projectService.create);
 router.get('/', authService.authenticate, projectService.fetch);   // Get all matching projects from filters
-router.get('/:id', authService.authenticate, projectService.get);  // Get project by Id
+router.get('/:id', authService.authenticate, projectService.get);  // Get all detaild of project by Id
 router.put('/:id', authService.authenticate, projectService.update);
 router.delete('/:id', authService.authenticate, projectService.delete);
+
+// Share with team functionality
+router.post('/:id/team', authService.authenticate, projectService.addTeam);
+router.put('/:projectid/team/:teamid', authService.authenticate, projectService.updateTeam);
+router.delete('/:projectid/team/:teamid', authService.authenticate, projectService.removeTeam);
 
 // Export functionality
 router.get('/:id/export', authService.authenticate, projectService.export);

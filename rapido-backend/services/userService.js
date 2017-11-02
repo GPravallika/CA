@@ -142,6 +142,8 @@ var userService = {
         model.readByIdAsync({"id": request.params.id})
         .then(function(data) {
             delete data.password;
+            delete data.createdat;
+            delete data.modifiedat;
             response.status(200).json(data);
         })
         .catch(function(err) {
@@ -245,7 +247,7 @@ var userService = {
                 }
             })
             .then(function(){
-                return model.deleteAllTokens({"id": user.id});
+                return model.deleteAllTokensAsync({"id": user.id});
             })
             .then(function() {
                 response.status(200).json({

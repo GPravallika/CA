@@ -47,18 +47,21 @@ CREATE TABLE public.teams
     name text,
     description text,
     createdat timestamp with time zone DEFAULT now(),
-    owner bigint
+    modifiedat timestamp with time zone DEFAULT now(),
+    createdby bigint,
+    modifiedby bigint,
+    capacity integer
 ) WITHOUT OIDS;
+
+CREATE TYPE TEAM_ACTION AS ENUM ('INVITED', 'ACCEPTED', 'REJECTED');
 
 CREATE TABLE public.user_team_workflow
 (
-    guestid bigint,
-    hostid bigint,
+    sender bigint,
+    reciever bigint,
     teamid bigint,
     createdat timestamp with time zone DEFAULT now(),
-    createdby bigint,
-    modifiedby bigint,
-    action bigint
+    action TEAM_ACTION
 ) WITHOUT OIDS;
 
 -- Create sequence for project table for auto increment.
@@ -70,7 +73,6 @@ CREATE TABLE public.projects
     id integer NOT NULL DEFAULT nextval('projects_id_seq'::regclass),
     name text,
     description text COLLATE pg_catalog."default",
-    userid bigint,
     createdat timestamp with time zone NOT NULL DEFAULT now(),
     modifiedat timestamp with time zone DEFAULT now(),
     createdby bigint,
@@ -78,6 +80,23 @@ CREATE TABLE public.projects
     treedata jsonb,
     vocabulary jsonb,
     apidetails jsonb,
-    teams bigint[],
     CONSTRAINT projects_pkey PRIMARY KEY (id)
+) WITHOUT OIDS;
+
+CREATE TYPE TEAM_ACCESS AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
+
+CREATE TABLE public.user_team
+(
+    userid bigint ,
+    teamid bigint,
+    access TEAM_ACCESS
+) WITHOUT OIDS;
+
+CREATE TYPE PROJECT_ACCESS AS ENUM ('READ', 'WRITE');
+
+CREATE TABLE public.team_project
+(
+    teamid bigint ,
+    projectid bigint,
+    access PROJECT_ACCESS
 ) WITHOUT OIDS;
