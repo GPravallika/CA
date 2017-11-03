@@ -48,6 +48,11 @@ export default class extends React.Component{
     browserHistory.push('/home');
   }
 
+  /* Method to handle profile page */
+  handleEditProfile() {
+    browserHistory.push('/profile');
+  }
+
   /* Method to navigate to tree Node details */
   getNodeDetails() {
     let sketchId = sessionStorage.getItem('sketchId')
@@ -132,10 +137,12 @@ export default class extends React.Component{
       {
         items: [
           {
-            text: 'Menu item with onClick'
+            text: 'Settings',
+            onClick: event => { this.handleEditProfile(); }
           },
           {
-            text: 'Menu item'
+            text: 'Logout',
+            onClick: event => { this.handleLogout(); }
           }
         ]
       }
