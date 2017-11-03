@@ -119,3 +119,15 @@ a.header-logo-section {
     right: 10Px;
     color: #09AEEF;
 }
+
+.cardLayout {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  clear: both;
+  & > * {
+    flex: 1 1 25%;
+    margin: 1.25em;
+    max-width: 30%;
+  }
+}

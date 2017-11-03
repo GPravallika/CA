@@ -3,6 +3,8 @@ import { browserHistory } from 'react-router';
 import Button from 'mineral-ui/Button';
 import DeleteModal from '../d3/DeleteModal';
 import SketchService from './SketchServices'
+import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
+import { createStyledComponent } from 'mineral-ui/styles';
 
 export default class extends React.Component{
   
@@ -144,24 +146,14 @@ export default class extends React.Component{
 
     const sketchItems = filteredData.map(function (row) {
       return (
-        <div className="sketch-card" key={row.id}>
-          <div className="header">
-            <span className="name">{row.name}</span>
-          </div>
-          <div className="body">
-            <div className="description">
-              {row.description}
-            </div>
-            <span className="time">{row.createdAt}</span>
-            <span className="time">{row.modifiedAt}</span>
-          </div>
-          <div className="sketch-hover-card">
-            <button className="btn btn-default del-btn" onClick={this.toggleModal.bind(this,{row})}>Delete</button>
-            <button className="btn btn-default det-btn" onClick={this.navigateToDetails.bind(this,{row})}>Details</button>
-          </div>
-        </div>
+        <Card>
+          <CardTitle>{row.name}</CardTitle>
+          <CardBlock>{row.description}</CardBlock>
+        </Card>
       );
     }, this);
+
+    const cardLayout = createStyledComponent('div');
 
     return(
       <div className="col-md-12 sketch-list-wrapper">
@@ -172,7 +164,9 @@ export default class extends React.Component{
           <button id="sortByModifiedBtn" className={(this.state.sortType == 'modified') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Modified</button>
           <button id="sortByNameBtn" className={(this.state.sortType == 'name') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Name</button>
         </div>
-        {sketchItems}
+        <cardLayout className="cardLayout">
+          {sketchItems}
+        </cardLayout>
         <DeleteModal show={this.state.isOpen}
           onClose={this.toggleModal.bind(this)}
           onConfirm={this.deleteSketch.bind(this)}>
