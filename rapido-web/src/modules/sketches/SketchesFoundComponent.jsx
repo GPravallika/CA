@@ -1,7 +1,12 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
+import Button from 'mineral-ui/Button';
 import DeleteModal from '../d3/DeleteModal';
 import SketchService from './SketchServices'
+import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
+import { createStyledComponent } from 'mineral-ui/styles';
+import { createThemedComponent } from 'mineral-ui/themes';
+import IconModeEdit from 'mineral-ui/Icon';
 
 export default class extends React.Component{
   
@@ -141,37 +146,55 @@ export default class extends React.Component{
 
     const { filteredData } = this.state;
 
+    const CustomContent = createStyledComponent('div', ({ theme }) => ({
+      backgroundColor: theme.color_gray_20,
+      margin: `${theme.space_stack_md} 0`,
+      padding: theme.space_inset_lg,
+
+      '&:last-child': {
+        borderRadius: `0 0 ${theme.borderRadius_1} ${theme.borderRadius_1}`,
+        marginBottom: `-${theme.space_stack_md}`
+      }
+    }));
+
+    const BlueButton = createThemedComponent(Button, {
+      Button_backgroundColor: '#09AEEF',
+      Button_color_text: '#ffffff',
+      Button_fontWeight: '100',
+      Button_borderColor: '#09AEEF',
+      Button_borderWidth: '2px',
+      Button_backgroundColor_active: '#09AEEF',
+      Button_backgroundColor_focus: '#09AEEF',
+      Button_backgroundColor_hover: '#09AEEF'
+    });
+
     const sketchItems = filteredData.map(function (row) {
       return (
-        <div className="sketch-card" key={row.id}>
-          <div className="header">
-            <span className="name">{row.name}</span>
-          </div>
-          <div className="body">
-            <div className="description">
-              {row.description}
-            </div>
-            <span className="time">{row.createdAt}</span>
-            <span className="time">{row.modifiedAt}</span>
-          </div>
-          <div className="sketch-hover-card">
-            <button className="btn btn-default del-btn" onClick={this.toggleModal.bind(this,{row})}>Delete</button>
-            <button className="btn btn-default det-btn" onClick={this.navigateToDetails.bind(this,{row})}>Details</button>
-          </div>
-        </div>
+        <Card>
+          <CardTitle>{row.name}</CardTitle>
+          <CardBlock>{row.description}</CardBlock>
+          <CustomContent>
+            <Button onClick={this.navigateToDetails.bind(this,{row})}>Edit</Button>
+            <Button className="sketchDeleteButton" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+          </CustomContent>
+        </Card>
       );
     }, this);
 
+    const cardLayout = createStyledComponent('div');
+
     return(
       <div className="col-md-12 sketch-list-wrapper">
-        <button onClick={this.addNewSketch.bind(this)} className="rapido-button new-sketch-label">+ Create Project</button>
+        <BlueButton onClick={this.addNewSketch.bind(this)} className="new-sketch-label">+ CREATE PROJECT</BlueButton>
         <div className="col-md-12 sketch-sort-section">
           <input className="search-sketch-input" placeholder="Search" type="text" value={this.state.query} onChange={this.handleChange} />
           <button id="sortByCreatedBtn" className={(this.state.sortType == 'created') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Created</button>
           <button id="sortByModifiedBtn" className={(this.state.sortType == 'modified') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Modified</button>
           <button id="sortByNameBtn" className={(this.state.sortType == 'name') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Name</button>
         </div>
-        {sketchItems}
+        <cardLayout className="cardLayout">
+          {sketchItems}
+        </cardLayout>
         <DeleteModal show={this.state.isOpen}
           onClose={this.toggleModal.bind(this)}
           onConfirm={this.deleteSketch.bind(this)}>

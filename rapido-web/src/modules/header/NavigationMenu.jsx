@@ -16,7 +16,6 @@ export default React.createClass({
         return (
           <div className="dropdown">
             <ul className="user-options">
-              <li><a href="/profile">Profile</a></li>
               <li><a id="option-logout">Logout</a></li>
             </ul>
           </div>

@@ -33,13 +33,6 @@
   }
   .user-dropdown-options {
     padding-top: 10px;
-    button {
-      border-radius: 40px;
-      height: 40px;
-      width: 40px;
-      padding: 5px;
-      padding-bottom: 10px;
-    }
     .dropdown{
       right: 15px;
       position: absolute;
@@ -99,8 +92,8 @@
 }
 
 .logo-text {
-    vertical-align: middle;
-    margin-left: 20px;
+    vertical-align: 24px;
+    margin-left: 15px;
 }
 
 .header-logo-section {
@@ -118,4 +111,27 @@ a.header-logo-section {
   .content.close {
     visibility: hidden
   }
+}
+
+.profileDropdown {
+    position: absolute;
+    top: 22px;
+    right: 10Px;
+    color: #09AEEF;
+}
+
+.cardLayout {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  clear: both;
+  & > * {
+    flex: 1 1 25%;
+    margin: 1.25em;
+    max-width: 30%;
+  }
+}
+
+.sketchDeleteButton {
+  margin-left: 20px;
 }

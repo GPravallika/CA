@@ -66,8 +66,8 @@ const CRUDTreeElement = d3Wrap ({
       });
 
     let node = CRUDTree.drawNodes(graphEl, nodes, handler);
-    d3.select('svg').attr('width',treeWidth + 350);
-    d3.select('svg').attr('height',treeHeight + 100);
+    d3.select(svg).attr('width',treeWidth + 350);
+    d3.select(svg).attr('height',treeHeight + 100);
     
     node.exit().remove();
     // Move the position of the tree graph based on x and y parameters
