@@ -5,6 +5,8 @@ import DeleteModal from '../d3/DeleteModal';
 import SketchService from './SketchServices'
 import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
 import { createStyledComponent } from 'mineral-ui/styles';
+import { createThemedComponent } from 'mineral-ui/themes';
+import IconModeEdit from 'mineral-ui/Icon';
 
 export default class extends React.Component{
   
@@ -144,11 +146,37 @@ export default class extends React.Component{
 
     const { filteredData } = this.state;
 
+    const CustomContent = createStyledComponent('div', ({ theme }) => ({
+      backgroundColor: theme.color_gray_20,
+      margin: `${theme.space_stack_md} 0`,
+      padding: theme.space_inset_lg,
+
+      '&:last-child': {
+        borderRadius: `0 0 ${theme.borderRadius_1} ${theme.borderRadius_1}`,
+        marginBottom: `-${theme.space_stack_md}`
+      }
+    }));
+
+    const BlueButton = createThemedComponent(Button, {
+      Button_backgroundColor: '#09AEEF',
+      Button_color_text: '#ffffff',
+      Button_fontWeight: '100',
+      Button_borderColor: '#09AEEF',
+      Button_borderWidth: '2px',
+      Button_backgroundColor_active: '#09AEEF',
+      Button_backgroundColor_focus: '#09AEEF',
+      Button_backgroundColor_hover: '#09AEEF'
+    });
+
     const sketchItems = filteredData.map(function (row) {
       return (
         <Card>
           <CardTitle>{row.name}</CardTitle>
           <CardBlock>{row.description}</CardBlock>
+          <CustomContent>
+            <Button onClick={this.navigateToDetails.bind(this,{row})}>Edit</Button>
+            <Button className="sketchDeleteButton" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+          </CustomContent>
         </Card>
       );
     }, this);
@@ -157,7 +185,7 @@ export default class extends React.Component{
 
     return(
       <div className="col-md-12 sketch-list-wrapper">
-        <Button onClick={this.addNewSketch.bind(this)} className="new-sketch-label">+ CREATE PROJECT</Button>
+        <BlueButton onClick={this.addNewSketch.bind(this)} className="new-sketch-label">+ CREATE PROJECT</BlueButton>
         <div className="col-md-12 sketch-sort-section">
           <input className="search-sketch-input" placeholder="Search" type="text" value={this.state.query} onChange={this.handleChange} />
           <button id="sortByCreatedBtn" className={(this.state.sortType == 'created') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Created</button>
