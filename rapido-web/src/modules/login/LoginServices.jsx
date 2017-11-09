@@ -13,6 +13,15 @@ const LoginApiCall = {
         "email": userObject.userId
       })
     });
+  },
+  getUserDetails(token) {
+    return fetch(apiObj.endPoint + 'me', { 
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
   }
   
 }

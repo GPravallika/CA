@@ -14,6 +14,7 @@ import ResetPassword from './modules/register/ResetPasswordComponent'
 import MailVerification from './modules/register/MailVerificationComponent'
 import Sketches from './modules/sketches/SketchesComponent'
 import Profile from './modules/profile'
+import AuthComponent from './modules/login/AuthComponent'
 import RouteNotFoundComponent from './modules/404Component'
 import { Router, Route, browserHistory,IndexRoute, Redirect } from 'react-router'
 
@@ -32,6 +33,7 @@ render(<Router history={browserHistory}>
     <Route path="/home" component={Dashboard} />
     <Route path="/resetPassword(/:resetPasswordToken)" component={ResetPassword} />
     <Route path="/forgotPassword" component={ForgotPassword} />
+    <Route path="/auth" component={AuthComponent} />
     <Route path="/verify(/:pathParam1)" component={Verification} />
     <Route path="/mailVerification" component={MailVerification} />
     <Route path="/sketches" component={Sketches} onEnter={checkSession}/>
