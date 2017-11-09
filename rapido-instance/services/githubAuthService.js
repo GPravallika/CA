@@ -19,7 +19,7 @@ var logger = import_utils('logger.js').getLoggerObject(),
 
 opts.clientID = configurations.github.clientID;
 opts.clientSecret = configurations.github.clientSecret;
-opts.callbackURL = "http://localhost:9001/api/login/github/callback";
+opts.callbackURL = "http://34.214.211.27:9001/api/login/github/callback";
 opts.scope = [ 'user:email' ];
 
 passport.use(new passportGitHub.Strategy(opts, function(accessToken, refreshToken, profile, callback) {
