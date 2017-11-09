@@ -123,7 +123,8 @@ export default class extends React.Component{
       <div>
         <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
         <div className="col-sm-12 form-wrapper">
-          <form className="col-sm-4 col-sm-offset-4 login-form" noValidate onSubmit={this.handleSubmit}>
+          <div className="col-sm-4 col-sm-offset-4 login-form">
+          <form noValidate onSubmit={this.handleSubmit}>
             <a href="/home">
             <svg width="80" height="80" viewBox="0 0 32 32">
               <path fill="#20465F" d="M1.21 24.009h-0.731v1.023h-0.425v0.594h0.425v1.843c0 0.441 0.213 0.714 0.75 0.714 0.208-0.004 0.408-0.022 0.605-0.051l-0.026-0.603c-0.098 0.029-0.213 0.050-0.331 0.058-0.186 0-0.27-0.051-0.27-0.213v-1.747h0.6v-0.593h-0.596v-1.023z"></path>
@@ -176,10 +177,11 @@ export default class extends React.Component{
             </div>
             <a className="form-link password-label" onClick={this.resetPassword}>Forgot Password?</a>
             <a className="form-link create-label" onClick={this.register}>Create an account</a>
-            <div className="form-group github-login-button-section">
-              <button className="btn btn-default github" onClick={this.handleGithubLogin.bind(this)}>Login with github</button>
-            </div>
           </form>
+          <div className="form-group github-login-button-section">
+            <button className="btn btn-default github" onClick={this.handleGithubLogin.bind(this)}>Login with github</button>
+          </div>
+          </div>
         </div>
       </div>
     )
