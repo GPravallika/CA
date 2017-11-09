@@ -3,8 +3,8 @@ show_usage()
     echo "Invalid build arguments ..."
     echo "Usage ./build.sh <project-name>|all [push]"
     echo "Examples :"
-    echo "1) ./build.sh rapido-web"
-    echo "2) ./build.sh rapido-backend push"
+    echo "1) ./build.sh rapido-instance"
+    echo "2) ./build.sh rapido-instance push"
     echo "3) ./build.sh all"
     echo "1) ./build.sh all push"
     echo ""
@@ -19,7 +19,7 @@ echo ""
 
 if [[ $# -eq 2 ]]; then
 
-    if [[ ($1 = "rapido-db" || $1 = "rapido-web"  || $1 = "rapido-backend") && $2 = "push" ]] ; then
+    if [[ ($1 = "rapido-db" || $1 = "rapido-instance") && $2 = "push" ]] ; then
         echo ""
         echo "--------------------------------"
         echo "Building $1 ..."
@@ -39,8 +39,7 @@ if [[ $# -eq 2 ]]; then
         echo "--------------------------------"
         echo ""
         docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-db" rapido-db
-        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-web" rapido-web
-        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-backend" rapido-backend
+        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-instance" rapido-instance
 
         echo ""
         echo "--------------------------------"
@@ -48,13 +47,12 @@ if [[ $# -eq 2 ]]; then
         echo "--------------------------------"
         echo ""
         docker push isl-dsdc.ca.com:5000/apim-solutions/rapido-db
-        docker push isl-dsdc.ca.com:5000/apim-solutions/rapido-web
-        docker push isl-dsdc.ca.com:5000/apim-solutions/rapido-backend
+        docker push isl-dsdc.ca.com:5000/apim-solutions/rapido-instance
     else
         show_usage
     fi
 elif [[ $# -eq 1 ]]; then
-    if [[ $1 = "rapido-db" || $1 = "rapido-web"  || $1 = "rapido-backend" ]] ; then
+    if [[ $1 = "rapido-db" || $1 = "rapido-instance" ]] ; then
         echo ""
         echo "--------------------------------"
         echo "Building $1 ..."
@@ -68,8 +66,7 @@ elif [[ $# -eq 1 ]]; then
         echo "--------------------------------"
         echo ""
         docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-db" rapido-db
-        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-web" rapido-web
-        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-backend" rapido-backend
+        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-web" rapido-instance
     else
         show_usage
     fi
