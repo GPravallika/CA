@@ -1,8 +1,8 @@
 version: '2'
 services:
-    rapido-backend:
-        image: isl-dsdc.ca.com:5001/apim-solutions/rapido-backend
-        container_name: rapido-backend
+    rapido-instance:
+        image: isl-dsdc.ca.com:5001/apim-solutions/rapido-instance
+        container_name: rapido-instance
         ports:
             - "9001:9001"
         environment:
@@ -22,19 +22,6 @@ services:
             - EMAIL_PASSWORD
             - JWT_SECRET
             - JWT_EXPIRY
-        cpu_shares:     85
-        mem_limit:      1g
-        memswap_limit:  2g
-
-    rapido-web:
-        image: isl-dsdc.ca.com:5001/apim-solutions/rapido-web
-        container_name: rapido-web
-        ports:
-            - "8090:8090"
-        environment:
-            - RAPIDO_BACKEND
-        links:
-            - rapido-backend
         cpu_shares:     85
         mem_limit:      1g
         memswap_limit:  2g
