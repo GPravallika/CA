@@ -18,7 +18,7 @@
       cursor: pointer;
       font-size: 15px;
       display: block;
-      margin-bottom: 50px;
+      margin-bottom: 20px;
       text-decoration: none;
     }
     .password-label {
@@ -97,4 +97,19 @@
 .home-logo-section img {
     margin-top: 27px;
     margin-left: 20px;
+}
+
+.github-login-button-section {
+  clear: both;
+  margin-bottom: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+  button.github {
+    background: #2a2a2a;
+    border-color: #2a2a2a;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACTUlEQVR42s1WPS9EQRSdZZNVkLc2CA3RaX0lJEKyhf+wiSA+QqdAIgo/QKNUCJUGITpR+mh0KBQIQSNorCBB9jlX7iaTydzd956RuMmxMnPvuWfmzZ07SgU03/ergGFgNZfLnQIvPhv9T2M0xz5VypWBrBlYAz794PbJMc2/SewBS7RAP7rlmMOLsuor351dBd4NOKbxPZ99x8ac6WLJW/8iuSGiVUpeCYdrI+YM2IwiimM2mUMfpxyVNgErFp4+nktwed0bZbdHMMrynn0THNtn4V0xk7cJC2mxVEYTUGJZQAnPecZ4i8DdpjttCU7tDu6RdoF7K+9QC3wJTgMOBAwI3JSzlhzGhEN0h5+UAwEpcN0KIsYUX5k2G3J4nQ8JOdaUWSba9ngOBXjCZz6jyTfLxI1ybMRpyfOmhK25cC0A5+DSlkgJBzD7BwKyVgHSBKzG4fbXiAvFn2NBQL9DAf2CgGOaXBYEnABxB8njzGWzZXLIFGhqCw4ELBTgz5BDBfBaoK1u/FyZ4RPXcaxklLMi77yoTcwDPcC+NvYBrAOj3DlLha3uBMa5uX0UeTIs6sH1wLv2kJykfo4VHNm6GBCzCIjBfzvge4Vy1ZsEc4ZTB9BoaSRdBba9O6CAOem0HmrffpfHk/zCmQV6bduvcVQHSH4oVhcdNuPKnAh58JJF3omXRQ80HBqoF2hBB/iZBgaBGaAsogDibAjziNgRiJJhBTBXKmwdx4ARBD9EFYDYRy7d2G9usnIuy3MQPuWf24Jvgn3OgSmKVf/dvgFJ8Cp7we0LbwAAAABJRU5ErkJggg==');
+    background-position: 1em;
+    background-repeat: no-repeat;
+    background-size: 1.25em;
+  }
 }

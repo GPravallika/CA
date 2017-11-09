@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router'
 import LoginService from './LoginServices'
 import AlertContainer from 'react-alert';
 import {showAlert, AlertOptions} from '../utils/AlertActions'
+import apiObj from '../utils/ApiServices'
 
 export default class extends React.Component{
   
@@ -16,6 +17,11 @@ export default class extends React.Component{
     this.alertOptions = AlertOptions;
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  /* Method to handle github login */
+  handleGithubLogin() {
+    window.location.href = apiObj.endPoint + 'login/github?callback_url=' + window.location.origin + '/auth';
   }
 
   /* Method to handle Form Input change */
@@ -170,6 +176,9 @@ export default class extends React.Component{
             </div>
             <a className="form-link password-label" onClick={this.resetPassword}>Forgot Password?</a>
             <a className="form-link create-label" onClick={this.register}>Create an account</a>
+            <div className="form-group github-login-button-section">
+              <button className="btn btn-default github" onClick={this.handleGithubLogin.bind(this)}>Login with github</button>
+            </div>
           </form>
         </div>
       </div>
