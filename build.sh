@@ -66,7 +66,7 @@ elif [[ $# -eq 1 ]]; then
         echo "--------------------------------"
         echo ""
         docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-db" rapido-db
-        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-web" rapido-instance
+        docker build -t "isl-dsdc.ca.com:5000/apim-solutions/rapido-instance" rapido-instance
     else
         show_usage
     fi
