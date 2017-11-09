@@ -1,0 +1,347 @@
+.sketch-component-wrapper {
+  padding: 0;
+  .sketch-sort-section {
+    padding: 20px 5px 20px 5px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+    button {
+      float: right;
+      margin-left: 10px;
+    }
+  }
+  .new-sketch-label {
+      float: right;
+      position: absolute;
+      top: -50px;
+      right: 2%;
+  }
+  .project-list-wrapper {
+    .search-sketch {
+      display: inline-block;
+    }
+    table{
+      margin-top: 30px;
+      th, td {
+        padding: 10px 50px;
+      }
+      tr {
+        border-bottom: 1px solid #ccc;
+        td {
+          cursor: pointer;
+        }
+      }
+      tr:first-child {
+        border-top: 0;
+      }
+      .list-even-row {
+        background: white;
+      }
+      .list-odd-row {
+        background: rgba(245, 245, 245, 0.68);
+      }
+    }
+    select{
+      display: none;
+    }
+  }
+}
+.sketch-label {
+  padding-top:20px;
+  margin: 0;
+  border-top: 1px solid #ccc;
+}
+.save-sketch-section {
+  padding-top:15px;
+  .remove {
+    cursor: pointer;
+  }
+}
+.project-details {
+  padding: 30px 15px;
+  span.inactive-desc {
+    border-bottom: 1px solid #ccc;
+    opacity: 0.5
+  }
+  span.inactive-name {
+    border-bottom: 1px solid #ccc;
+    opacity: 0.5
+  }
+
+  span.inactive-name:after {
+    color:red;
+    content:"*";
+  }
+  input {
+    border: 0;
+    height: 25px;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+  }
+}
+
+.project-details.description {
+  span {
+    height: 25px;
+    padding-right: 15px;
+    width: 100%;
+  }
+}
+.project-details.name {
+  span  {
+    width: 50%;
+  }
+  input  {
+    width: 50%;
+  }
+  span.error {
+    width: 50%;
+    border-bottom: 1px solid red;
+  }
+}
+.node-details-section {
+  padding-bottom: 30px;
+  .child-node-edit-section, .parent-node-edit-section {
+    padding-bottom: 50px;
+    border-top: 1px solid #ccc;
+    padding-top: 30px;
+  }
+  .child-node-edit-section {
+    .path-section {
+      margin-bottom: 10px;
+      @media(min-width:992px){
+        padding-right: 0;
+      }
+    }
+    .get-parameters {
+      margin-bottom: 10px;
+    }
+    .payload-type-section {
+      margin: 10px 0;
+      .summary-section {
+        @media(min-width:992px){
+          padding-right: 0;
+        }
+        textarea {
+          border-color: #ccc;
+          width: 100%
+        }
+      }
+    }
+    .param-label {
+      padding: 0
+    }
+    .ace-editor-wrapper {
+      border: 1px solid #ccc;
+      padding: 0;
+    }
+    .ace-sample-wrapper {
+      color: #a94442;
+    }
+    .ace-sample-wrapper.visible-sm {
+      margin-top: 15px;
+      padding: 0;
+    }
+  }
+  .associate-section {
+    padding-top: 5px;
+  }
+}
+.no-sketch-section {
+  height: 400px;
+  padding-top: 200px;
+  font-size: 24px;
+}
+.loading-project-details {
+  height: 200px;
+  padding-top: 100px;
+}
+.Select-clear-zone {
+  display: none;
+}
+.Select-menu-outer {
+  z-index: 1000;
+}
+.vocabulary-wrapper {
+  height: 150px;
+  padding-top: 100px;
+  input {
+    width: 100%;
+    height: 40px;
+    padding-left: 15px;
+  }
+  button {
+    height: 40px;
+  }
+  select{
+    display: none;
+  }
+  .vocabulary-list {
+    table{
+      margin-top: 30px;
+      th, td {
+        padding: 10px 30px;
+      }
+      tr {
+        border-bottom: 1px solid #ccc;
+        td {
+          cursor: pointer;
+        }
+      }
+      tr:first-child {
+        border-top: 0;
+      }
+      .list-even-row {
+        background: white;
+      }
+      .list-odd-row {
+        background: rgba(245, 245, 245, 0.68);
+      }
+    }
+  }
+}
+.suggestion-section {
+  ul {
+    list-style-type: none;
+  }
+}
+.vocabulary-suggest {
+  padding: 0;
+  input {
+    border-color: #ccc !important;
+    width: 100%;
+  }
+}
+.delete-modal {
+  .delete-message-label {
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+  .cancel-button {
+    margin-right: 10px;
+  }
+}
+
+.create-project-section {
+  padding-top: 50px;
+  height: 400px;
+  .next-section {
+    margin-top: 20px;
+    button {
+      width: 100px;
+    }
+  }
+}
+
+.sketch-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+  float: left;
+  width: 30%;
+  position: relative;
+  box-sizing: border-box;
+  min-height: 1px;
+  margin-left: 1.65%;
+  margin-right: 1.65%;
+  margin-bottom: 40px;
+  .header {
+    padding: 15px 5px;
+    border-bottom: 1px solid #d8d8d8;
+    margin: 0px 12px;
+    .name {
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  }
+  .body {
+    padding: 15px;
+    .description {
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.titleContainer {
+  position: relative;
+  overflow: hidden;
+  padding: 50px 35px 60px;
+  h2, h3 {
+    font-weight: 200;
+    color: #20465F;
+    font-size: 36px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+}
+
+.firstTime {
+  text-align: center;
+  margin-top: 50px;
+  .first-time-sketch-btn {
+    padding: 7px 5px;
+    border-radius: 0;
+    margin-top: 50px;
+  }
+}
+
+.sketch-list-wrapper {
+  background-color: #FAFAFA;
+  height: auto!important;
+  height: 100%;
+  min-height: 100%;
+}
+
+.search-sketch-input {
+    float: left;
+    padding: 5px;
+    border: 0;
+    border-bottom: 1px solid #09AEEF;
+    background: #fafafa;
+    width: 150px;
+}
+
+.projectTabs {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  .tab {
+    float: left;
+    margin-right: 30px;
+    border: 5px solid transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
+    padding-bottom: 10px;
+    a {
+      color: #337099;
+      text-decoration: none;
+    }
+  }
+  .active-tab {
+    border-color: #62C6E5;
+  }
+}
+
+.tabsContainer {
+  padding: 0 35px;
+}
+
+.sketchPage {
+  padding-bottom: 30px;
+}
+
+.sortByBtn {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 5px;
+}
+
+.sortByBtn.active {
+    border-bottom: 1px solid #09AEEF;
+}
