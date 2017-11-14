@@ -1,9 +1,7 @@
 # rapido
 A project for graphically designing restful apis.
 
-[rapido-web](rapido-web) : is a the frontend project written in React js for all UX and sketching stuffs.
-
-[rapido-backend](rapido-backend) : is a nodejs http api server which serves the apis required for the Sketching etc
+[rapido-instance](rapido-instance) : is a nodejs http server serves api and SPA written in react required for the Sketching etc
 
 [rapido-db](rapido-db) : is just a docker container for postgres database, with rapido schemas, which can be leveraged for persistence.
 
@@ -22,8 +20,8 @@ Usage :
 
 Examples :
 ``` sh
-./build.sh rapido-web
-./build.sh rapido-backend push
+./build.sh rapido-db
+./build.sh rapido-instance push
 ./build.sh all
 ./build.sh all push
 ```
@@ -52,7 +50,7 @@ Alternatively (yes, easy!)
 
 ### For development purpose
 
-- [rapido-web](rapido-web) is a React js application, which leverages webpack for development purpose and uses a slim node http server to server the SPA in production mode. To run the app in development mode, please modify the [ApiServices.jsx](rapido-web/src/modules/utils/ApiServices.jsx) to point to the backend instance and run
+You can run the ui application using webpack-dev-server. This will compile and serve the pages at 8090 port.
 
 ``` sh
 npm install
@@ -61,7 +59,7 @@ npm run dev
 
 - Prepare the database using schema from [init.sql](rapido-db/init.sql)
 
-- [rapido-backend](rapido-backend) is a standard express based node application. And hence, can be run using standard node conventions. Note, you may want to override below environment variables before running
+- Api server can be run using standard node conventions. Note, you may want to override below environment variables before running
 
 ``` sh
 npm install

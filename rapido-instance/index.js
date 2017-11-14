@@ -11,15 +11,15 @@
  * declare import functions for easy require inside the applications.
  */
 global.import_services = function(name) {
-    return require(__dirname + '/services/' + name)
+    return require(__dirname + '/api/services/' + name)
 }
 
 global.import_templates = function(name) {
-    return require(__dirname + '/templates/' + name)
+    return require(__dirname + '/api/templates/' + name)
 }
 
 global.import_utils = function(name) {
-    return require(__dirname + '/utils/' + name)
+    return require(__dirname + '/api/utils/' + name)
 }
 
 /*
@@ -43,9 +43,10 @@ var logger = import_utils('logger.js').getLoggerObject(),
     mailer = require('express-mailer'),
     fs = require('fs');
 
-var routes = __dirname + "/routes";
+var routes = __dirname + "/api/routes";
 
 mailer.extend(server, configurations.email);
+server.set('views', __dirname + "/api/views");
 server.set('view engine', 'ejs');
 
 server
@@ -67,7 +68,7 @@ server.use(function(req, res, next) {
     if(req.originalUrl == "/echo") {
         res.status(200).send();
     } else if(req.originalUrl.includes("/api")){
-        logger.debug('\n**************** Incoming Http request ****************',
+        logger.debug('\n**************** Incoming API request ****************',
             '\nRequest method:', req.method,
             '\nRequest path:', req.originalUrl,
             '\nRequest params:', req.params,
@@ -101,7 +102,7 @@ server.use((req, res) => {
     ) {
         resource = req.originalUrl.substring(req.originalUrl.lastIndexOf('/'));
     }
-    res.sendFile(__dirname + '/build/' + resource);
+    res.sendFile(__dirname + '/ui/build/' + resource);
  }); // Parse urlencoded body with qs library
 
 server.listen(configurations['port'], function() {
