@@ -3,6 +3,13 @@ import AlertContainer from 'react-alert'
 import RegistrationService from './register/RegistrationServices'
 import PasswordConfig from './passwordConfig.js'
 import {showAlert, AlertOptions} from './utils/AlertActions'
+import { Tabs } from './components/tabs'
+import { Tab } from './components/tab'
+import Button from 'mineral-ui/Button';
+import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
+import { createStyledComponent } from 'mineral-ui/styles';
+import AddTeamModal from './team/addTeamModal';
+import AddMemberModal from './team/addMemberModal';
 
 export default class extends React.Component{
   
@@ -16,7 +23,9 @@ export default class extends React.Component{
         password: '',
         passwordConfirm: '',
         oldPassword: '',
-        passwordConfig: PasswordConfig
+        passwordConfig: PasswordConfig,
+        addTeamModalIsOpen: false,
+        addMemberModalIsOpen: false
       };
       this.alertOptions = AlertOptions;
       this.handleChange = this.handleChange.bind(this);
@@ -39,6 +48,21 @@ export default class extends React.Component{
         passwordConfirm: "",
         oldPassword: "",
       })
+    }
+  }
+
+  /* Method to toggle modal */
+  toggleModal(type) {
+    console.log(type);
+    if(type = "addTeam") {
+      this.setState({
+        addTeamModalIsOpen: !this.state.addTeamModalIsOpen
+      });
+    }
+    if(type = "addMember") {
+      this.setState({
+        addMemberModalIsOpen: !this.state.addMemberModalIsOpen
+      });
     }
   }
 
@@ -163,83 +187,129 @@ export default class extends React.Component{
     if (!this.props.fromDashboard) {
       creationLabel = <h3>Create an account</h3>
     }
+
+    var teamsArr = [{"name":"test"}, {"name":"test222"}, {"name":"testddfdf"}, {"name":"tesddsdt"}];
+
+    const CustomContent = createStyledComponent('div', ({ theme }) => ({
+      backgroundColor: theme.color_gray_20,
+      margin: `${theme.space_stack_md} 0`,
+      padding: theme.space_inset_lg,
+
+      '&:last-child': {
+        borderRadius: `0 0 ${theme.borderRadius_1} ${theme.borderRadius_1}`,
+        marginBottom: `-${theme.space_stack_md}`
+      }
+    }));
+
+    const teamCards = teamsArr.map(function (team) {
+      return (
+        <Card>
+          <CardTitle>{team.name}</CardTitle>
+          <CustomContent>
+            <Button onClick={this.toggleModal.bind(this,"addMember")}>Add Member</Button>
+            <Button className="cardButtonSepMargin">Edit</Button>
+            <Button className="cardButtonSepMargin">Delete</Button>
+          </CustomContent>
+        </Card>
+      );
+    }, this);
+
+    const cardLayout = createStyledComponent('div');
+
     return(
       <div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-        <div className="col-md-12">
-          <span className="profile-header-text">Profile Details</span>
-          <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <input className="form-control"
-                type="text"
-                name="firstName"
-                ref="firstName"
-                placeholder="First Name *"
-                value={ this.state.firstName } 
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="firstNameError"></div>
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="text"
-                name="lastName"
-                ref="lastName"
-                placeholder="Last Name *"
-                value={ this.state.lastName } 
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="lastNameError"></div>
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="email"
-                name="email"
-                ref="email"
-                placeholder="Email *"
-                value={ this.state.email } 
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="emailError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password" 
-                name="oldPassword"
-                ref="oldPassword"
-                placeholder="Old Password *"
-                value={ this.state.oldPassword } 
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="oldPasswordError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password" 
-                name="password"
-                ref="password"
-                placeholder="New Password *"
-                value={ this.state.password } 
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="passwordError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password" 
-                name="passwordConfirm"
-                ref="passwordConfirm"
-                placeholder="New Password Confirm *"
-                value={ this.state.passwordConfirm } 
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="passwordConfirmError" />
-            </div>
-            <div className="form-group">
-              <button className="btn btn-default form-control" onClick={ this.handleSubmit }>Update</button>
-            </div>
-          </form>
+        <div className="col-md-12 profile-section">
+          <Tabs>
+            <Tab label={'Profile'}>
+                <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
+                  <div className="form-group">
+                    <input className="form-control"
+                      type="text"
+                      name="firstName"
+                      ref="firstName"
+                      placeholder="First Name *"
+                      value={ this.state.firstName } 
+                      onChange={ this.handleChange }
+                      required />
+                    <div className="error" id="firstNameError"></div>
+                  </div>
+                  <div className="form-group">
+                    <input className="form-control"
+                      type="text"
+                      name="lastName"
+                      ref="lastName"
+                      placeholder="Last Name *"
+                      value={ this.state.lastName } 
+                      onChange={ this.handleChange }
+                      required />
+                    <div className="error" id="lastNameError"></div>
+                  </div>
+                  <div className="form-group">
+                    <input className="form-control"
+                      type="email"
+                      name="email"
+                      ref="email"
+                      placeholder="Email *"
+                      value={ this.state.email } 
+                      onChange={ this.handleChange }
+                      required />
+                    <div className="error" id="emailError" />
+                  </div>
+                  <div className="form-group">
+                    <input className="form-control"
+                      type="password" 
+                      name="oldPassword"
+                      ref="oldPassword"
+                      placeholder="Old Password *"
+                      value={ this.state.oldPassword } 
+                      onChange={ this.handleChange }
+                      required />
+                    <div className="error" id="oldPasswordError" />
+                  </div>
+                  <div className="form-group">
+                    <input className="form-control"
+                      type="password" 
+                      name="password"
+                      ref="password"
+                      placeholder="New Password *"
+                      value={ this.state.password } 
+                      onChange={ this.handleChange }
+                      required />
+                    <div className="error" id="passwordError" />
+                  </div>
+                  <div className="form-group">
+                    <input className="form-control"
+                      type="password" 
+                      name="passwordConfirm"
+                      ref="passwordConfirm"
+                      placeholder="New Password Confirm *"
+                      value={ this.state.passwordConfirm } 
+                      onChange={ this.handleChange }
+                      required />
+                    <div className="error" id="passwordConfirmError" />
+                  </div>
+                  <div className="form-group">
+                    <button className="btn btn-default form-control" onClick={ this.handleSubmit }>Update</button>
+                  </div>
+                </form>
+            </Tab>
+            <Tab label={'Teams'}>
+              <Button className="pull-right" onClick={this.toggleModal.bind(this,"addTeam")}>+ ADD TEAM</Button>
+              <cardLayout className="cardLayout">
+                {teamCards}
+              </cardLayout>
+            </Tab>
+          </Tabs>
         </div>
+        <AddTeamModal show={this.state.addTeamModalIsOpen}
+          onClose={this.toggleModal.bind(this,"addTeam")}
+          onConfirm={this.toggleModal.bind(this,"addTeam")}>
+        </AddTeamModal>
+        <AddMemberModal show={this.state.addMemberModalIsOpen}
+          onClose={this.toggleModal.bind(this,"addMember")}
+          onConfirm={this.toggleModal.bind(this,"addMember")}>
+        </AddMemberModal>
       </div>
     )
   }

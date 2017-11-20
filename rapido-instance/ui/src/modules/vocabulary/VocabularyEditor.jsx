@@ -223,7 +223,7 @@ export default class extends React.Component{
           {projectHeader}
         </div>
         <div className="tabsContainer">
-          <ul className="projectTabs">
+          <ul className="tabs">
             <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
             <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
             <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>

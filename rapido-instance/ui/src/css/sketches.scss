@@ -302,7 +302,7 @@
     width: 150px;
 }
 
-.projectTabs {
+.tabs {
   width: 100%;
   margin: 0;
   padding: 0;
@@ -317,7 +317,7 @@
     border-right: none;
     cursor: pointer;
     padding-bottom: 10px;
-    a {
+    .tab-link {
       color: #337099;
       text-decoration: none;
     }
@@ -327,12 +327,20 @@
   }
 }
 
+.tabs-active-content {
+  margin-top: 30px;  
+}
+
 .tabsContainer {
   padding: 0 35px;
 }
 
 .sketchPage {
   padding-bottom: 30px;
+}
+
+.profile-section {
+  margin-top: 30px;
 }
 
 .sortByBtn {

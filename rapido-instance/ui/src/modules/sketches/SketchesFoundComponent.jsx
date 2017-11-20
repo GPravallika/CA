@@ -180,7 +180,7 @@ export default class extends React.Component{
           <CardBlock>{row.description}</CardBlock>
           <CustomContent>
             <Button onClick={this.navigateToDetails.bind(this,{row})}>Edit</Button>
-            <Button className="sketchDeleteButton" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+            <Button className="cardButtonSepMargin" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
           </CustomContent>
         </Card>
       );
