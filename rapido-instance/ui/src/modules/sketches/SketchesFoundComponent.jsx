@@ -32,6 +32,11 @@ export default class extends React.Component{
       if(sketch.description.toLowerCase().indexOf(event.target.value)!=-1)
         queryResult.push(sketch);
     });
+    queryResult = queryResult.filter((sketch, index, self) =>
+      index === self.findIndex((s) => (
+        s.id === sketch.id && s.name === sketch.name
+      ))
+    )
     this.setState({
       query: event.target.value,
       filteredData: queryResult
