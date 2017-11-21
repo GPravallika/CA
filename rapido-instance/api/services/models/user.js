@@ -44,6 +44,22 @@ var model = {
             callback(err);
         });
     },
+    'search': (filter, callback) => {
+        db.connection()('users')
+            .where('email', 'ilike', '%'+ filter +'%')
+            .orWhere('firstname', 'ilike', '%'+ filter +'%')
+            .orWhere('lastname', 'ilike', '%'+ filter +'%')
+            .select('id', 'email', 'firstname', 'lastname')
+            .limit(15)
+            .then(function(data){
+                logger.debug("User search matched", data.length, "records");
+                return callback(null, data);
+            })
+            .catch(function(err){
+                logger.error("Error while searching user", err.message);
+                callback(err);
+            });
+    },
     'readById': (user, callback) => {
         db.executeAsync(queries.selectById, [user.id])
         .then(function(data){

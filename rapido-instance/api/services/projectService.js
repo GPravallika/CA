@@ -436,7 +436,7 @@ var projectService = {
                     logger.error(err);
                     response.status(500).json({
                         "code": err.code,
-                        "message": err.message
+                        "message": "Can not export sketch"
                     });
                 });
 
@@ -467,7 +467,7 @@ var projectService = {
                     logger.error(err);
                     response.status(500).json({
                         "code": err.code,
-                        "message": err.message
+                        "message": "Can not export sketch"
                     });
                 });
         } else {

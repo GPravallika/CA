@@ -147,12 +147,28 @@ var userService = {
             response.status(200).json(data);
         })
         .catch(function(err) {
+            logger.error(err);
             response.status(500).json({
                 "code": err.code,
                 "message": "Could not get user details"
             });
         });
     },
+
+    'fetch': function(request, response, next) {
+        var filter = request.query.filter;
+        model.searchAsync(filter)
+        .then(function(data) {
+            response.status(200).json(data);
+        })
+        .catch(function(err) {
+            response.status(500).json({
+                "code": err.code,
+                "message": "Could not search user"
+            });
+        });
+    },
+
     'update': function(request, response, next) {
         var user = {};
         user.id = request.params.id;
@@ -257,7 +273,7 @@ var userService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Can not update password"
                     }
                 }
                 response.status(httpCode).json(err);
@@ -310,7 +326,7 @@ var userService = {
                 httpCode = 500;
                 err = {
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not send verification link"
                 }
             }
             response.status(httpCode).json(err);
@@ -362,7 +378,7 @@ var userService = {
                 httpCode = 500;
                 err = {
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not send forgotpassword link"
                 }
             }
             response.status(httpCode).json(err);
@@ -386,7 +402,7 @@ var userService = {
                 httpCode = 500;
                 err = {
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not invalidate token for user " + user.id
                 }
             }
             response.status(httpCode).json(err);
@@ -409,7 +425,7 @@ var userService = {
                 httpCode = 500;
                 err = {
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not invalidate all tokens for user " + user.id
                 }
             }
             response.status(httpCode).json(err);
@@ -446,7 +462,7 @@ var userService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Can not reset password"
                     }
                 }
                 response.status(httpCode).json(err);

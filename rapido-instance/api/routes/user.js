@@ -25,6 +25,7 @@ router.post('/forgotpassword', userService.forgotpassword); // get password reco
 router.post('/resetpassword', userService.resetpassword); // reset password via token
 
 // CRUD user
+router.get('/', authenticator.authenticate, userService.fetch);   // search users by passing filters as ?filter=partha
 router.get('/:id', authenticator.authenticate, userService.get);
 router.put('/:id', authenticator.authenticate, userService.update);
 router.delete('/:id', authenticator.authenticate, userService.delete);
