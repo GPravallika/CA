@@ -38,25 +38,14 @@ var model = {
                 callback(err);
             });
     },
-    'readByUser': (project, callback) => {
-        db.executeAsync(queries.getUserProjects, [project.userid])
+    'read': (id, callback) => {
+        db.executeAsync(queries.select, [id])
             .then(function(data) {
-                logger.debug("Projects for user with id", project.userid, "retrived.");
-                return callback(null, data.rows);
-            })
-            .catch(function(err) {
-                logger.error("Error retrieving projects for user with id ", project.userid, err.message);
-                callback(err);
-            });
-    },
-    'readById': (project, callback) => {
-        db.executeAsync(queries.selectById, [project.id])
-            .then(function(data) {
-                logger.debug("Project with id", project.id, "retrived.");
+                logger.debug("Project with id", id, "retrived.");
                 return callback(null, data.rows[0]);
             })
             .catch(function(err) {
-                logger.error("Error retrieving project with id ", project.id, err.message);
+                logger.error("Error retrieving project with id ", id, err.message);
                 callback(err);
             });
     },
@@ -83,50 +72,54 @@ var model = {
                 callback(err);
             });
     },
-    'delete': (project, callback) => {
-        db.executeAsync(queries.delete, [project.id])
+    'delete': (id, callback) => {
+        db.executeAsync(queries.delete, [id])
             .then(function(data) {
-                logger.debug("Projects with id", project.id, "deleted.");
-                return callback(null, data.rows);
+                logger.debug("Projects with id", id, "deleted.");
+                return db.executeAsync(queries.removeAllTeams, [id]);
             })
-            .catch(function(err) {
-                logger.error("Error deleting projects with id ", project.id, err.message);
-                callback(err);
-            });
-    },
-    'addTeam': function(project, team, callback) {
-        db.executeAsync(queries.addTeam, [team.id, project.id, team.access || 'READ'])
-            .then(function(data) {
-                logger.debug("Team", team.id, "added to project", project.id);
+            .then(function(){
+                logger.debug("All teams for projects are removed", id, "deleted.");
                 return callback(null, true);
             })
             .catch(function(err) {
-                logger.error("Error adding team to project", project.id, err.message);
+                logger.error("Error deleting projects with id ", id, err.message);
                 callback(err);
             });
     },
-    'updateTeam': function(project, team, callback) {
-        db.executeAsync(queries.updateTeam, [team.access  || 'READ' , project.id, team.id])
+    'addTeam': function(projectid, team, callback) {
+        db.executeAsync(queries.addTeam, [team.id, projectid, team.access || 'READ'])
             .then(function(data) {
-                logger.debug("Team details for project", project.id, "updated");
+                logger.debug("Team", team.id, "added to project", projectid);
                 return callback(null, true);
             })
             .catch(function(err) {
-                logger.error("Error updating team for project", project.id, err.message);
+                logger.error("Error adding team to project", projectid, err.message);
                 callback(err);
             });
     },
-    'removeTeam': function(project, team, callback) {
-        db.executeAsync(queries.removeTeam, [project.id, team.id])
+    'updateTeam': function(projectid, team, callback) {
+        db.executeAsync(queries.updateTeam, [team.access  || 'READ' , projectid, team.id])
             .then(function(data) {
-                logger.debug("team ", team.id, "removed from project", project.id);
+                logger.debug("Team details for project", projectid, "updated");
                 return callback(null, true);
             })
             .catch(function(err) {
-                logger.error("Error removing team for project", project.id, err.message);
+                logger.error("Error updating team for project", projectid, err.message);
                 callback(err);
             });
     },
+    'removeTeam': function(projectid, teamid, callback) {
+        db.executeAsync(queries.removeTeam, [projectid, teamid])
+            .then(function(data) {
+                logger.debug("team ", teamid, "removed from project", projectid);
+                return callback(null, true);
+            })
+            .catch(function(err) {
+                logger.error("Error removing team for project", projectid, err.message);
+                callback(err);
+            });
+    }
 };
 
 module.exports = promises.promisifyAll(model);

@@ -8,14 +8,14 @@
 
 var logger = import_utils('logger.js').getLoggerObject(),
     userService = import_services('userService.js'),
-    authService = import_services('localAuthService.js'),
+    authenticator = import_services('authenticator.js'),
     express = require('express'),
     router = express.Router();
 /*
  * Middleware that is specific to this router
  * Perform authentication etc here.
  */
-router.use(authService.initialize());
+router.use(authenticator.initialize());
 
 // Unprotected routes.
 
@@ -24,15 +24,13 @@ router.get('/verify/:token', userService.verify); // activate via email
 router.post('/forgotpassword', userService.forgotpassword); // get password recovery email
 router.post('/resetpassword', userService.resetpassword); // reset password via token
 
-
-
 // CRUD user
-router.get('/:id', authService.authenticate, userService.get);
-router.put('/:id', authService.authenticate, userService.update);
-router.delete('/:id', authService.authenticate, userService.delete);
+router.get('/:id', authenticator.authenticate, userService.get);
+router.put('/:id', authenticator.authenticate, userService.update);
+router.delete('/:id', authenticator.authenticate, userService.delete);
 
 // security
-router.get('/:id/verifyemail', authService.authenticate, userService.verifyemail); // get email with verification link
-router.delete('/:id/token/:secret', authService.authenticate, userService.invalidateTokenForUser);
+router.get('/:id/verifyemail', authenticator.authenticate, userService.verifyemail); // get email with verification link
+router.delete('/:id/token/:secret', authenticator.authenticate, userService.invalidateTokenForUser);
 
 module.exports = router;

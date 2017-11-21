@@ -11,6 +11,7 @@ var logger = import_utils('logger.js').getLoggerObject(),
     _ = require("lodash"),
     bcrypt = require('bcrypt'),
     model = require(__dirname + "/models/project.js"),
+    auth = require(__dirname + "/models/authorize.js"),
     promises = require('bluebird'),
     exportJson = import_utils('exportLoader.js');
 
@@ -19,7 +20,6 @@ var projectService = {
         var project = {};
         project.name = request.body.name;
         project.description = request.body.description || '';
-        project.userid = request.user.id;
         project.createdby = request.user.id;
         project.treedata = request.body.treedata || {};
         project.vocabulary = request.body.vocabulary || [];
@@ -55,19 +55,19 @@ var projectService = {
                 "project": project
             })
             .then(function() {
+                return auth.myProjectsAsync(project.createdby);
+            })
+            .then(function(results) {
+                _.each(results, function(result, index) {
+                    if (result.name == project.name) {
+                        throw new Error("project " + project.name + " already exists for user " + project.createdby);
+                    }
+                });
 
                 project.treedata = JSON.stringify(project.treedata);
                 project.vocabulary = JSON.stringify(project.vocabulary);
                 project.apidetails = JSON.stringify(project.apidetails);
 
-                return model.readByUserAsync(project);
-            })
-            .then(function(results) {
-                _.each(results, function(result, index) {
-                    if (result.name == project.name) {
-                        throw new Error("project " + project.name + " already exists for user " + project.userid);
-                    }
-                });
                 return model.createAsync(project);
             })
             .then(function(data) {
@@ -82,7 +82,7 @@ var projectService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Can not create project"
                     }
                 }
                 response.status(httpCode).json(err);
@@ -90,23 +90,63 @@ var projectService = {
 
     },
     'fetch': function(request, response, next) {
-        model.readByUserAsync({
-                'userid': request.user.id
-            })
-            .then(function(data) {
-                response.status(200).json(data);
+        var allProjects = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanViewAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(project, index) {
+                    project.ownership = 'OWN';
+                    allProjects.push(project);
+                });
+                _.each(results[1], function(project, index) {
+                    project.ownership = 'WRITE';
+                    allProjects.push(project);
+                });
+                _.each(results[2], function(project, index) {
+                    project.ownership = 'VIEW';
+                    allProjects.push(project);
+                });
+                response.status(200).json(allProjects);
             })
             .catch(function(err) {
                 logger.error(err);
                 response.status(500).json({
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not fetch projects for user " + request.user.id
                 });
             });
     },
     'get': function(request, response, next) {
-        model.readByIdAsync({
-                'id': request.params.id
+
+        var allProjectIds = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanViewAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(project, index) {
+                    allProjectIds.push(project.id.toString());
+                });
+                _.each(results[1], function(project, index) {
+                    allProjectIds.push(project.id.toString());
+                });
+                _.each(results[2], function(project, index) {
+                    allProjectIds.push(project.id.toString());
+                });
+
+                if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                    throw new Error("User " + request.user.id + " does not have access to project" + request.params.id);
+                } else {
+                    return model.readAsync(request.params.id);
+                }
             })
             .then(function(data) {
                 response.status(200).json(data);
@@ -115,14 +155,14 @@ var projectService = {
                 logger.error(err);
                 response.status(500).json({
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not retrieve prject with id " + request.params.id
                 });
             });
+
     },
     'update': function(request, response, next) {
         var project = {};
         project.id = request.params.id;
-        project.userid = request.user.id;
 
         if (request.body.name) project.name = request.body.name;
         if (request.body.description) project.description = request.body.description;
@@ -153,27 +193,41 @@ var projectService = {
                 }
             }
         };
-        var validator = promises.promisifyAll(new schema(descriptor));
+        var validator = promises.promisifyAll(new schema(descriptor)),
+            allProjectIds = [],
+            promiseResolutions = [];
 
         validator.validateAsync({
                 "project": project
             })
             .then(function() {
-                return model.readByUserAsync(project);
+
+                promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+                promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+                return promises.all(promiseResolutions);
             })
             .then(function(results) {
-                _.each(results, function(result, index) {
+
+                _.each(results[0], function(result, index) {
                     if (result.name == project.name && project.id != result.id) {
                         throw new Error("project " + project.name + " already exists for different project id " + result.id);
                     }
+                    allProjectIds.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allProjectIds.push(result.id.toString());
                 });
 
-                project.treedata = JSON.stringify(project.treedata);
-                project.vocabulary = JSON.stringify(project.vocabulary);
-                project.apidetails = JSON.stringify(project.apidetails);
+                if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                    throw new Error("user " + request.user.id + " does not have permission to update project " + project.id);
+                } else {
+                    project.treedata = JSON.stringify(project.treedata);
+                    project.vocabulary = JSON.stringify(project.vocabulary);
+                    project.apidetails = JSON.stringify(project.apidetails);
 
-                delete project.userid;
-                return model.updateAsync(project);
+                    return model.updateAsync(project);
+                }
             })
             .then(function(data) {
                 response.status(200).json({
@@ -187,89 +241,172 @@ var projectService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Can not update project with id " + project.id
                     }
                 }
                 response.status(httpCode).json(err);
             });
     },
     'delete': function(request, response, next) {
-        model.deleteAsync({
-                'id': request.params.id
-            })
-            .then(function(data) {
-                response.status(200).json({
-                    'id': request.params.id
-                });
-            })
-            .catch(function(err) {
-                logger.error(err);
-                response.status(500).json({
-                    "code": err.code,
-                    "message": err.message
-                });
+
+        var allProjectIds = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+        .then(function(results) {
+
+            _.each(results[0], function(result, index) {
+                allProjectIds.push(result.id.toString());
             });
+            _.each(results[1], function(result, index) {
+                allProjectIds.push(result.id.toString());
+            });
+
+            if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                throw new Error("user " + request.user.id + " does not have permission to delete " + request.params.id);
+            } else {
+                return model.deleteAsync(request.params.id);
+            }
+        })
+        .then(function(data) {
+            response.status(200).json({
+                'id': request.params.id
+            });
+        })
+        .catch(function(err) {
+            logger.error(err);
+            response.status(500).json({
+                "code": err.code,
+                "message": "Can not delete project with id " + request.params.id
+            });
+        });
+
     },
     'addTeam': function(request, response, next) {
-        var project = {
-            "id": request.params.id
-        };
-        var team = {
-            "id": request.body.id,
-            "access": request.body.access
-        };
-        model.addTeamAsync(project, team)
-            .then(function(data) {
-                response.status(200).json({"id": request.params.id});
-            })
-            .catch(function(err) {
-                logger.error(err);
-                response.status(500).json({
-                    "code": err.code,
-                    "message": err.message
-                });
+
+        var allProjectIds = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+        .then(function(results) {
+
+            _.each(results[0], function(result, index) {
+                allProjectIds.push(result.id.toString());
             });
+            _.each(results[1], function(result, index) {
+                allProjectIds.push(result.id.toString());
+            });
+
+            if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                throw new Error("user " + request.user.id + " does not have permission to share " + request.params.id);
+            } else {
+
+                var team = {
+                    "id": request.body.id,
+                    "access": request.body.access
+                };
+                return model.addTeamAsync(request.params.id, team);
+            }
+        })
+        .then(function(data) {
+            response.status(200).json({"id": request.params.id});
+        })
+        .catch(function(err) {
+            logger.error(err);
+            response.status(500).json({
+                "code": err.code,
+                "message": "Can not share project " + request.params.id
+            });
+        });
     },
-    
+
     'updateTeam': function(request, response, next) {
-        var project = {
-            "id": request.params.projectid
-        };
-        var team = {
-            "id": request.params.teamid,
-            "access": request.body.access
-        };
-        model.updateTeamAsync(project, team)
-            .then(function(data) {
-                response.status(200).json({"id": request.params.projectid});
-            })
-            .catch(function(err) {
-                logger.error(err);
-                response.status(500).json({
-                    "code": err.code,
-                    "message": err.message
-                });
+
+        var allProjectIds = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+        .then(function(results) {
+
+            _.each(results[0], function(result, index) {
+                allProjectIds.push(result.id.toString());
             });
+            _.each(results[1], function(result, index) {
+                allProjectIds.push(result.id.toString());
+            });
+
+            if(_.indexOf(allProjectIds, request.params.projectid) < 0 ) {
+                throw new Error("user " + request.user.id + " does not have permission to share project " + request.params.projectid);
+            } else {
+
+                var team = {
+                    "id": request.params.teamid,
+                    "access": request.body.access
+                };
+                return model.updateTeamAsync(request.params.projectid, team);
+            }
+        })
+        .then(function(data) {
+            response.status(200).json({"id": request.params.projectid});
+        })
+        .catch(function(err) {
+            logger.error(err);
+            response.status(500).json({
+                "code": err.code,
+                "message": "Can not update the project share details"
+            });
+        });
+
     },
     'removeTeam': function(request, response, next) {
-        var project = {
-            "id": request.params.projectid
-        };
-        var team = {
-            "id": request.params.teamid,
-            "access": request.body.access
-        };
-        model.removeteamAsync(project, team)
-            .then(function(data) {
-                response.status(200).json({"id": request.params.projectid});
-            })
-            .catch(function(err) {
-                logger.error(err);
-                response.status(500).json({
-                    "code": err.code,
-                    "message": err.message
-                });
+
+        var allProjectIds = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+        .then(function(results) {
+
+            _.each(results[0], function(result, index) {
+                allProjectIds.push(result.id.toString());
             });
+            _.each(results[1], function(result, index) {
+                allProjectIds.push(result.id.toString());
+            });
+
+            if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                throw new Error("user " + request.user.id + " does not have permission to share " + project.id);
+            } else {
+
+                var team = {
+                    "id": request.params.teamid,
+                    "access": request.body.access
+                };
+                return model.removeteamAsync(request.params.projectid, request.params.teamid);
+            }
+        })
+        .then(function(data) {
+            response.status(200).json({"id": request.params.projectid});
+        })
+        .catch(function(err) {
+            logger.error(err);
+            response.status(500).json({
+                "code": err.code,
+                "message": "Can not remove team " + request.params.teamid + " from the project " + request.params.projectid
+            });
+        });
+
     },
 
     'export': function(request, response, next) {
@@ -279,9 +416,7 @@ var projectService = {
             var resObj = [];
             project.id = request.params.id;
 
-            model.readByIdAsync({
-                    'id': project.id
-                })
+            model.readAsync(project.id)
                 .then(function(project){
                     var apiData = project.apidetails;
                     var swaggerObj = new exportJson();
@@ -310,9 +445,7 @@ var projectService = {
             var project = {};
         	project.id = request.params.id;
 
-            model.readByIdAsync({
-                    'id': project.id
-                })
+            model.readAsync(project.id)
                 .then(function(project){
                     var apiData = project.apidetails;
             		var swaggerObj=new exportJson();

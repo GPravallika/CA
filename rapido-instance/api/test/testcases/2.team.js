@@ -65,6 +65,7 @@ describe('Team APIs', function() {
     it('Create a second team with different name', function(done) {
         teamflow.createTeamAsync(user, teams[1])
         .then(function(response){
+            teams[1].id = response.id;
             assert.exists(response.id, "Successfully created team should have id returned");
             done();
         })
@@ -157,6 +158,26 @@ describe('Team APIs', function() {
         teamflow.removeMemberFromTeamAsync(user, team, member)
         .then(function(response){
             done();
+        })
+        .catch(function(err){
+            done(err);
+        });
+    });
+
+    it('Delete team and check', function(done) {
+        var member = {
+            "id": users[1].id
+        }
+        teamflow.deleteTeamAsync(user, teams[1])
+        .then(function(response){
+            teamflow.getOneTeamAsync(user, teams[1])
+            .then(function(response){
+                done("Team not deleted successfully");
+            })
+            .catch(function(err) {
+                assert.equal(500, err.code, "Internal server error should be thrown");
+                done(null);
+            });
         })
         .catch(function(err){
             done(err);

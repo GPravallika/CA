@@ -55,7 +55,9 @@ var _init = function() {
 
         "github": {
             "clientID": "59a1193e5ae13e6f4dc2",
-            "clientSecret": "136bc60abd578438ed1fef002711de726b88dcd7"
+            "clientSecret": "136bc60abd578438ed1fef002711de726b88dcd7",
+            "callback": "http://rapido.dev.ca.com/api/login/github/callback",
+            "scope": [ 'user:email' ]
         }
     };
     return configurations;

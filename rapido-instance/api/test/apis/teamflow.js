@@ -171,11 +171,34 @@ var removeMemberFromTeam = function(user, team, member, done) {
         });
 };
 
+var deleteTeam = function(user, team, done) {
+    var options = {
+        'host': httpServer.host,
+        'port': httpServer.port,
+        'path': '/api/team/'+ team.id,
+        'method': 'DELETE',
+        'headers': {}
+    };
+
+    options.headers['Authorization'] = 'Bearer ' + user.token;
+
+    httpRequest.deleteAsync(options)
+        .then(function(response) {
+            response = JSON.parse(response);
+            assert.isObject(response, "delete member from team response should be an object");
+            done(null,response);
+        })
+        .catch(function(err) {
+            done(err);
+        });
+};
+
 module.exports = {
     'createTeam' : createTeam,
     'getUserTeams' : getUserTeams,
     'getOneTeam' : getOneTeam,
     'updateTeam' : updateTeam,
+    'deleteTeam' : deleteTeam,
     'addMemberToTeam' : addMemberToTeam,
     'updateMemberOfTeam': updateMemberOfTeam,
     'removeMemberFromTeam': removeMemberFromTeam

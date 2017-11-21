@@ -14,14 +14,17 @@ var logger = import_utils('logger.js').getLoggerObject(),
     usermodel = require(__dirname + "/models/user.js"),
     promises = require('bluebird'),
     passport = require("passport"),
-    passportJWT = require("passport-jwt"),
+    jwtPassport = require("passport-jwt"),
     jwt = require("jsonwebtoken"),
-    opts = {};
+    githubPassport = require("passport-github2"),
+    localOpts = {},
+    githubOpts = {};
 
-opts.jwtFromRequest = passportJWT.ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = configurations.jwt.secret;
+localOpts.jwtFromRequest = jwtPassport.ExtractJwt.fromAuthHeaderAsBearerToken();
+localOpts.secretOrKey = configurations.jwt.secret;
 
-passport.use(new passportJWT.Strategy(opts, function(payload, callback) {
+// Add local Strategy
+passport.use(new jwtPassport.Strategy(localOpts, function(payload, callback) {
     usermodel.getActiveSecretsAsync(payload)
         .then(function(activeSecrets) {
             if(_.map(activeSecrets, 'secret').indexOf(payload.secret) >= 0) {
@@ -30,6 +33,11 @@ passport.use(new passportJWT.Strategy(opts, function(payload, callback) {
                 return callback(null, false);
             }
         });
+}));
+
+// Add github Strategy
+passport.use(new githubPassport.Strategy(configurations.github, function(accessToken, refreshToken, profile, callback) {
+    callback(null, profile.emails);
 }));
 
 var authService = {
@@ -116,7 +124,7 @@ var authService = {
             .catch(function(err) {
                 logger.error("Error while login:", err.message);
                 response.status(401).json({
-                    "message": err.message
+                    "message": "unauthorized access"
                 });
             });
     },
@@ -155,10 +163,27 @@ var authService = {
             .catch(function(err) {
                 logger.error("Error while login:", err.message);
                 response.status(401).json({
-                    "message": err.message
+                    "message": "unauthorized access"
                 });
             });
     },
+
+    'authenticateViaGithub': function(request,response,next) {
+        passport.authenticate("github", {
+            'scope': [ 'user:email' ],
+            "session": false
+        }, function(err, user, info) {
+            if (err) {
+                return next(err);
+            }
+            if (!user || !Array.isArray(user)) {
+                return response.status(401).json({"error":"Either email not available or not authorized"});
+            }
+            request.user = {'email': user[0].value};
+            logger.debug("Github user authenticated, passing to next handler.")
+            next();
+        })(request, response, next);
+    }
 };
 
 module.exports = authService;

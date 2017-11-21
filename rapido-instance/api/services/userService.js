@@ -100,7 +100,7 @@ var userService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Could not register user"
                     }
                 }
                 response.status(httpCode).json(err);
@@ -132,7 +132,7 @@ var userService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Could not verify user"
                     }
                 }
                 response.status(httpCode).json(err);
@@ -149,7 +149,7 @@ var userService = {
         .catch(function(err) {
             response.status(500).json({
                 "code": err.code,
-                "message": err.message
+                "message": "Could not get user details"
             });
         });
     },
@@ -192,7 +192,7 @@ var userService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Could not update user details"
                     }
                 }
                 response.status(httpCode).json(err);
@@ -209,10 +209,6 @@ var userService = {
                 "type": "object",
                 "required": true,
                 "fields": {
-                    "old-password": {
-                        "required": true,
-                        "message" : "old-password missing"
-                    },
                     "new-password": {
                         "required": true,
                         "message" : "new-password missing"

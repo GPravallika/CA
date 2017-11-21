@@ -11,6 +11,8 @@ var logger = import_utils('logger.js').getLoggerObject(),
     _ = require("lodash"),
     bcrypt = require('bcrypt'),
     model = require(__dirname + "/models/team.js"),
+    usermodel = require(__dirname + "/models/user.js"),
+    auth = require(__dirname + "/models/authorize.js"),
     promises = require('bluebird'),
     exportJson = import_utils('exportLoader.js');
 
@@ -40,7 +42,7 @@ var teamService = {
                 "team": team
             })
             .then(function() {
-                return model.readByUserAsync(team);
+                return auth.myTeamsAsync(request.user.id);
             })
             .then(function(results) {
                 _.each(results, function(result, index) {
@@ -62,7 +64,7 @@ var teamService = {
                     httpCode = 500;
                     err = {
                         "code": err.code,
-                        "message": err.message
+                        "message": "Can not create team"
                     }
                 }
                 response.status(httpCode).json(err);
@@ -70,39 +72,104 @@ var teamService = {
 
     },
     'fetch': function(request, response, next) {
-        model.readByUserAsync({
-                'createdby': request.user.id
-            })
-            .then(function(data) {
-                response.status(200).json(data);
-            })
-            .catch(function(err) {
-                logger.error(err);
-                response.status(500).json({
-                    "code": err.code,
-                    "message": err.message
-                });
-            });
-    },
-    'get': function(request, response, next) {
-        model.readByIdAsync({
-                'id': request.params.id
-            })
-            .then(function(data) {
-                response.status(200).json(data);
-            })
-            .catch(function(err) {
-                logger.error(err);
-                response.status(500).json({
-                    "code": err.code,
-                    "message": err.message
-                });
-            });
 
+        var allTeams = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myTeamsAsync(request.user.id));
+        promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+        promiseResolutions.push(auth.teamsIbelongAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(team, index) {
+                    team.ownership = 'OWN';
+                    allTeams.push(team);
+                });
+                _.each(results[1], function(team, index) {
+                    team.ownership = 'ADMIN';
+                    allTeams.push(team);
+                });
+                _.each(results[2], function(team, index) {
+                    team.ownership = 'MEMBER';
+                    allTeams.push(team);
+                });
+                response.status(200).json(allTeams);
+            })
+            .catch(function(err) {
+                logger.error(err);
+                response.status(500).json({
+                    "code": err.code,
+                    "message": "Can not fetch teams for user " + request.user.id
+                });
+            });
     },
+
+    'get': function(request, response, next) {
+
+        var allTeams = [],
+            promiseResolutions = [],
+            team = {};
+
+        promiseResolutions.push(auth.myTeamsAsync(request.user.id));
+        promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+        promiseResolutions.push(auth.teamsIbelongAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+                _.each(results[2], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+
+                if(_.indexOf(allTeams, request.params.id ) < 0) {
+                    throw new Error("user " + request.user.id + " does not have access to team " + request.params.id);
+                } else {
+                    return model.readAsync(request.params.id);
+                }
+            })
+            .then(function(result) {
+                team = result;
+                promiseResolutions = [];
+
+                promiseResolutions.push(model.getAllMembersAsync(team.id));
+                promiseResolutions.push(usermodel.readByIdAsync({"id": team.createdby}));
+                return promises.all(promiseResolutions);
+            })
+            .then(function(results) {
+                team.memebers = [];
+                _.each(results[0], function(member, index) {
+                    team.memebers.push(member);
+                });
+
+                team.memebers.push({
+                    'id': results[1].id,
+                    'email': results[1].email,
+                    'access': 'OWNER'
+                });
+                delete team.createdby;
+                response.status(200).json(team);
+            })
+            .catch(function(err) {
+                logger.error(err);
+                response.status(500).json({
+                    "code": err.code,
+                    "message": "Can not get team with id" + request.params.id
+                });
+            });
+    },
+
     'update': function(request, response, next) {
-        var team = {};
-        team.createdby = request.user.id;
+
+        var allTeams = [],
+            promiseResolutions = [],
+            team = {};
+
         team.id = request.params.id;
 
         if(request.body.name) {
@@ -118,94 +185,194 @@ var teamService = {
             team.capacity = request.body.capacity;
         }
 
-        model.readByUserAsync(team)
-        .then(function(results) {
-            _.each(results, function(result, index) {
-                if (result.name == team.name && team.id != result.id) {
-                    throw new Error("team " + team.name + " already exists for different team id " + result.id);
-                }
-            });
+        promiseResolutions.push(auth.myTeamsAsync(request.user.id));
+        promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
 
-            delete team.createdby;
-            return model.updateAsync(team);
-        })
-        .then(function(data) {
-            response.status(200).json({
-                "id": data.id
-            });
-        })
-        .catch(function(err) {
-            logger.error(err);
-            var httpCode = 400;
-            if (err instanceof Error) { // 400 for validation error;
-                httpCode = 500;
-                err = {
-                    "code": err.code,
-                    "message": err.message
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(result, index) {
+                    if (result.name == team.name && team.id != result.id) {
+                        throw new Error("team " + team.name + " already exists for different team id " + result.id);
+                    }
+                    allTeams.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+
+                if(_.indexOf(allTeams, request.params.id ) < 0) {
+                    throw new Error("user " + request.user.id + " does not have admin access to team " + request.params.id);
+                } else {
+                    return model.updateAsync(team);
                 }
-            }
-            response.status(httpCode).json(err);
-        });
+            })
+            .then(function(result) {
+                response.status(200).json({
+                    "id": result.id
+                });
+            })
+            .catch(function(err) {
+                logger.error(err);
+                var httpCode = 400;
+                if (err instanceof Error) { // 400 for validation error;
+                    httpCode = 500;
+                    err = {
+                        "code": err.code,
+                        "message": "Can not update team with id " + team.id
+                    }
+                }
+                response.status(httpCode).json(err);
+            });
     },
     'delete': function(request, response, next) {
 
-    },
-    'addMember': function(request, response, next) {
-        var team = {
-            "id": request.params.id
-        };
-        var member = {
-            "id": request.body.id,
-            "access": request.body.access
-        };
-        model.addMemberAsync(team, member)
-            .then(function(data) {
+        var allTeams = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myTeamsAsync(request.user.id));
+        promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+
+                if(_.indexOf(allTeams, request.params.id ) < 0) {
+                    throw new Error("user " + request.user.id + " does not have admin access to team " + request.params.id);
+                } else {
+                    return model.deleteAsync(request.params.id);
+                }
+            })
+            .then(function(result) {
                 response.status(200).json({"id": request.params.id});
             })
             .catch(function(err) {
                 logger.error(err);
                 response.status(500).json({
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not delete team " + request.params.id
+                });
+            });
+    },
+    'addMember': function(request, response, next) {
+
+        var allTeams = [],
+            promiseResolutions = [],
+            team = {
+                "id": request.params.id
+            },
+            member = {
+                "id": request.body.id,
+                "access": request.body.access
+            };
+
+        promiseResolutions.push(auth.myTeamsAsync(request.user.id));
+        promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+
+                if(_.indexOf(allTeams, request.params.id ) < 0) {
+                    throw new Error("user " + request.user.id + " does not have admin access to team " + request.params.id);
+                } else {
+                    return model.addMemberAsync(team, member);
+                }
+            })
+            .then(function(result) {
+                response.status(200).json({"id": request.params.id});
+            })
+            .catch(function(err) {
+                logger.error(err);
+                response.status(500).json({
+                    "code": err.code,
+                    "message": "Can not add member to team " + request.params.id
                 });
             });
     },
     'updateMember': function(request, response, next) {
-        var team = {
-            "id": request.params.teamid
-        };
-        var member = {
-            "id": request.params.userid,
-            "access": request.body.access
-        };
-        model.updateMemberAsync(team, member)
-            .then(function(data) {
-                response.status(200).json({"id": request.params.id});
+
+        var allTeams = [],
+            promiseResolutions = [],
+            team = {
+                "id": request.params.teamid
+            },
+            member = {
+                "id": request.params.userid,
+                "access": request.body.access
+            };
+
+        promiseResolutions.push(auth.myTeamsAsync(request.user.id));
+        promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+
+                if(_.indexOf(allTeams, request.params.teamid ) < 0) {
+                    throw new Error("user " + request.user.id + " does not have admin access to team " + request.params.teamid);
+                } else {
+                    return model.updateMemberAsync(team, member);
+                }
+            })
+            .then(function(result) {
+                response.status(200).json({"id": request.params.teamid});
             })
             .catch(function(err) {
                 logger.error(err);
                 response.status(500).json({
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not update member for team " + request.params.teamid
                 });
             });
     },
     'removeMember': function(request, response, next) {
-        var team = {
-            "id": request.params.teamid
-        };
-        var member = {
-            "id": request.params.userid
-        };
-        model.removeMemberAsync(team, member)
-            .then(function(data) {
-                response.status(200).json({"id": request.params.id});
+
+        var allTeams = [],
+            promiseResolutions = [],
+            teamid = request.params.teamid,
+            memberid = request.params.userid;
+
+        promiseResolutions.push(auth.myTeamsAsync(request.user.id));
+        promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allTeams.push(result.id.toString());
+                });
+
+                if(_.indexOf(allTeams, request.params.teamid ) < 0) {
+                    throw new Error("user " + request.user.id + " does not have admin access to team " + request.params.teamid);
+                } else {
+                    return model.removeMemberAsync(teamid, memberid);
+                }
+            })
+            .then(function(result) {
+                response.status(200).json({"id": request.params.teamid});
             })
             .catch(function(err) {
                 logger.error(err);
                 response.status(500).json({
                     "code": err.code,
-                    "message": err.message
+                    "message": "Can not remove member from team " + request.params.teamid
                 });
             });
     }

@@ -7,15 +7,14 @@
 "use strict";
 
 var logger = import_utils('logger.js').getLoggerObject(),
-    localAuth = import_services('localAuthService.js'),
-    githubAuth = import_services('githubAuthService.js'),
+    authenticator = import_services('authenticator.js'),
     express = require('express'),
     router = express.Router();
 
-router.use(githubAuth.initialize);
-router.post('/', localAuth.login);
+router.use(authenticator.initialize());
+router.post('/', authenticator.login);
 
-router.get('/github', githubAuth.authenticate);
-router.get('/github/callback', githubAuth.authenticate, localAuth.loginWithoutPassword);
+router.get('/github', authenticator.authenticateViaGithub);
+router.get('/github/callback', authenticator.authenticateViaGithub, authenticator.loginWithoutPassword);
 
 module.exports = router;
