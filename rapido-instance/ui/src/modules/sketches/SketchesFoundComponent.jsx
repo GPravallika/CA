@@ -202,7 +202,8 @@ export default class extends React.Component{
         </cardLayout>
         <DeleteModal show={this.state.isOpen}
           onClose={this.toggleModal.bind(this)}
-          onConfirm={this.deleteSketch.bind(this)}>
+          onConfirm={this.deleteSketch.bind(this)}
+          modalText="Are you sure you want to delete this sketch project?">
         </DeleteModal>
       </div>
     )

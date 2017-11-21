@@ -10,6 +10,7 @@ import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
 import { createStyledComponent } from 'mineral-ui/styles';
 import AddTeamModal from './team/addTeamModal';
 import AddMemberModal from './team/addMemberModal';
+import teamService from './team/teamServices'
 
 export default class extends React.Component{
   
@@ -25,11 +26,13 @@ export default class extends React.Component{
         oldPassword: '',
         passwordConfig: PasswordConfig,
         addTeamModalIsOpen: false,
-        addMemberModalIsOpen: false
+        addMemberModalIsOpen: false,
+        teamList: []
       };
       this.alertOptions = AlertOptions;
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.addTeamSuccess = this.addTeamSuccess.bind(this);
   }
   
   /* Component Initialisation */
@@ -49,21 +52,51 @@ export default class extends React.Component{
         oldPassword: "",
       })
     }
+    let teamSrvGetTeamsRes = null;
+    teamService.getTeams()
+    .then((response) => {
+      teamSrvGetTeamsRes = response.clone();
+      return response.json();
+    })
+    .then((responseData) => {
+      if(teamSrvGetTeamsRes.ok) {
+        this.setState({
+          teamList: responseData
+        });
+      } else {
+        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+        if(teamSrvGetTeamsRes.status == 401) {
+          sessionStorage.removeItem('user')
+          sessionStorage.removeItem('token')
+        }
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   /* Method to toggle modal */
   toggleModal(type) {
-    console.log(type);
-    if(type = "addTeam") {
+    if(type == "addTeam") {
       this.setState({
         addTeamModalIsOpen: !this.state.addTeamModalIsOpen
       });
     }
-    if(type = "addMember") {
+    if(type == "addMember") {
       this.setState({
         addMemberModalIsOpen: !this.state.addMemberModalIsOpen
       });
     }
+  }
+
+  /* Method to add team success */
+  addTeamSuccess(team) {
+    var tempTeamList = this.state.teamList;
+    tempTeamList.push(team);
+    this.setState({
+      teamList: tempTeamList
+    });
   }
 
   
@@ -188,8 +221,6 @@ export default class extends React.Component{
       creationLabel = <h3>Create an account</h3>
     }
 
-    var teamsArr = [{"name":"test"}, {"name":"test222"}, {"name":"testddfdf"}, {"name":"tesddsdt"}];
-
     const CustomContent = createStyledComponent('div', ({ theme }) => ({
       backgroundColor: theme.color_gray_20,
       margin: `${theme.space_stack_md} 0`,
@@ -201,10 +232,11 @@ export default class extends React.Component{
       }
     }));
 
-    const teamCards = teamsArr.map(function (team) {
+    const teamCards = this.state.teamList.map(function (team) {
       return (
-        <Card>
+        <Card key={team.teamid}>
           <CardTitle>{team.name}</CardTitle>
+          <CardBlock>{team.description}</CardBlock>
           <CustomContent>
             <Button onClick={this.toggleModal.bind(this,"addMember")}>Add Member</Button>
             <Button className="cardButtonSepMargin">Edit</Button>
@@ -304,7 +336,7 @@ export default class extends React.Component{
         </div>
         <AddTeamModal show={this.state.addTeamModalIsOpen}
           onClose={this.toggleModal.bind(this,"addTeam")}
-          onConfirm={this.toggleModal.bind(this,"addTeam")}>
+          onConfirm={this.addTeamSuccess}>
         </AddTeamModal>
         <AddMemberModal show={this.state.addMemberModalIsOpen}
           onClose={this.toggleModal.bind(this,"addMember")}

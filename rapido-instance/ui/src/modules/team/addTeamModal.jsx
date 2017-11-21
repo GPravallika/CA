@@ -1,11 +1,13 @@
 import React from 'react';
+import teamService from './teamServices'
 
 class Modal extends React.Component {
 
   constructor(props) {
       super(props);
       this.state = {
-        teamName: ''
+        teamName: '',
+        teamDesc: ''
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -67,7 +69,31 @@ class Modal extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     if (this.showFormErrors()) {
-      console.log(event);
+      let team = {
+        "name" : this.state.teamName,
+        "description" : this.state.teamDesc
+      }
+      let teamServCreateTeamRes = null;
+      teamService.createTeam(team)
+        .then((response) => {
+          teamServCreateTeamRes = response.clone();
+          return response.json();
+        })
+        .then((responseData) => {
+          if(teamServCreateTeamRes.ok ) {
+            this.props.onConfirm(team);
+            this.props.onClose();
+          } else {
+            showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+            if(teamServCreateTeamRes.status == 401) {
+              sessionStorage.removeItem('user')
+              sessionStorage.removeItem('token')
+            }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }
 
@@ -120,6 +146,17 @@ class Modal extends React.Component {
                 onChange={ this.handleChange }
                 required />
               <div className="error" id="teamNameError"></div>
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="text"
+                name="teamDesc"
+                ref="teamDesc"
+                placeholder="Team Description"
+                value={ this.state.teamDesc } 
+                onChange={ this.handleChange }
+              />
+              <div className="error" id="teamDescError"></div>
             </div>
             <div className="form-group pull-right">
               <button className="btn btn-default cancel-button" onClick={this.props.onClose}>
