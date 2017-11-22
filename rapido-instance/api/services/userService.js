@@ -141,6 +141,11 @@ var userService = {
     'get': function(request, response, next) {
         model.readByIdAsync({"id": request.params.id})
         .then(function(data) {
+            if(!data.password || data.password == '') {
+                data.hasPassword = false;
+            } else {
+                data.hasPassword = true;
+            }
             delete data.password;
             delete data.createdat;
             delete data.modifiedat;

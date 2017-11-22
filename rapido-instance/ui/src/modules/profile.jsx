@@ -5,7 +5,7 @@ import PasswordConfig from './passwordConfig.js'
 import {showAlert, AlertOptions} from './utils/AlertActions'
 
 export default class extends React.Component{
-  
+
   constructor(props) {
       super(props);
       this.state = {
@@ -22,7 +22,7 @@ export default class extends React.Component{
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
   }
-  
+
   /* Component Initialisation */
   componentDidMount() {
     this.refs["password"].pattern = this.state.passwordConfig.passwordFields.pattern;
@@ -39,18 +39,28 @@ export default class extends React.Component{
         passwordConfirm: "",
         oldPassword: "",
       })
+
+      if(userObj.hasPassword == false) {
+        this.refs["oldPassword"].disabled = true;
+        this.refs["password"].disabled = true;
+        this.refs["passwordConfirm"].disabled = true;
+      } else {
+        this.refs["oldPassword"].disabled = false;
+        this.refs["password"].disabled = false;
+        this.refs["passwordConfirm"].disabled = false;
+      }
     }
   }
 
-  
+
   /* Method to handle input change */
   handleChange(e) {
     e.target.classList.add('active');
-    
+
     this.setState({
       [e.target.name]: e.target.value
     });
-    
+
     this.showInputError(e.target.name);
   }
 
@@ -93,20 +103,20 @@ export default class extends React.Component{
   showFormErrors() {
     const inputs = document.querySelectorAll('input');
     let isFormValid = true;
-    
+
     inputs.forEach(input => {
       input.classList.add('active');
-      
+
       const isInputValid = this.showInputError(input.name);
-      
+
       if (!isInputValid) {
         isFormValid = false;
       }
     });
-    
+
     return isFormValid;
   }
-  
+
   /* Method to show Input Errors */
   showInputError(refName) {
     const validity = this.refs[refName].validity;
@@ -129,7 +139,7 @@ export default class extends React.Component{
     const error = document.getElementById(`${refName}Error`);
     const isPassword = refName.indexOf('password') !== -1;
     const isPasswordConfirm = refName === 'passwordConfirm';
-    
+
     if (isPasswordConfirm) {
       if (this.refs.password.value !== this.refs.passwordConfirm.value) {
         this.refs.passwordConfirm.setCustomValidity('Passwords do not match');
@@ -140,19 +150,19 @@ export default class extends React.Component{
 
     if (!validity.valid) {
       if (validity.valueMissing) {
-        error.textContent = `${label} is a required field`; 
+        error.textContent = `${label} is a required field`;
       } else if (validity.typeMismatch) {
-        error.textContent = `${label} should be a valid email address`; 
+        error.textContent = `${label} should be a valid email address`;
       } else if (isPassword && validity.patternMismatch) {
-        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`; 
+        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
       } else if (isPassword && (validity.tooShort || validity.tooLong)) {
-        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`; 
+        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
       } else if (isPasswordConfirm && validity.customError) {
         error.textContent = 'Passwords do not match';
       }
       return false;
     }
-    
+
     error.textContent = '';
     return true;
   }
@@ -175,7 +185,7 @@ export default class extends React.Component{
                 name="firstName"
                 ref="firstName"
                 placeholder="First Name *"
-                value={ this.state.firstName } 
+                value={ this.state.firstName }
                 onChange={ this.handleChange }
                 required />
               <div className="error" id="firstNameError"></div>
@@ -186,7 +196,7 @@ export default class extends React.Component{
                 name="lastName"
                 ref="lastName"
                 placeholder="Last Name *"
-                value={ this.state.lastName } 
+                value={ this.state.lastName }
                 onChange={ this.handleChange }
                 required />
               <div className="error" id="lastNameError"></div>
@@ -197,40 +207,40 @@ export default class extends React.Component{
                 name="email"
                 ref="email"
                 placeholder="Email *"
-                value={ this.state.email } 
+                value={ this.state.email }
                 onChange={ this.handleChange }
                 required />
               <div className="error" id="emailError" />
             </div>
             <div className="form-group">
               <input className="form-control"
-                type="password" 
+                type="password"
                 name="oldPassword"
                 ref="oldPassword"
                 placeholder="Old Password *"
-                value={ this.state.oldPassword } 
+                value={ this.state.oldPassword }
                 onChange={ this.handleChange }
                 required />
               <div className="error" id="oldPasswordError" />
             </div>
             <div className="form-group">
               <input className="form-control"
-                type="password" 
+                type="password"
                 name="password"
                 ref="password"
                 placeholder="New Password *"
-                value={ this.state.password } 
+                value={ this.state.password }
                 onChange={ this.handleChange }
                 required />
               <div className="error" id="passwordError" />
             </div>
             <div className="form-group">
               <input className="form-control"
-                type="password" 
+                type="password"
                 name="passwordConfirm"
                 ref="passwordConfirm"
                 placeholder="New Password Confirm *"
-                value={ this.state.passwordConfirm } 
+                value={ this.state.passwordConfirm }
                 onChange={ this.handleChange }
                 required />
               <div className="error" id="passwordConfirmError" />

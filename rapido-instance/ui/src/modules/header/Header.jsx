@@ -11,7 +11,7 @@ import Icon from 'mineral-ui/Icon';
 import { createThemedComponent } from 'mineral-ui/themes';
 
 export default class extends React.Component{
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -32,10 +32,10 @@ export default class extends React.Component{
     if(this.props.authenticated) {
       this.setState({
         navStatus: this.props.location
-      })  
+      })
     }
   }
-  
+
   /* Method to handle header Click event */
   handleClick(e) {
     e.preventDefault();
@@ -149,7 +149,7 @@ export default class extends React.Component{
     ];
 
     if(loggedIn) {
-      
+
       headerSection = <div className="row rapido-header-wrapper">
         <div className="col-md-4 col-sm-3 pull-left">
           <Link className="header-logo-section" to="/sketches">
@@ -160,7 +160,7 @@ export default class extends React.Component{
         <div className="col-md-8 col-sm-9">
           <div className="col-md-12 col-sm-12">
             <Dropdown placement="bottom-end" className="profileDropdown" data={profileDropdownItems}>
-              <profileDropdownBtn>{this.props.userInfo.firstname} ▾</profileDropdownBtn>
+              <profileDropdownBtn>{this.props.userInfo.email} ▾</profileDropdownBtn>
             </Dropdown>
           </div>
         </div>
@@ -181,7 +181,7 @@ export default class extends React.Component{
           </Link>
         </div>
       }
-      
+
       headerSection = <div className="row header-login">
         <div className="col-sm-4 pull-left home-logo-section">
           {logoImg}
