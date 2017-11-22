@@ -7,6 +7,7 @@ import Button from 'mineral-ui/Button';
 import teamService from './teamServices'
 import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
 import { createStyledComponent } from 'mineral-ui/styles';
+import DeleteModal from '../d3/DeleteModal';
 
 export default class extends React.Component{
   
@@ -14,10 +15,10 @@ export default class extends React.Component{
       super(props);
       this.state = {
         addMemberModalIsOpen: false,
+        deleteMemberModalIsOpen: false,
         membersList: []
       };
       this.alertOptions = AlertOptions;
-      /*this.handleChange = this.handleChange.bind(this);*/
   }
   
   /* Component Initialisation */
@@ -83,6 +84,17 @@ export default class extends React.Component{
     });
   }
 
+  /* Method to delete team toggle modal */
+  deleteMemberToggleModal(member) {
+    if(this.props.location.query.teamId) {
+      sessionStorage.setItem("teamId",this.props.location.query.teamId)
+    }
+    this.setState({
+      deleteMemberModalIsOpen: !this.state.deleteMemberModalIsOpen,
+      memberId: (member.member) ? member.member.id : null
+    });
+  }
+
   addMemberToggleModal() {
     if(this.props.location.query.teamId) {
       sessionStorage.setItem("teamId",this.props.location.query.teamId)
@@ -94,7 +106,46 @@ export default class extends React.Component{
 
   /* Method to add member success */
   addMemberSuccess(member) {
-    console.log(member);
+    var tempMemberList = this.state.membersList;
+    tempMemberList.push(member);
+    this.setState({
+      membersList: tempMemberList
+    });
+  }
+
+  /* Method to delete member */
+  deleteMember() {
+    let teamSrvDelMemRes = null;
+    let teamId = sessionStorage.getItem('teamId');
+    teamService.deleteTeamMember(teamId,this.state.memberId)
+    .then((response) => {
+      teamSrvDelMemRes = response.clone();
+      return response.json();
+    })
+    .then((responseData) => {
+      if(teamSrvDelMemRes.ok) {
+        var tempMembersList = this.state.membersList;
+        tempMembersList = tempMembersList.filter(function(member){
+          console.log(member.id);
+          console.log(responseData.id);
+          return member.id != responseData.id;
+        });
+        this.setState({
+          membersList: tempMembersList
+        });
+        this.deleteMemberToggleModal({});
+      } else {
+        this.deleteMemberToggleModal({});
+        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+        if(teamSrvDelMemRes.status == 401) {
+          sessionStorage.removeItem('user')
+          sessionStorage.removeItem('token')
+        }
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   /* Render Method */
@@ -124,11 +175,13 @@ export default class extends React.Component{
               <option value="OWNER">Owner</option>
               <option value="MEMBER">Member</option>
             </select>
-            <Button>Delete</Button>
+            <Button onClick={this.deleteMemberToggleModal.bind(this,{member})}>Delete</Button>
           </CustomContent>
         </Card>
       );
     }, this);
+
+    const selectedTeam =  JSON.parse(sessionStorage.getItem('team')).team;
 
     return(
       <div>
@@ -140,7 +193,7 @@ export default class extends React.Component{
         </ul>
       </div>
       <div className="col-md-12">
-        <span>Teams</span>|<span>{this.props.location.query.teamId}</span>
+        <span>{selectedTeam.name} , {selectedTeam.id}</span>
         <Button className="pull-right" onClick={this.addMemberToggleModal.bind(this)}>+ ADD MEMBER</Button>
         <cardLayout className="cardLayout">
           {members}
@@ -150,6 +203,11 @@ export default class extends React.Component{
         onClose={this.addMemberToggleModal.bind(this)}
         onConfirm={this.addMemberSuccess}>
       </AddMemberModal>
+      <DeleteModal show={this.state.deleteMemberModalIsOpen}
+        onClose={this.deleteMemberToggleModal.bind(this,{})}
+        onConfirm={this.deleteMember.bind(this)}
+        modalText="Are you sure you want to delete this member?">
+      </DeleteModal>
       </div>
     )
   }

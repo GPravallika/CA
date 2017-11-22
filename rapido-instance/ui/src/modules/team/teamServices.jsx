@@ -71,7 +71,18 @@ const TeamApiCall = {
       },
       body: JSON.stringify(member)
     });
-  }
+  },
+  deleteTeamMember(teamId, memberId) {
+    var token  = sessionStorage.getItem("token");
+    
+    return fetch(apiObj.endPoint + 'team/'+ teamId + '/member/' + memberId, { 
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  },
 }
 
 export default TeamApiCall;

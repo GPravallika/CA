@@ -72,6 +72,7 @@ export default class extends React.Component{
 
   teamDetails(team) {
     sessionStorage.setItem("teamId",team.team.id);
+    sessionStorage.setItem("team", JSON.stringify(team));
     browserHistory.push('/team?teamId='+team.team.id);
   }
 
@@ -93,9 +94,8 @@ export default class extends React.Component{
           teamList: tempTeamsList
         });
         this.deleteTeamToggleModal({});
-
       } else {
-        this.toggleModal({});
+        this.deleteTeamToggleModal({});
         showAlert(this, (responseData.message) ? responseData.message : "Error occured");
         if(teamSrvDelTeamRes.status == 401) {
           sessionStorage.removeItem('user')
