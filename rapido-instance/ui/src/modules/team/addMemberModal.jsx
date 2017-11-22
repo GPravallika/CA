@@ -1,18 +1,100 @@
 import React from 'react';
+import teamService from './teamServices'
+import {showAlert, AlertOptions} from '../utils/AlertActions'
 
 class Modal extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      query: ''
+      memberId: ''
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  /* Method to handle search members*/
-  handleChange(event) {
-    console.log(event);
+  /* Method to handle input change */
+  handleChange(e) {
+    e.target.classList.add('active');
+    
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+    
+    this.showInputError(e.target.name);
+  }
+
+  /* Method to show Form Errors */
+  showFormErrors() {
+    const inputs = document.querySelectorAll('input');
+    let isFormValid = true;
+    
+    inputs.forEach(input => {
+      input.classList.add('active');
+      
+      const isInputValid = this.showInputError(input.name);
+      
+      if (!isInputValid) {
+        isFormValid = false;
+      }
+    });
+    
+    return isFormValid;
+  }
+
+  /* Method to show Input Errors */
+  showInputError(refName) {
+    const validity = this.refs[refName].validity;
+
+    var label = "";
+    if(refName == "memberId") {
+      label = "Member Id";
+    }
+
+    const error = document.getElementById(`${refName}Error`);
+
+    if (!validity.valid) {
+      if (validity.valueMissing) {
+        error.textContent = `${label} is a required field`; 
+      }
+      return false;
+    }
+    
+    error.textContent = '';
+    return true;
+  }
+
+  /* Method to submit */
+  handleSubmit(event) {
+    event.preventDefault();
+    if (this.showFormErrors()) {
+      let member = {
+        "id" : this.state.memberId,
+        "access" : "MEMBER"
+      }
+      let teamServAddTeamMemRes = null;
+      let teamId = sessionStorage.getItem('teamId');
+      teamService.addTeamMember(teamId, member)
+        .then((response) => {
+          teamServAddTeamMemRes = response.clone();
+          return response.json();
+        })
+        .then((responseData) => {
+          if(teamServAddTeamMemRes.ok ) {
+            this.props.onConfirm(member);
+            this.props.onClose();
+          } else {
+            showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+            if(teamServAddTeamMemRes.status == 401) {
+              sessionStorage.removeItem('user')
+              sessionStorage.removeItem('token')
+            }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   }
 
   /* Render Method */
@@ -53,12 +135,27 @@ class Modal extends React.Component {
           <h4 className="text-center">
             Add Member
           </h4>
-          <input placeholder="Search Members" type="text" value={this.state.query} onChange={this.handleChange} />
-          <div className="form-group pull-right">
-            <button className="btn btn-default cancel-button" onClick={this.props.onClose}>
-              Cancel
-            </button>
-          </div>
+          <form className="col-md-12" noValidate>
+            <div className="form-group">
+              <input className="form-control"
+                type="text"
+                name="memberId"
+                ref="memberId"
+                placeholder="Member Id *"
+                value={ this.state.memberId } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="memberIdError"></div>
+            </div>
+            <div className="form-group pull-right">
+              <button className="btn btn-default cancel-button" onClick={this.props.onClose}>
+                Cancel
+              </button>
+               <button className="btn btn-default" onClick={this.handleSubmit}>
+                Add
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     );

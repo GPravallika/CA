@@ -11,6 +11,8 @@ import { createStyledComponent } from 'mineral-ui/styles';
 import AddTeamModal from './team/addTeamModal';
 import AddMemberModal from './team/addMemberModal';
 import teamService from './team/teamServices'
+import DeleteModal from './d3/DeleteModal';
+import MembersModal from './team/membersModal';
 
 export default class extends React.Component{
   
@@ -27,6 +29,8 @@ export default class extends React.Component{
         passwordConfig: PasswordConfig,
         addTeamModalIsOpen: false,
         addMemberModalIsOpen: false,
+        deleteTeamModal: false,
+        membersListModal: false,
         teamList: []
       };
       this.alertOptions = AlertOptions;
@@ -83,11 +87,29 @@ export default class extends React.Component{
         addTeamModalIsOpen: !this.state.addTeamModalIsOpen
       });
     }
-    if(type == "addMember") {
-      this.setState({
-        addMemberModalIsOpen: !this.state.addMemberModalIsOpen
-      });
+  }
+
+  membersListToggleModal(){
+    this.setState({
+      membersListModal: !this.state.membersListModal
+    });
+  }
+
+  addMemberToggleModal(team) {
+    if(team.team) {
+      sessionStorage.setItem("teamId",team.team.id)
     }
+    this.setState({
+      addMemberModalIsOpen: !this.state.addMemberModalIsOpen
+    });
+  }
+
+  /* Method to delete team toggle modal */
+  deleteTeamToggleModal(team) {
+    this.setState({
+      deleteTeamModal: !this.state.deleteTeamModal,
+      teamId: (team.team) ? team.team.id : null
+    });
   }
 
   /* Method to add team success */
@@ -96,6 +118,36 @@ export default class extends React.Component{
     tempTeamList.push(team);
     this.setState({
       teamList: tempTeamList
+    });
+  }
+
+  /* Method to add team success */
+  addMemberSuccess(member) {
+    console.log(member);
+  }
+
+  /* Method to delete team */
+  deleteTeam() {
+    let teamSrvDelTeamRes = null;
+    teamService.deleteTeam(this.state.teamId)
+    .then((response) => {
+      teamSrvDelTeamRes = response.clone();
+      return response.json();
+    })
+    .then((responseData) => {
+      if(teamSrvDelTeamRes.ok) {
+        this.deleteTeamToggleModal({});
+      } else {
+        this.toggleModal({});
+        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+        if(teamSrvDelTeamRes.status == 401) {
+          sessionStorage.removeItem('user')
+          sessionStorage.removeItem('token')
+        }
+      }
+    })
+    .catch((error) => {
+      console.error(error);
     });
   }
 
@@ -238,9 +290,9 @@ export default class extends React.Component{
           <CardTitle>{team.name}</CardTitle>
           <CardBlock>{team.description}</CardBlock>
           <CustomContent>
-            <Button onClick={this.toggleModal.bind(this,"addMember")}>Add Member</Button>
-            <Button className="cardButtonSepMargin">Edit</Button>
-            <Button className="cardButtonSepMargin">Delete</Button>
+            <Button onClick={this.addMemberToggleModal.bind(this,{team})}>Add Member</Button>
+            <Button className="cardButtonSepMargin" onClick={this.membersListToggleModal.bind(this)}>Edit</Button>
+            <Button className="cardButtonSepMargin" onClick={this.deleteTeamToggleModal.bind(this,{team})}>Delete</Button>
           </CustomContent>
         </Card>
       );
@@ -339,9 +391,17 @@ export default class extends React.Component{
           onConfirm={this.addTeamSuccess}>
         </AddTeamModal>
         <AddMemberModal show={this.state.addMemberModalIsOpen}
-          onClose={this.toggleModal.bind(this,"addMember")}
-          onConfirm={this.toggleModal.bind(this,"addMember")}>
+          onClose={this.addMemberToggleModal.bind(this,{})}
+          onConfirm={this.addMemberSuccess}>
         </AddMemberModal>
+        <DeleteModal show={this.state.deleteTeamModal}
+          onClose={this.deleteTeamToggleModal.bind(this,{})}
+          onConfirm={this.deleteTeam.bind(this)}
+          modalText="Are you sure you want to delete this team?">
+        </DeleteModal>
+        <MembersModal show={this.state.membersListModal}
+          onClose={this.membersListToggleModal.bind(this,{})}>
+        </MembersModal>
       </div>
     )
   }
