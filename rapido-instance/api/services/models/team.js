@@ -75,7 +75,7 @@ var model = {
         db.executeAsync(queries.getAllMembers, [teamid])
             .then(function(data) {
                 logger.debug("All Members for", teamid, "retrived.");
-                return callback(null, data.rows[0]);
+                return callback(null, data.rows);
             })
             .catch(function(err) {
                 logger.error("Error retrieving all members for team with id", teamid, err.message);

@@ -37,7 +37,7 @@ passport.use(new jwtPassport.Strategy(localOpts, function(payload, callback) {
 
 // Add github Strategy
 passport.use(new githubPassport.Strategy(configurations.github, function(accessToken, refreshToken, profile, callback) {
-    callback(null, profile.emails);
+    callback(null, {'firstname': profile.displayName, 'email': profile.emails[0].value});
 }));
 
 var authService = {
@@ -132,7 +132,7 @@ var authService = {
         var user = {};
         user.email = request.user.email;
         user.password ='';
-        user.firstname = '';
+        user.firstname = request.user.firstname;
         user.lastname = '';
         user.isverified = false;
 
@@ -176,10 +176,10 @@ var authService = {
             if (err) {
                 return next(err);
             }
-            if (!user || !Array.isArray(user)) {
+            if (!user || !user.email) {
                 return response.status(401).json({"error":"Either email not available or not authorized"});
             }
-            request.user = {'email': user[0].value};
+            request.user = user;
             logger.debug("Github user authenticated, passing to next handler.")
             next();
         })(request, response, next);
