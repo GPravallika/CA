@@ -51,7 +51,7 @@ var model = {
         db.executeAsync(queries.getOnlyAdmins, [teamid])
             .then(function(data) {
                 logger.debug("Admins for", teamid, "retrived.");
-                return callback(null, data.rows[0]);
+                return callback(null, data.rows);
             })
             .catch(function(err) {
                 logger.error("Error retrieving admins for team with id", teamid, err.message);
@@ -63,7 +63,7 @@ var model = {
         db.executeAsync(queries.getOnlyMembers, [teamid])
             .then(function(data) {
                 logger.debug("Members for", teamid, "retrived.");
-                return callback(null, data.rows[0]);
+                return callback(null, data.rows);
             })
             .catch(function(err) {
                 logger.error("Error retrieving members for team with id", teamid, err.message);
