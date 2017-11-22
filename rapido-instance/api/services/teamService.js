@@ -296,7 +296,7 @@ var teamService = {
                 }
             })
             .then(function(result) {
-                response.status(200).json({"id": request.params.id});
+                response.status(200).json({"id": member.id});
             })
             .catch(function(err) {
                 logger.error(err);
@@ -337,7 +337,7 @@ var teamService = {
                 }
             })
             .then(function(result) {
-                response.status(200).json({"id": request.params.teamid});
+                response.status(200).json({"id": member.id});
             })
             .catch(function(err) {
                 logger.error(err);
@@ -373,7 +373,7 @@ var teamService = {
                 }
             })
             .then(function(result) {
-                response.status(200).json({"id": request.params.teamid});
+                response.status(200).json({"id": memberid});
             })
             .catch(function(err) {
                 logger.error(err);

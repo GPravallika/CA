@@ -21,7 +21,9 @@ exports.project = {
     "updateTeam": "UPDATE team_project set access = ? where projectid = ? and teamid = ?",
     "removeTeam": "DELETE FROM team_project where projectid = ? and teamid = ?",
     "removeAllTeams": "DELETE FROM team_project where projectid = ?",
-    "getAllTeams": "select T.id, T.name, T.description, P.access from teams T join team_project P on P.teamid = T.id where P.projectid = ?"
+    "getAllTeams": "select T.id, T.name, T.description, P.access from teams T join team_project P on P.teamid = T.id where P.projectid = ?",
+    "addVocabulary": "UPDATE projects SET vocabulary = vocabulary || ?::jsonb WHERE id =?",
+    "removeVocabulary": "UPDATE projects SET vocabulary = vocabulary - ? WHERE id =?"
 };
 
 exports.team = {

@@ -485,7 +485,84 @@ var projectService = {
                 "message": "export type not specified"
             });
         }
-    }
+    },
+
+    'addVocabulary': function(request, response, next) {
+        var allProjectIds = [],
+            promiseResolutions = [],
+            vocab = JSON.stringify(request.body);
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+
+                _.each(results[0], function(result, index) {
+                    allProjectIds.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allProjectIds.push(result.id.toString());
+                });
+
+                if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                    throw new Error("user " + request.user.id + " does not have permission to update project " + request.params.id);
+                } else {
+                    return model.addVocabularyAsync(request.params.id, vocab);
+                }
+            })
+            .then(function(data) {
+                response.status(200).json({
+                    "id": request.params.id
+                });
+            })
+            .catch(function(err) {
+                logger.error(err);
+                err = {
+                    "code": err.code,
+                    "message": "Can not add vocabulary to project " + project.id
+                }
+                response.status(httpCode).json(err);
+            });
+    },
+
+    'removeVocabulary': function(request, response, next) {
+        var allProjectIds = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+
+                _.each(results[0], function(result, index) {
+                    allProjectIds.push(result.id.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allProjectIds.push(result.id.toString());
+                });
+
+                if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                    throw new Error("user " + request.user.id + " does not have permission to update project " + request.params.id);
+                } else {
+                    return model.removeVocabularyAsync(request.params.id, request.params.vocab);
+                }
+            })
+            .then(function(data) {
+                response.status(200).json({
+                    "id": request.params.id
+                });
+            })
+            .catch(function(err) {
+                logger.error(err);
+                err = {
+                    "code": err.code,
+                    "message": "Can not remove vocabulary from project " + request.params.id
+                }
+                response.status(httpCode).json(err);
+            });
+    },
 };
 
 module.exports = projectService;

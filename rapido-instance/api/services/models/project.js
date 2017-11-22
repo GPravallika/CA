@@ -130,7 +130,30 @@ var model = {
                 logger.error("Error removing team for project", projectid, err.message);
                 callback(err);
             });
-    }
+    },
+    'addVocabulary': function(projectid, vocabulary, callback) {
+        db.executeAsync(queries.addVocabulary, [vocabulary, projectid])
+            .then(function(data) {
+                logger.debug("vocabulary", vocabulary, "added to project", projectid);
+                return callback(null, true);
+            })
+            .catch(function(err) {
+                logger.error("Error adding vocabulary to project", projectid, err.message);
+                callback(err);
+            });
+    },
+    'removeVocabulary': function(projectid, vocabulary, callback) {
+        db.executeAsync(queries.removeVocabulary, [vocabulary, projectid])
+            .then(function(data) {
+                logger.debug("vocabulary", vocabulary, "removed from project", projectid);
+                return callback(null, true);
+            })
+            .catch(function(err) {
+                logger.error("Error removing vocabulary to project", projectid, err.message);
+                callback(err);
+            });
+    },
+
 };
 
 module.exports = promises.promisifyAll(model);

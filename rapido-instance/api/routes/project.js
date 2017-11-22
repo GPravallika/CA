@@ -20,6 +20,10 @@ router.post('/', authenticator.authenticate, projectService.create);
 router.get('/', authenticator.authenticate, projectService.fetch);   // Get all matching projects from filters
 router.get('/:id', authenticator.authenticate, projectService.get);  // Get all detaild of project by Id
 router.put('/:id', authenticator.authenticate, projectService.update);
+
+router.post('/:id/vocabulary', authenticator.authenticate, projectService.addVocabulary);
+router.delete('/:id/vocabulary/:vocab', authenticator.authenticate, projectService.removeVocabulary);
+
 router.delete('/:id', authenticator.authenticate, projectService.delete);
 
 // Share with team functionality
