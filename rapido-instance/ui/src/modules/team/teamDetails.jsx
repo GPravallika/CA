@@ -193,7 +193,7 @@ export default class extends React.Component{
         </ul>
       </div>
       <div className="col-md-12">
-        <span>{selectedTeam.name} , {selectedTeam.id}</span>
+        <span className={"selected-team"}>{selectedTeam.name} , {selectedTeam.id}</span>
         <Button className="pull-right" onClick={this.addMemberToggleModal.bind(this)}>+ ADD MEMBER</Button>
         <cardLayout className="cardLayout">
           {members}
