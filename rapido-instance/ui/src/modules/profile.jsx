@@ -3,16 +3,7 @@ import AlertContainer from 'react-alert'
 import RegistrationService from './register/RegistrationServices'
 import PasswordConfig from './passwordConfig.js'
 import {showAlert, AlertOptions} from './utils/AlertActions'
-import { Tabs } from './components/tabs'
-import { Tab } from './components/tab'
-import Button from 'mineral-ui/Button';
-import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
-import { createStyledComponent } from 'mineral-ui/styles';
-import AddTeamModal from './team/addTeamModal';
-import AddMemberModal from './team/addMemberModal';
-import teamService from './team/teamServices'
-import DeleteModal from './d3/DeleteModal';
-import MembersModal from './team/membersModal';
+import { Link } from 'react-router'
 
 export default class extends React.Component{
   
@@ -26,17 +17,11 @@ export default class extends React.Component{
         password: '',
         passwordConfirm: '',
         oldPassword: '',
-        passwordConfig: PasswordConfig,
-        addTeamModalIsOpen: false,
-        addMemberModalIsOpen: false,
-        deleteTeamModal: false,
-        membersListModal: false,
-        teamList: []
+        passwordConfig: PasswordConfig
       };
       this.alertOptions = AlertOptions;
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
-      this.addTeamSuccess = this.addTeamSuccess.bind(this);
   }
   
   /* Component Initialisation */
@@ -56,99 +41,6 @@ export default class extends React.Component{
         oldPassword: "",
       })
     }
-    let teamSrvGetTeamsRes = null;
-    teamService.getTeams()
-    .then((response) => {
-      teamSrvGetTeamsRes = response.clone();
-      return response.json();
-    })
-    .then((responseData) => {
-      if(teamSrvGetTeamsRes.ok) {
-        this.setState({
-          teamList: responseData
-        });
-      } else {
-        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
-        if(teamSrvGetTeamsRes.status == 401) {
-          sessionStorage.removeItem('user')
-          sessionStorage.removeItem('token')
-        }
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  }
-
-  /* Method to toggle modal */
-  toggleModal(type) {
-    if(type == "addTeam") {
-      this.setState({
-        addTeamModalIsOpen: !this.state.addTeamModalIsOpen
-      });
-    }
-  }
-
-  membersListToggleModal(){
-    this.setState({
-      membersListModal: !this.state.membersListModal
-    });
-  }
-
-  addMemberToggleModal(team) {
-    if(team.team) {
-      sessionStorage.setItem("teamId",team.team.id)
-    }
-    this.setState({
-      addMemberModalIsOpen: !this.state.addMemberModalIsOpen
-    });
-  }
-
-  /* Method to delete team toggle modal */
-  deleteTeamToggleModal(team) {
-    this.setState({
-      deleteTeamModal: !this.state.deleteTeamModal,
-      teamId: (team.team) ? team.team.id : null
-    });
-  }
-
-  /* Method to add team success */
-  addTeamSuccess(team) {
-    var tempTeamList = this.state.teamList;
-    tempTeamList.push(team);
-    this.setState({
-      teamList: tempTeamList
-    });
-  }
-
-  /* Method to add team success */
-  addMemberSuccess(member) {
-    console.log(member);
-  }
-
-  /* Method to delete team */
-  deleteTeam() {
-    let teamSrvDelTeamRes = null;
-    teamService.deleteTeam(this.state.teamId)
-    .then((response) => {
-      teamSrvDelTeamRes = response.clone();
-      return response.json();
-    })
-    .then((responseData) => {
-      if(teamSrvDelTeamRes.ok) {
-        this.deleteTeamToggleModal({});
-      } else {
-        this.toggleModal({});
-        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
-        if(teamSrvDelTeamRes.status == 401) {
-          sessionStorage.removeItem('user')
-          sessionStorage.removeItem('token')
-        }
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 
   
@@ -272,136 +164,88 @@ export default class extends React.Component{
     if (!this.props.fromDashboard) {
       creationLabel = <h3>Create an account</h3>
     }
-
-    const CustomContent = createStyledComponent('div', ({ theme }) => ({
-      backgroundColor: theme.color_gray_20,
-      margin: `${theme.space_stack_md} 0`,
-      padding: theme.space_inset_lg,
-
-      '&:last-child': {
-        borderRadius: `0 0 ${theme.borderRadius_1} ${theme.borderRadius_1}`,
-        marginBottom: `-${theme.space_stack_md}`
-      }
-    }));
-
-    const teamCards = this.state.teamList.map(function (team) {
-      return (
-        <Card key={team.teamid}>
-          <CardTitle>{team.name}</CardTitle>
-          <CardBlock>{team.description}</CardBlock>
-          <CustomContent>
-            <Button onClick={this.addMemberToggleModal.bind(this,{team})}>Add Member</Button>
-            <Button className="cardButtonSepMargin" onClick={this.membersListToggleModal.bind(this)}>Edit</Button>
-            <Button className="cardButtonSepMargin" onClick={this.deleteTeamToggleModal.bind(this,{team})}>Delete</Button>
-          </CustomContent>
-        </Card>
-      );
-    }, this);
-
-    const cardLayout = createStyledComponent('div');
-
     return(
       <div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-        <div className="col-md-12 profile-section">
-          <Tabs>
-            <Tab label={'Profile'}>
-                <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
-                  <div className="form-group">
-                    <input className="form-control"
-                      type="text"
-                      name="firstName"
-                      ref="firstName"
-                      placeholder="First Name *"
-                      value={ this.state.firstName } 
-                      onChange={ this.handleChange }
-                      required />
-                    <div className="error" id="firstNameError"></div>
-                  </div>
-                  <div className="form-group">
-                    <input className="form-control"
-                      type="text"
-                      name="lastName"
-                      ref="lastName"
-                      placeholder="Last Name *"
-                      value={ this.state.lastName } 
-                      onChange={ this.handleChange }
-                      required />
-                    <div className="error" id="lastNameError"></div>
-                  </div>
-                  <div className="form-group">
-                    <input className="form-control"
-                      type="email"
-                      name="email"
-                      ref="email"
-                      placeholder="Email *"
-                      value={ this.state.email } 
-                      onChange={ this.handleChange }
-                      required />
-                    <div className="error" id="emailError" />
-                  </div>
-                  <div className="form-group">
-                    <input className="form-control"
-                      type="password" 
-                      name="oldPassword"
-                      ref="oldPassword"
-                      placeholder="Old Password *"
-                      value={ this.state.oldPassword } 
-                      onChange={ this.handleChange }
-                      required />
-                    <div className="error" id="oldPasswordError" />
-                  </div>
-                  <div className="form-group">
-                    <input className="form-control"
-                      type="password" 
-                      name="password"
-                      ref="password"
-                      placeholder="New Password *"
-                      value={ this.state.password } 
-                      onChange={ this.handleChange }
-                      required />
-                    <div className="error" id="passwordError" />
-                  </div>
-                  <div className="form-group">
-                    <input className="form-control"
-                      type="password" 
-                      name="passwordConfirm"
-                      ref="passwordConfirm"
-                      placeholder="New Password Confirm *"
-                      value={ this.state.passwordConfirm } 
-                      onChange={ this.handleChange }
-                      required />
-                    <div className="error" id="passwordConfirmError" />
-                  </div>
-                  <div className="form-group">
-                    <button className="btn btn-default form-control" onClick={ this.handleSubmit }>Update</button>
-                  </div>
-                </form>
-            </Tab>
-            <Tab label={'Teams'}>
-              <Button className="pull-right" onClick={this.toggleModal.bind(this,"addTeam")}>+ ADD TEAM</Button>
-              <cardLayout className="cardLayout">
-                {teamCards}
-              </cardLayout>
-            </Tab>
-          </Tabs>
+      <div className="tabsContainer tabsProfilePage">
+        <ul className="tabs">
+          <li className={this.props.location.pathname === '/profile' ? 'tab active-tab': 'tab'}><Link to="/profile">Profile</Link></li>
+          <li className={this.props.location.pathname === '/teams' ? 'tab active-tab': 'tab'}><Link to="/teams">Teams</Link></li>
+        </ul>
+      </div>
+        <div className="col-md-12">
+          <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <input className="form-control"
+                type="text"
+                name="firstName"
+                ref="firstName"
+                placeholder="First Name *"
+                value={ this.state.firstName } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="firstNameError"></div>
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="text"
+                name="lastName"
+                ref="lastName"
+                placeholder="Last Name *"
+                value={ this.state.lastName } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="lastNameError"></div>
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="email"
+                name="email"
+                ref="email"
+                placeholder="Email *"
+                value={ this.state.email } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="emailError" />
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="password" 
+                name="oldPassword"
+                ref="oldPassword"
+                placeholder="Old Password *"
+                value={ this.state.oldPassword } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="oldPasswordError" />
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="password" 
+                name="password"
+                ref="password"
+                placeholder="New Password *"
+                value={ this.state.password } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="passwordError" />
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="password" 
+                name="passwordConfirm"
+                ref="passwordConfirm"
+                placeholder="New Password Confirm *"
+                value={ this.state.passwordConfirm } 
+                onChange={ this.handleChange }
+                required />
+              <div className="error" id="passwordConfirmError" />
+            </div>
+            <div className="form-group">
+              <button className="btn btn-default form-control" onClick={ this.handleSubmit }>Update</button>
+            </div>
+          </form>
         </div>
-        <AddTeamModal show={this.state.addTeamModalIsOpen}
-          onClose={this.toggleModal.bind(this,"addTeam")}
-          onConfirm={this.addTeamSuccess}>
-        </AddTeamModal>
-        <AddMemberModal show={this.state.addMemberModalIsOpen}
-          onClose={this.addMemberToggleModal.bind(this,{})}
-          onConfirm={this.addMemberSuccess}>
-        </AddMemberModal>
-        <DeleteModal show={this.state.deleteTeamModal}
-          onClose={this.deleteTeamToggleModal.bind(this,{})}
-          onConfirm={this.deleteTeam.bind(this)}
-          modalText="Are you sure you want to delete this team?">
-        </DeleteModal>
-        <MembersModal show={this.state.membersListModal}
-          onClose={this.membersListToggleModal.bind(this,{})}>
-        </MembersModal>
       </div>
     )
   }

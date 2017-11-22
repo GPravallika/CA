@@ -61,6 +61,17 @@ const TeamApiCall = {
       body: JSON.stringify(member)
     });
   },
+  editTeamMember(teamId, member) {
+    var token  = sessionStorage.getItem("token");
+    return fetch(apiObj.endPoint + 'team/'+ teamId + '/member/' + member.id, { 
+      method: 'PUT', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(member)
+    });
+  }
 }
 
 export default TeamApiCall;

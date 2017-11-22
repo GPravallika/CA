@@ -81,6 +81,7 @@ class Modal extends React.Component {
         })
         .then((responseData) => {
           if(teamServCreateTeamRes.ok ) {
+            team["id"] = responseData.id;
             this.props.onConfirm(team);
             this.props.onClose();
           } else {
