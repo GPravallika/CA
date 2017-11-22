@@ -123,7 +123,8 @@ var projectService = {
     },
     'get': function(request, response, next) {
 
-        var allProjectIds = [],
+        var proj = {},
+            allProjectIds = [],
             promiseResolutions = [];
 
         promiseResolutions.push(auth.myProjectsAsync(request.user.id));
@@ -143,13 +144,22 @@ var projectService = {
                 });
 
                 if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
-                    throw new Error("User " + request.user.id + " does not have access to project" + request.params.id);
+                    throw new Error("User " + request.user.id + " does not have access to project " + request.params.id);
                 } else {
                     return model.readAsync(request.params.id);
                 }
             })
             .then(function(data) {
-                response.status(200).json(data);
+                proj = data;
+                return model.getAllTeamsAsync(request.params.id);
+            })
+            .then(function(teams) {
+                proj.teams = [];
+                _.each(teams, function(team, index) {
+                    proj.teams.push(team);
+                });
+
+                response.status(200).json(proj);
             })
             .catch(function(err) {
                 logger.error(err);

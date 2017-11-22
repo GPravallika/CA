@@ -153,6 +153,13 @@ var teamService = {
                     'access': 'OWNER'
                 });
                 delete team.createdby;
+                return model.getAllProjectsAsync(team.id)
+            })
+            .then(function(projects){
+                team.projects = [];
+                _.each(projects, function(project, index) {
+                    team.projects.push(project);
+                });
                 response.status(200).json(team);
             })
             .catch(function(err) {

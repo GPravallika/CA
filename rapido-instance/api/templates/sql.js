@@ -21,6 +21,7 @@ exports.project = {
     "updateTeam": "UPDATE team_project set access = ? where projectid = ? and teamid = ?",
     "removeTeam": "DELETE FROM team_project where projectid = ? and teamid = ?",
     "removeAllTeams": "DELETE FROM team_project where projectid = ?",
+    "getAllTeams": "select T.id, T.name, T.description, P.access from teams T join team_project P on P.teamid = T.id where P.projectid = ?"
 };
 
 exports.team = {
@@ -32,7 +33,8 @@ exports.team = {
     "updateMember": "UPDATE user_team set access = ? where teamid = ? and userid = ?",
     "removeMember": "DELETE FROM user_team where teamid = ? and userid = ?",
     "getMembersWithSpecificAcccess": "select U.id, U.email, T.access from users U join user_team T on U.id = T.userid where T.teamid = ? and T.access = ?",
-    "getAllMembers": "select U.id, U.email, T.access from users U join user_team T on U.id = T.userid where T.teamid = ?"
+    "getAllMembers": "select U.id, U.email, T.access from users U join user_team T on U.id = T.userid where T.teamid = ?",
+    "getAllProjects": "select P.id, P.name, P.description, T.access from projects P join team_project T on P.id = T.projectid where T.teamid = ?"
 };
 
 exports.auth = {

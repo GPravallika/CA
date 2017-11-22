@@ -109,6 +109,17 @@ var model = {
                 callback(err);
             });
     },
+    'getAllTeams': function(projectid, callback) {
+        db.executeAsync(queries.getAllTeams, [projectid])
+            .then(function(data) {
+                logger.debug("All teams for project id", projectid, "retrived");
+                return callback(null, data.rows);
+            })
+            .catch(function(err) {
+                logger.error("Error retrieving all teams for project", projectid, err.message);
+                callback(err);
+            });
+    },
     'removeTeam': function(projectid, teamid, callback) {
         db.executeAsync(queries.removeTeam, [projectid, teamid])
             .then(function(data) {

@@ -83,6 +83,18 @@ var model = {
             });
     },
 
+    'getAllProjects' : function(teamid, callback) {
+        db.executeAsync(queries.getAllProjects, [teamid])
+            .then(function(data) {
+                logger.debug("All Projects for", teamid, "retrived.");
+                return callback(null, data.rows);
+            })
+            .catch(function(err) {
+                logger.error("Error retrieving all projects for team with id", teamid, err.message);
+                callback(err);
+            });
+    },
+
     'addMember': function(team, user, callback) {
         db.executeAsync(queries.addMember, [user.id, team.id, user.access || 'MEMBER'])
             .then(function(data) {
