@@ -420,7 +420,7 @@ var projectService = {
             if(_.indexOf(allProjectIds, request.params.projectid) < 0 ) {
                 throw new Error("user " + request.user.id + " does not have permission to share " + request.params.projectid);
             } else {
-                return model.removeteamAsync(request.params.projectid, request.params.teamid);
+                return model.removeTeamAsync(request.params.projectid, request.params.teamid);
             }
         })
         .then(function(data) {
