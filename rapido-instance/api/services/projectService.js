@@ -417,14 +417,9 @@ var projectService = {
                 allProjectIds.push(result.id.toString());
             });
 
-            if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
-                throw new Error("user " + request.user.id + " does not have permission to share " + project.id);
+            if(_.indexOf(allProjectIds, request.params.projectid) < 0 ) {
+                throw new Error("user " + request.user.id + " does not have permission to share " + request.params.projectid);
             } else {
-
-                var team = {
-                    "id": request.params.teamid,
-                    "access": request.body.access
-                };
                 return model.removeteamAsync(request.params.projectid, request.params.teamid);
             }
         })
