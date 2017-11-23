@@ -156,6 +156,34 @@ a.header-logo-section {
     margin-right: 20px;
 }
 
+.addMembersList{
+  display: inline-block;
+  width: 100%;
+  margin: 10px 0;
+  .memberRow {
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    button {
+      float: right;
+      background: none;
+      padding: 2px 10px;
+    }
+    select {
+      float: right;
+      background: none;
+      height: 24px;
+      margin-right: 20px;
+    }
+  }
+}
+
+.addMembersModalCloseBtn {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+}
+
 .selected-team {
     margin-left: 20px;
     font-size: 18px;

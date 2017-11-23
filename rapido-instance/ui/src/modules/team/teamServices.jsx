@@ -50,6 +50,18 @@ const TeamApiCall = {
     });
   },
 
+  searchMember(searchQuery) {
+    var token  = sessionStorage.getItem("token");
+    
+    return fetch(apiObj.endPoint + 'user?filter='+ searchQuery, { 
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  },
+
   addTeamMember(teamId, member) {
     var token  = sessionStorage.getItem("token");
       return fetch(apiObj.endPoint + 'team/'+ teamId + '/member', { 

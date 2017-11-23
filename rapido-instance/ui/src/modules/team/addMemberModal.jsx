@@ -1,5 +1,6 @@
 import React from 'react';
 import teamService from './teamServices'
+import AlertContainer from 'react-alert'
 import {showAlert, AlertOptions} from '../utils/AlertActions'
 
 class Modal extends React.Component {
@@ -7,10 +8,12 @@ class Modal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      memberId: ''
+      memberQuery: '',
+      searchResult: []
     };
+    this.alertOptions = AlertOptions;
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   /* Method to handle input change */
@@ -46,16 +49,13 @@ class Modal extends React.Component {
   showInputError(refName) {
     const validity = this.refs[refName].validity;
 
-    var label = "";
-    if(refName == "memberId") {
-      label = "Member Id";
-    }
-
     const error = document.getElementById(`${refName}Error`);
 
     if (!validity.valid) {
       if (validity.valueMissing) {
-        error.textContent = `${label} is a required field`; 
+        error.textContent = `It's a required field`; 
+      } else if (validity.tooShort) {
+        error.textContent = `More than three characters`; 
       }
       return false;
     }
@@ -64,13 +64,40 @@ class Modal extends React.Component {
     return true;
   }
 
-  /* Method to submit */
-  handleSubmit(event) {
+  handleSearch(event) {
     event.preventDefault();
     if (this.showFormErrors()) {
+      let teamServSrchMemRes = null;
+      console.log(event.target.value);
+      teamService.searchMember(this.state.memberQuery)
+        .then((response) => {
+          teamServSrchMemRes = response.clone();
+          return response.json();
+        })
+        .then((responseData) => {
+          if(teamServSrchMemRes.ok ) {
+            this.setState({
+              searchResult: responseData
+            });
+          } else {
+            showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+            if(teamServSrchMemRes.status == 401) {
+              sessionStorage.removeItem('user')
+              sessionStorage.removeItem('token')
+            }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }
+
+  /* Method to submit */
+  handleSubmit(event, memberObj) {
       let member = {
-        "id" : this.state.memberId,
-        "access" : "MEMBER"
+        "id" : memberObj.member.id,
+        "access" : event.target.parentElement.children[2].value
       }
       let teamServAddTeamMemRes = null;
       let teamId = sessionStorage.getItem('teamId');
@@ -81,6 +108,7 @@ class Modal extends React.Component {
         })
         .then((responseData) => {
           if(teamServAddTeamMemRes.ok ) {
+            member["email"] = memberObj.member.email;
             this.props.onConfirm(member);
             this.props.onClose();
           } else {
@@ -94,7 +122,6 @@ class Modal extends React.Component {
         .catch((error) => {
           console.error(error);
         });
-    }
   }
 
   /* Render Method */
@@ -122,40 +149,63 @@ class Modal extends React.Component {
       backgroundColor: '#fff',
       borderRadius: 5,
       maxWidth: 500,
-      height: 200,
+      minHeight: 250,
+      maxHeight: 400,
       zIndex: 1000,
       margin: '30 auto',
       padding: 20,
       display: 'block'
     };
 
+    const members = this.state.searchResult.map(function (member) {
+      return (
+        <div className="memberRow" key={member.id}>
+          <span>{member.email}</span>
+          <button onClick={(e) => this.handleSubmit(e, {member})}>Add</button>
+          <select value={member.access}>
+            <option value="MEMBER">MEMBER</option>
+            <option value="OWNER">OWNER</option>
+          </select>
+        </div>
+      );
+    }, this);
+
     return (
       <div style={backdropStyle}>
+        <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
         <div className="modal col-md-12" style={modalStyle}>
           <h4 className="text-center">
             Add Member
           </h4>
           <form className="col-md-12" noValidate>
             <div className="form-group">
-              <input className="form-control"
+              <div className="col-md-9">
+                <input className="form-control"
                 type="text"
-                name="memberId"
-                ref="memberId"
-                placeholder="Member Id *"
-                value={ this.state.memberId } 
+                name="memberQuery"
+                ref="memberQuery"
+                placeholder="Search Member *"
+                minLength="4"
+                value={ this.state.memberQuery } 
                 onChange={ this.handleChange }
                 required />
-              <div className="error" id="memberIdError"></div>
-            </div>
-            <div className="form-group pull-right">
-              <button className="btn btn-default cancel-button" onClick={this.props.onClose}>
-                Cancel
-              </button>
-               <button className="btn btn-default" onClick={this.handleSubmit}>
-                Add
-              </button>
+                <div className="error" id="memberQueryError"></div>
+              </div>
+              <div className="col-md-3">
+                <button className="btn btn-default" onClick={this.handleSearch}>
+                  Search
+                </button>
+              </div>
             </div>
           </form>
+          <div className={"addMembersList"}>
+            {members}
+          </div>
+          <div className="form-group pull-right">
+              <button className="btn btn-default cancel-button addMembersModalCloseBtn" onClick={this.props.onClose}>
+                Close
+              </button>
+            </div>
         </div>
       </div>
     );

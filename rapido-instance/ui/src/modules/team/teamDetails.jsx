@@ -19,6 +19,7 @@ export default class extends React.Component{
         membersList: []
       };
       this.alertOptions = AlertOptions;
+      this.addMemberSuccess = this.addMemberSuccess.bind(this);
   }
   
   /* Component Initialisation */
