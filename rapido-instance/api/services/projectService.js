@@ -91,6 +91,7 @@ var projectService = {
     },
     'fetch': function(request, response, next) {
         var allProjects = [],
+            allProjectIds = [],
             promiseResolutions = [];
 
         promiseResolutions.push(auth.myProjectsAsync(request.user.id));
@@ -100,14 +101,25 @@ var projectService = {
         promises.all(promiseResolutions)
             .then(function(results) {
                 _.each(results[0], function(project, index) {
+                    allProjectIds.push(project.id);
                     project.ownership = 'OWN';
                     allProjects.push(project);
                 });
                 _.each(results[1], function(project, index) {
+                    if(_.indexOf(allProjectIds, project.id) >=0) {
+                        return;
+                        // Thats means he has got his own project shared via some team
+                        // Duplicate
+                    }
                     project.ownership = 'WRITE';
                     allProjects.push(project);
                 });
                 _.each(results[2], function(project, index) {
+                    if(_.indexOf(allProjectIds, project.id) >=0) {
+                        return;
+                        // Thats means he has got his own project shared via some team
+                        // Duplicate
+                    }
                     project.ownership = 'VIEW';
                     allProjects.push(project);
                 });
