@@ -424,7 +424,7 @@ var projectService = {
             }
         })
         .then(function(data) {
-            response.status(200).json({"id": request.params.projectid});
+            response.status(200).json({"id": request.params.teamid});
         })
         .catch(function(err) {
             logger.error(err);
