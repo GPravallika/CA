@@ -120,7 +120,7 @@ var projectService = {
                         // Thats means he has got his own project shared via some team
                         // Duplicate
                     }
-                    project.ownership = 'VIEW';
+                    project.ownership = 'READ';
                     allProjects.push(project);
                 });
                 response.status(200).json(allProjects);
@@ -136,7 +136,10 @@ var projectService = {
     'get': function(request, response, next) {
 
         var proj = {},
-            allProjectIds = [],
+            access = 'NONE',
+            allProjectsIownIds = [],
+            allProjectsIcanEditIds = [],
+            allProjectsIcanViewIds = [],
             promiseResolutions = [];
 
         promiseResolutions.push(auth.myProjectsAsync(request.user.id));
@@ -146,23 +149,30 @@ var projectService = {
         promises.all(promiseResolutions)
             .then(function(results) {
                 _.each(results[0], function(project, index) {
-                    allProjectIds.push(project.id.toString());
+                    allProjectsIownIds.push(project.id.toString());
                 });
                 _.each(results[1], function(project, index) {
-                    allProjectIds.push(project.id.toString());
+                    allProjectsIcanEditIds.push(project.id.toString());
                 });
                 _.each(results[2], function(project, index) {
-                    allProjectIds.push(project.id.toString());
+                    allProjectsIcanViewIds.push(project.id.toString());
                 });
-
-                if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
-                    throw new Error("User " + request.user.id + " does not have access to project " + request.params.id);
+                if(_.indexOf(allProjectsIownIds, request.params.id) >=0 ) {
+                    access = 'OWN';
+                } else if(_.indexOf(allProjectsIcanEditIds, request.params.id) >= 0 ) {
+                    access = 'WRITE';
+                } else if(_.indexOf(allProjectsIcanViewIds, request.params.id) >= 0 ) {
+                    access = 'READ';
                 } else {
-                    return model.readAsync(request.params.id);
+                    throw new Error("User " + request.user.id + " does not have access to project " + request.params.id);
                 }
+
+                return model.readAsync(request.params.id);
+
             })
             .then(function(data) {
                 proj = data;
+                proj.access = access;
                 return model.getAllTeamsAsync(request.params.id);
             })
             .then(function(teams) {
