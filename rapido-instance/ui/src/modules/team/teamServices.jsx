@@ -1,9 +1,10 @@
 import apiObj from '../utils/ApiServices'
 
-const ProjectApiCall = {
-  createProject(obj) {
+const TeamApiCall = {
+
+  createTeam(obj) {
     var token  = sessionStorage.getItem("token");
-      return fetch(apiObj.endPoint + 'project', { 
+      return fetch(apiObj.endPoint + 'team', { 
       method: 'POST', 
       headers: {
         'Content-Type': 'application/json',
@@ -13,34 +14,34 @@ const ProjectApiCall = {
     });
   },
 
-  addTeamToProject(team, projectId) {
-    var token  = sessionStorage.getItem("token");
-      return fetch(apiObj.endPoint + 'project/' + projectId + '/team', { 
-      method: 'POST', 
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(team)
-    });
-  },
-
-  updateTeamToProject(team, projectId) {
-    var token  = sessionStorage.getItem("token");
-      return fetch(apiObj.endPoint + 'project/' + projectId + '/team/' + team.id, { 
-      method: 'PUT', 
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(team)
-    });
-  },
-
-  deleteTeamFromProject(team, projectId) {
+  getTeams() {
     var token  = sessionStorage.getItem("token");
     
-    return fetch(apiObj.endPoint + 'project/' + projectId + '/team/' + team.id, { 
+    return fetch(apiObj.endPoint + 'team', { 
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  },
+
+  getTeam(teamId) {
+    var token  = sessionStorage.getItem("token");
+    
+    return fetch(apiObj.endPoint + 'team/'+ teamId, { 
+      method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  },
+
+  deleteTeam(teamId) {
+    var token  = sessionStorage.getItem("token");
+    
+    return fetch(apiObj.endPoint + 'team/'+ teamId, { 
       method: 'DELETE', 
       headers: {
         'Content-Type': 'application/json',
@@ -49,40 +50,51 @@ const ProjectApiCall = {
     });
   },
 
-  updateProject(obj) {
+  searchMember(searchQuery) {
     var token  = sessionStorage.getItem("token");
-    return fetch(apiObj.endPoint + 'project/'+obj.id, { 
-      method: 'PUT', 
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(obj)
-    });
-  },
-
-  updateProjectHeaders(obj) {
-    var token  = sessionStorage.getItem("token");
-    return fetch(apiObj.endPoint + 'projects/updateproject', { 
-      method: 'PUT', 
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(obj)
-    });
-  },
-
-  getProjectDetails(pId) {
-    var token  = sessionStorage.getItem("token");
-    return fetch(apiObj.endPoint + 'project/'+pId, { 
+    
+    return fetch(apiObj.endPoint + 'user?filter='+ searchQuery, { 
       method: 'GET', 
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       }
     });
-  } 
+  },
+
+  addTeamMember(teamId, member) {
+    var token  = sessionStorage.getItem("token");
+      return fetch(apiObj.endPoint + 'team/'+ teamId + '/member', { 
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(member)
+    });
+  },
+  editTeamMember(teamId, member) {
+    var token  = sessionStorage.getItem("token");
+    return fetch(apiObj.endPoint + 'team/'+ teamId + '/member/' + member.id, { 
+      method: 'PUT', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(member)
+    });
+  },
+  deleteTeamMember(teamId, memberId) {
+    var token  = sessionStorage.getItem("token");
+    
+    return fetch(apiObj.endPoint + 'team/'+ teamId + '/member/' + memberId, { 
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  },
 }
 
-export default ProjectApiCall;
+export default TeamApiCall;

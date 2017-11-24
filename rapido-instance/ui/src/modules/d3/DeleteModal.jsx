@@ -38,7 +38,7 @@ class Modal extends React.Component {
       <div style={backdropStyle}>
         <div className="modal col-md-12 delete-modal" style={modalStyle}>
           <h4 className="text-center delete-message-label">
-            Are you sure you want to delete this sketch project?
+            {this.props.modalText}
           </h4>
           <div className="form-group pull-right">
             <button className="btn btn-default cancel-button" onClick={this.props.onClose}>

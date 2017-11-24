@@ -180,7 +180,7 @@ export default class extends React.Component{
           <CardBlock>{row.description}</CardBlock>
           <CustomContent>
             <Button onClick={this.navigateToDetails.bind(this,{row})}>Edit</Button>
-            <Button className="sketchDeleteButton" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+            <Button className="cardButtonSepMargin" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
           </CustomContent>
         </Card>
       );
@@ -202,7 +202,8 @@ export default class extends React.Component{
         </cardLayout>
         <DeleteModal show={this.state.isOpen}
           onClose={this.toggleModal.bind(this)}
-          onConfirm={this.deleteSketch.bind(this)}>
+          onConfirm={this.deleteSketch.bind(this)}
+          modalText="Are you sure you want to delete this sketch project?">
         </DeleteModal>
       </div>
     )

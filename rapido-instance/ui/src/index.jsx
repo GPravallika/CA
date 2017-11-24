@@ -14,6 +14,9 @@ import ResetPassword from './modules/register/ResetPasswordComponent'
 import MailVerification from './modules/register/MailVerificationComponent'
 import Sketches from './modules/sketches/SketchesComponent'
 import Profile from './modules/profile'
+import ShareProject from './modules/shareProject'
+import Teams from './modules/team/teams'
+import TeamDetails from './modules/team/teamDetails'
 import AuthComponent from './modules/login/AuthComponent'
 import RouteNotFoundComponent from './modules/404Component'
 import { Router, Route, browserHistory,IndexRoute, Redirect } from 'react-router'
@@ -38,10 +41,13 @@ render(<Router history={browserHistory}>
     <Route path="/mailVerification" component={MailVerification} />
     <Route path="/sketches" component={Sketches} onEnter={checkSession}/>
     <Route path="/profile" component={Profile} onEnter={checkSession}/>
+    <Route path="/teams" component={Teams} onEnter={checkSession}/>
     <Route path="/nodes" onEnter={checkSession}>
       <Route path="/nodes/add" component={AddSketch}></Route>
       <Route path="/nodes/edit" component={CRUDSketch}></Route>
     </Route>
+    <Route path="/team" component={TeamDetails} onEnter={checkSession}/>
+    <Route path="/share" component={ShareProject} onEnter={checkSession}></Route>
     <Route path="/vocabulary" component={VocabEditor} onEnter={checkSession}></Route>
     <Route path="/export" component={Export} onEnter={checkSession}></Route>
     <Route path="/404" component={RouteNotFoundComponent}></Route>

@@ -3,6 +3,7 @@ import AlertContainer from 'react-alert'
 import RegistrationService from './register/RegistrationServices'
 import PasswordConfig from './passwordConfig.js'
 import {showAlert, AlertOptions} from './utils/AlertActions'
+import { Link } from 'react-router'
 
 export default class extends React.Component{
 
@@ -176,8 +177,13 @@ export default class extends React.Component{
     return(
       <div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
+      <div className="tabsContainer tabsProfilePage">
+        <ul className="tabs">
+          <li className={this.props.location.pathname === '/profile' ? 'tab active-tab': 'tab'}><Link to="/profile">Profile</Link></li>
+          <li className={this.props.location.pathname === '/teams' ? 'tab active-tab': 'tab'}><Link to="/teams">Teams</Link></li>
+        </ul>
+      </div>
         <div className="col-md-12">
-          <span className="profile-header-text">Profile Details</span>
           <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
             <div className="form-group">
               <input className="form-control"
