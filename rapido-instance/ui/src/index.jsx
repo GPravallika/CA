@@ -14,6 +14,7 @@ import ResetPassword from './modules/register/ResetPasswordComponent'
 import MailVerification from './modules/register/MailVerificationComponent'
 import Sketches from './modules/sketches/SketchesComponent'
 import Profile from './modules/profile'
+import ShareProject from './modules/shareProject'
 import Teams from './modules/team/teams'
 import TeamDetails from './modules/team/teamDetails'
 import AuthComponent from './modules/login/AuthComponent'
@@ -46,6 +47,7 @@ render(<Router history={browserHistory}>
       <Route path="/nodes/edit" component={CRUDSketch}></Route>
     </Route>
     <Route path="/team" component={TeamDetails} onEnter={checkSession}/>
+    <Route path="/share" component={ShareProject} onEnter={checkSession}></Route>
     <Route path="/vocabulary" component={VocabEditor} onEnter={checkSession}></Route>
     <Route path="/export" component={Export} onEnter={checkSession}></Route>
     <Route path="/404" component={RouteNotFoundComponent}></Route>

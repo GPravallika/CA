@@ -13,6 +13,42 @@ const ProjectApiCall = {
     });
   },
 
+  addTeamToProject(team, projectId) {
+    var token  = sessionStorage.getItem("token");
+      return fetch(apiObj.endPoint + 'project/' + projectId + '/team', { 
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(team)
+    });
+  },
+
+  updateTeamToProject(team, projectId) {
+    var token  = sessionStorage.getItem("token");
+      return fetch(apiObj.endPoint + 'project/' + projectId + '/team/' + team.id, { 
+      method: 'PUT', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(team)
+    });
+  },
+
+  deleteTeamFromProject(team, projectId) {
+    var token  = sessionStorage.getItem("token");
+    
+    return fetch(apiObj.endPoint + 'project/' + projectId + '/team/' + team.id, { 
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  },
+
   updateProject(obj) {
     var token  = sessionStorage.getItem("token");
     return fetch(apiObj.endPoint + 'project/'+obj.id, { 

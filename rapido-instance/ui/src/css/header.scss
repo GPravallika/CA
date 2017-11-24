@@ -156,11 +156,11 @@ a.header-logo-section {
     margin-right: 20px;
 }
 
-.addMembersList{
+.addMembersList, .projectTeamsList{
   display: inline-block;
   width: 100%;
   margin: 10px 0;
-  .memberRow {
+  .memberRow, .projectTeamRow {
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
     border-top: 1px solid #ccc;

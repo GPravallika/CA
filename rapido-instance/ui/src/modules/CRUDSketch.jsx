@@ -250,7 +250,6 @@ export default class extends React.Component{
     }
 
 
-
     return (<div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
       <div className="titleContainer sketchPage">
@@ -260,6 +259,7 @@ export default class extends React.Component{
         <ul className="tabs">
           <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
           <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
+          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">SHARE</Link></li>
           <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>
         </ul>
       </div>
