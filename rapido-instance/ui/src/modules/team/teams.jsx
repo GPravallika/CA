@@ -6,7 +6,7 @@ import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
 import Button from 'mineral-ui/Button';
 import { createStyledComponent } from 'mineral-ui/styles';
 import teamService from './teamServices'
-import AddTeamModal from './AddTeamModal';
+import AddTeamModal from './addTeamModal';
 import DeleteModal from '../d3/DeleteModal';
 
 export default class extends React.Component{
