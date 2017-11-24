@@ -178,6 +178,10 @@ a.header-logo-section {
   }
 }
 
+.sketchProjectDisabled {
+  pointer-events: none;
+}
+
 .addMembersModalCloseBtn {
     position: absolute;
     bottom: 25px;

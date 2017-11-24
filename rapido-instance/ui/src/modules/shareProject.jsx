@@ -19,7 +19,10 @@ export default class extends React.Component{
       projectDetailsData: {} ,
       teamList: [],
       selectedTeamId: "",
-      selectedTeamAccess: ""
+      selectedTeamAccess: "",
+      projectName: "",
+      projectDesc: "",
+      projectId: ""
     };
     this.alertOptions = AlertOptions;
     this.shareTeam = this.shareTeam.bind(this);
@@ -43,6 +46,11 @@ export default class extends React.Component{
         this.setState({
           projectDetailsData: responseData
         });
+        this.setState({
+          projectName: responseData["name"],
+          projectDesc: responseData["description"],
+          projectId: responseData["id"]
+        })
       } else {
         showAlert(this, (responseData.message) ? responseData.message : "Error occured");
         if(prjSrvGetPrjDetRes.status == 401) {
@@ -96,7 +104,7 @@ export default class extends React.Component{
       "access": event.target.parentElement.children[3].value
     }
     let prjSrvUpdTeamRes = null;
-    ProjectService.updateTeamToProject(team,this.state.projectDetailsData.id)
+    ProjectService.updateTeamToProject(team,this.state.projectId)
     .then((response) => {
       prjSrvUpdTeamRes = response.clone();
       return response.json();
@@ -120,7 +128,7 @@ export default class extends React.Component{
   deleteTeam(event, team) {
     team = team.team;
     let prjSrvDelTeamRes = null;
-    ProjectService.deleteTeamFromProject(team,this.state.projectDetailsData.id)
+    ProjectService.deleteTeamFromProject(team,this.state.projectId)
     .then((response) => {
       prjSrvDelTeamRes = response.clone();
       return response.json();
@@ -155,7 +163,7 @@ export default class extends React.Component{
       "access": this.state.selectedTeamAccess
     }
     let prjSrvAddTeamRes = null;
-    ProjectService.addTeamToProject(team,this.state.projectDetailsData.id)
+    ProjectService.addTeamToProject(team,this.state.projectId)
     .then((response) => {
       prjSrvAddTeamRes = response.clone();
       return response.json();
@@ -166,6 +174,7 @@ export default class extends React.Component{
         var seletedTeamFromList = this.state.teamList.filter(function(teamObj) {
             return teamObj.id == team.id;
         });
+        seletedTeamFromList[0]["access"] = team.access;
         tempTeamList.push(seletedTeamFromList[0]);
         this.setState({
           projectDetailsData: {
@@ -188,11 +197,9 @@ export default class extends React.Component{
   /* Render Method */
   render() {
 
-    var projectDetailsData = this.state.projectDetailsData;
-
-    var projectHeader = (projectDetailsData) ? <div>
-      <h2>{projectDetailsData["name"]}</h2>
-      <h3>{projectDetailsData["description"]}</h3>
+    var projectHeader = (this.state.projectName != "" && this.state.projectDesc != "") ? <div>
+      <h2>{this.state.projectName}</h2>
+      <h3>{this.state.projectDesc}</h3>
       </div> : null;
 
     var allTeamOptions = this.state.teamList.map(function (team) {
