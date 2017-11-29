@@ -26,7 +26,7 @@ global.import_utils = function(name) {
  * Other global declarations
  */
 
-global.configurations = import_utils('configLoader.js')();
+global.configurations = import_utils('configurations.js')();
 
 /*
  * Load the configurations and other
@@ -107,5 +107,6 @@ server.use((req, res) => {
 
 server.listen(configurations['port'], function() {
     logger.info('Server started in', configurations['env'], 'mode.');
+    logger.info('Database in use', configurations['database'].connection.host);
     logger.info('Listening on ', configurations['port']);
 });

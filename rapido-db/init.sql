@@ -1,6 +1,3 @@
-alter user rapidoadmin with encrypted password 'rapidopass';
-GRANT ALL PRIVILEGES ON DATABASE rapido TO rapidoadmin;
-
 -- Create sequence for user.
 Create sequence users_id_seq;
 
@@ -100,3 +97,11 @@ CREATE TABLE public.team_project
     projectid bigint,
     access PROJECT_ACCESS
 ) WITHOUT OIDS;
+
+
+-- Grants commands at the last to ensure the
+
+alter user rapidoadmin with encrypted password 'rapidopass';
+GRANT ALL PRIVILEGES ON DATABASE rapido TO rapidoadmin;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO rapidoadmin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO rapidoadmin;
