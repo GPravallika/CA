@@ -249,6 +249,11 @@ export function createSketch(component, savedVocabulary, ProjectService, browser
         sessionStorage.removeItem('vocabularyInfo');
         sessionStorage.removeItem('projectInfo');
         sessionStorage.setItem('sketchId',responseData.id);
+        sessionStorage.setItem('selectedSketch',JSON.stringify({
+          "name": projectData.name,
+          "description": projectData.description,
+          "id": responseData.id
+        }))
         browserHistory.push('/vocabulary');
       } else {
         component.showAlert((responseData.message) ? responseData.message : "Error occured");
