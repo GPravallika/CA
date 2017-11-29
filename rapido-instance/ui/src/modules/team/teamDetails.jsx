@@ -170,7 +170,6 @@ export default class extends React.Component{
       return (
         <Card key={member.id}>
           <CardTitle>{member.email}</CardTitle>
-          <CardBlock>{member.id}</CardBlock>
           <CustomContent>
             <select className="access-dropdown" value={member.access} onChange={(e) => this.handleChange(e, {member})}>
               <option value="OWNER">Owner</option>
@@ -194,7 +193,7 @@ export default class extends React.Component{
         </ul>
       </div>
       <div className="col-md-12">
-        <span className={"selected-team"}>{selectedTeam.name} , {selectedTeam.id}</span>
+        <span className={"selected-team"}>{selectedTeam.name}</span>
         <Button className="pull-right" onClick={this.addMemberToggleModal.bind(this)}>+ ADD MEMBER</Button>
         <cardLayout className="cardLayout">
           {members}
