@@ -139,15 +139,17 @@ export default class extends React.Component{
   /* Render Method */
   render() {
     let exportComponent;
-    if(this.state && this.state.apiData ) {
-      var projectHeader = (this.state.projectDetailsData) ? <div>
-      <h2>{this.state.projectDetailsData["name"]}</h2>
-      <h3>{this.state.projectDetailsData["description"]}</h3>
+    var selectedSketch = JSON.parse(sessionStorage.getItem('selectedSketch'));
+    var projectHeader = (selectedSketch) ? <div>
+      <h2>{selectedSketch["name"]}</h2>
+      <h3>{selectedSketch["description"]}</h3>
       </div> : null;
+
+    if(this.state && this.state.apiData ) {
       exportComponent = 
         <div>
           <div className="col-md-12 download-option">
-            <div className="col-md-2 col-md-offset-9">
+            <div className="col-md-2 col-md-offset-8">
               <Select
                 name="form-field-name"
                 value={this.state.exportType}
@@ -156,7 +158,7 @@ export default class extends React.Component{
                 onChange={this.changeExportType.bind(this)}
               />
               </div>
-            <div className="col-md-1">
+            <div className="col-md-2">
               <button onClick={ this.handleDownload } className="btn btn-default">Download JSON</button>
             </div>
           </div>
@@ -194,7 +196,7 @@ export default class extends React.Component{
         <ul className="tabs">
           <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
           <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
-          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">SHARE</Link></li>
+          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">TEAMS</Link></li>
           <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>
         </ul>
       </div>

@@ -157,7 +157,8 @@ export default class extends React.Component{
     });
   }
 
-  shareTeam() {
+  shareTeam(e) {
+    e.preventDefault();
     let team = {
       "id": this.state.selectedTeamId,
       "access": this.state.selectedTeamAccess
@@ -197,9 +198,11 @@ export default class extends React.Component{
   /* Render Method */
   render() {
 
-    var projectHeader = (this.state.projectName != "" && this.state.projectDesc != "") ? <div>
-      <h2>{this.state.projectName}</h2>
-      <h3>{this.state.projectDesc}</h3>
+    var selectedSketch = JSON.parse(sessionStorage.getItem('selectedSketch'));
+
+    var projectHeader = (selectedSketch) ? <div>
+      <h2>{selectedSketch["name"]}</h2>
+      <h3>{selectedSketch["description"]}</h3>
       </div> : null;
 
     var allTeamOptions = this.state.teamList.map(function (team) {
@@ -207,6 +210,8 @@ export default class extends React.Component{
         <option value={team.id} key={team.id}>{team.name}</option>
       );
     }, this);
+
+    let loadedComponent;
 
     if(this.state.projectDetailsData.teams) {
 
@@ -222,8 +227,35 @@ export default class extends React.Component{
           </select>
         </div>
       );
-    }, this); 
+    }, this);
 
+    loadedComponent = <div>
+      <div className="col-md-3">
+          <form className="col-md-12 addTeamToPrjForm" noValidate>
+            <h3>Add Team</h3>
+            <div className="form-group">
+              <select className="form-control" defaultValue={this.state.selectedTeamId} name="selectedTeamId" onChange={this.handleTeamDropDownChange}>
+              <option value="">Select Team</option>
+              {allTeamOptions}
+              </select>
+            </div>
+            <div className="form-group">
+              <select className="form-control" defaultValue={this.state.selectedTeamAccess} onChange={this.handleTeamAccessDropDownChange}>
+                <option value="READ">READ</option>
+                <option value="WRITE">WRITE</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <button className="form-control" onClick={this.shareTeam}>SHARE</button>
+            </div>
+          </form>
+      </div>
+      <div className="col-md-9 projectTeamsList">
+        {projectTeams}
+      </div>
+    </div>
+    } else {
+      loadedComponent =  <div className="text-center loading-project-details">Loading...</div>
     }
 
     return (<div>
@@ -235,31 +267,12 @@ export default class extends React.Component{
         <ul className="tabs">
           <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
           <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
-          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">SHARE</Link></li>
+          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">TEAMS</Link></li>
           <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>
         </ul>
       </div>
       <div className="col-md-12 sketch-list-wrapper">
-        <div>
-          <div className="col-md-4">
-            <select defaultValue={this.state.selectedTeamId} name="selectedTeamId" onChange={this.handleTeamDropDownChange}>
-              <option value="">Select Team</option>
-              {allTeamOptions}
-            </select>
-          </div>
-          <div className="col-md-4">
-            <select defaultValue={this.state.selectedTeamAccess} onChange={this.handleTeamAccessDropDownChange}>
-              <option value="READ">READ</option>
-              <option value="WRITE">WRITE</option>
-            </select>
-          </div>
-          <div className="col-md-4">
-            <button onClick={this.shareTeam}>SHARE</button>
-          </div>
-        </div>
-        <div className="projectTeamsList">
-          {projectTeams}
-        </div>
+        {loadedComponent}
       </div>
       </div>)
   }

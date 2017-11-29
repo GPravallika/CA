@@ -23,6 +23,7 @@ export default class extends React.Component{
 
     this.state = {
       searchColumn: 'all',
+      selectedSketch: {},
       query: {},
       columns: [
         {
@@ -63,28 +64,8 @@ export default class extends React.Component{
 
   /* Component Initialisation */
   componentDidMount() {
-    let sketchId = sessionStorage.getItem('sketchId');
-    let prjSrvGetPrjDet = null;
-    ProjectService.getProjectDetails(sketchId)
-    .then((response) => {
-      prjSrvGetPrjDet = response.clone();
-      return response.json();
-    })
-    .then((responseData) => {
-      if(prjSrvGetPrjDet.ok) {
-        this.setState({
-          projectDetailsData: responseData
-        });
-      } else {
-        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
-        if(prjSrvGetPrjDet.status == 401) {
-          sessionStorage.removeItem('user')
-          sessionStorage.removeItem('token')
-        }
-      }
-    })
-    .catch((error) => {
-      console.error(error);
+    this.setState({
+        selectedSketch: JSON.parse(sessionStorage.getItem('selectedSketch'))
     });
   }
 
@@ -128,15 +109,15 @@ export default class extends React.Component{
   render() {
     let addOption, loadedComponent;
 
-    if(this.state && this.state.projectDetailsData) {
+    if(this.state && this.state.selectedSketch) {
 
       const { searchColumn, columns, vocabularyData, query } = this.state;
       const resolvedColumns = resolve.columnChildren({ columns });
 
       /* Project Details Section */
-      var projectHeader = (this.state.projectDetailsData) ? <div>
-        <h2>{this.state.projectDetailsData["name"]}</h2>
-        <h3>{this.state.projectDetailsData["description"]}</h3>
+      var projectHeader = (this.state.selectedSketch) ? <div>
+        <h2>{this.state.selectedSketch["name"]}</h2>
+        <h3>{this.state.selectedSketch["description"]}</h3>
         </div> : null;
 
       
@@ -226,7 +207,7 @@ export default class extends React.Component{
           <ul className="tabs">
             <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
             <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
-            <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">SHARE</Link></li>
+            <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">TEAMS</Link></li>
             <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>
           </ul>
         </div>

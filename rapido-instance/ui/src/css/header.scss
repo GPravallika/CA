@@ -156,36 +156,74 @@ a.header-logo-section {
     margin-right: 20px;
 }
 
-.addMembersList, .projectTeamsList{
+.addMembersList {
   display: inline-block;
   width: 100%;
   margin: 10px 0;
+}
+
+.projectTeamsList {
+  margin-top: 40px;
+}
+
+.addMembersList, .projectTeamsList{
   .memberRow, .projectTeamRow {
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
+    padding: 10px 15px;
     border-top: 1px solid #ccc;
     button {
       float: right;
       background: none;
       padding: 2px 10px;
+      font-size: 14px;
+      margin: 0 10px;
+      position: relative;
+      top: -4px;
     }
     select {
       float: right;
       background: none;
       height: 24px;
       margin-right: 20px;
+      font-size: 12PX;
+      POSITION: RELATIVE;
+      TOP: -5PX;
     }
   }
+}
+
+.memberRow:last-child, .projectTeamRow:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+
+.memberRow:nth-child(even), .projectTeamRow:nth-child(even) {
+  background: white;
 }
 
 .sketchProjectDisabled {
   pointer-events: none;
 }
 
+.download-option {
+  margin: 20px 0px;
+}
+
 .addMembersModalCloseBtn {
-    position: absolute;
-    bottom: 25px;
-    right: 25px;
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+}
+
+.addTeamToPrjForm {
+  border-right: 3px solid #ccc;
+  height: 100%;
+  margin-bottom: 0;
+  padding-right: 40px;
+  padding-top: 10px;
+  h3 {
+    font-size: 18px;
+    text-align:center;
+  }
 }
 
 .selected-team {

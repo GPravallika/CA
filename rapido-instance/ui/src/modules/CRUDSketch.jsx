@@ -177,14 +177,17 @@ export default class extends React.Component{
 
   /* Render Method */
   render() {
-    var projectHeader, projectNodeDetails, saveSketch, createProjectOption, loadedComponent
-    if(this.state) {
 
-      /* Project Details Section */
-      projectHeader = (this.state.projectDetails) ? <div>
-        <h2>{this.state.projectDetails["projectName"]}</h2>
-        <h3>{this.state.projectDetails["projectDesc"]}</h3>
-        </div> : null;
+    var selectedSketch = JSON.parse(sessionStorage.getItem('selectedSketch'));
+
+    /* Project Details Section */
+    var projectHeader = (selectedSketch) ? <div>
+      <h2>{selectedSketch["name"]}</h2>
+      <h3>{selectedSketch["description"]}</h3>
+      </div> : null;
+
+    var projectNodeDetails, saveSketch, createProjectOption, loadedComponent
+    if(this.state) {
       
       projectNodeDetails = <div className="col-xs-12 node-details-section">
           <NodeDetails nodeData={this.state.treeEditDetails} updatedData={(val,mode,data)=>updateTreeData(val, mode, this)}/>
@@ -259,7 +262,7 @@ export default class extends React.Component{
         <ul className="tabs">
           <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
           <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
-          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">SHARE</Link></li>
+          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">TEAMS</Link></li>
           <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>
         </ul>
       </div>
