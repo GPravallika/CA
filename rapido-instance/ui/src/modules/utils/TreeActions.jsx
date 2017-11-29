@@ -195,6 +195,7 @@ export function loadProjectDetails (ProjectService, component, sketchId) {
             projectDesc: responseData.description,
             projectId: responseData.id,
             createdBy: responseData.createdby,
+            access: responseData.access
           },
           isProjectEmpty: false,
           inListDetails: true,
