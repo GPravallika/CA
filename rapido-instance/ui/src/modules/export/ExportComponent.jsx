@@ -72,6 +72,13 @@ export default class extends React.Component{
               "downloadType": "swagger"
             });
           }
+          if(download) {
+            var a = document.createElement('a');
+            a.href = 'data:attachment/json,' + encodeURI(JSON.stringify(responseData, null, 2));
+            a.target = '_blank';
+            a.download = 'swagger.json';
+            a.click();
+          }
         } else {
           showAlert(this, (responseData.message) ? responseData.message : "Error occured");
           if(expSrvgetSwaggerRes.status == 401) {
@@ -101,6 +108,13 @@ export default class extends React.Component{
             "apiData" : JSON.stringify(responseData, null, 2),
             "downloadType": "postman"
           });
+        }
+        if(download) {
+          var a = document.createElement('a');
+          a.href = 'data:attachment/json,' + encodeURI(JSON.stringify(responseData, null, 2));
+          a.target = '_blank';
+          a.download = 'postman.json';
+          a.click();
         }
       } else {
         showAlert(this, (responseData.message) ? responseData.message : "Error occured");
