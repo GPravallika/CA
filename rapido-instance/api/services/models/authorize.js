@@ -60,7 +60,7 @@ var model = {
         });
     },
     'projectsIcanEdit': (userid, callback) => {
-        db.executeAsync(queries.projectsIcanEdit, [userid])
+        db.executeAsync(queries.projectsIcanEdit, [userid, userid])
         .then(function(data) {
             logger.debug("Projects I can edit for", userid, "fetched.");
             return callback(null, data.rows);
@@ -71,7 +71,7 @@ var model = {
         });
     },
     'projectsIcanView': (userid, callback) => {
-        db.executeAsync(queries.projectsIcanView, [userid])
+        db.executeAsync(queries.projectsIcanView, [userid, userid])
         .then(function(data) {
             logger.debug("Projects I can view for", userid, "fetched.");
             return callback(null, data.rows);

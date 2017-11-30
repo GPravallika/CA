@@ -44,6 +44,6 @@ exports.auth = {
     "teamsImoderate": "select id, name, description from teams where id in (select teamid from user_team where access = 'ADMIN' and userid = ?)",
     "teamsIbelong": "select id, name, description from teams where id in (select teamid from user_team where access = 'MEMBER' and userid = ?)",
     "myProjects": "select id, name, description from projects where createdby=?",
-    "projectsIcanEdit": "select id, name, description from projects where id in (select projectid from team_project where access = 'WRITE' and teamid in (select teamid from user_team where userid = ?))",
-    "projectsIcanView": "select id, name, description from projects where id in (select projectid from team_project where access = 'READ' and teamid in (select teamid from user_team where userid = ?))"
+    "projectsIcanEdit": "select id, name, description from projects where id in (select projectid from team_project where access = 'WRITE' and teamid in ((select teamid from user_team where userid = ?) UNION (select id from teams where createdby= ?)))",
+    "projectsIcanView": "select id, name, description from projects where id in (select projectid from team_project where access = 'READ' and teamid in ((select teamid from user_team where userid = ?) UNION (select id from teams where createdby= ?)))"
 };

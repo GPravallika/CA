@@ -9,6 +9,7 @@
 var logger = import_utils('logger.js').getLoggerObject(),
     promises = require('bluebird'),
     db = promises.promisifyAll(import_utils('db.js')()),
+    _ = require('lodash'),
     queries = import_templates("sql.js")['team'];
 
 
@@ -96,12 +97,24 @@ var model = {
     },
 
     'addMember': function(team, user, callback) {
-        db.executeAsync(queries.addMember, [user.id, team.id, user.access || 'MEMBER'])
+        db.executeAsync(queries.getAllMembers, [team.id])
+            .then(function(data) {
+                _.each(data.rows, function(memeber, index) {
+                    if(memeber.id == user.id) {
+                        throw {'code': 201};
+                    }
+                })
+                return db.executeAsync(queries.addMember, [user.id, team.id, user.access || 'MEMBER']);
+            })
             .then(function(data) {
                 logger.debug("User", user.id, "added to team", team.id);
                 return callback(null, true);
             })
             .catch(function(err) {
+                if(err.code && err.code == 201) {
+                    callback(null, true);
+                    return;
+                }
                 logger.error("Error adding user to team", team.id, err.message);
                 callback(err);
             });

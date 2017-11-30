@@ -107,8 +107,11 @@ var teamService = {
 
     'get': function(request, response, next) {
 
-        var allTeams = [],
+        var allMyTeams = [],
+            allTeamsIamAdmin = [],
+            allTeamsIamMember = [],
             promiseResolutions = [],
+            access = 'NONE',
             team = {};
 
         promiseResolutions.push(auth.myTeamsAsync(request.user.id));
@@ -118,20 +121,27 @@ var teamService = {
         promises.all(promiseResolutions)
             .then(function(results) {
                 _.each(results[0], function(result, index) {
-                    allTeams.push(result.id.toString());
+                    allMyTeams.push(result.id.toString());
                 });
                 _.each(results[1], function(result, index) {
-                    allTeams.push(result.id.toString());
+                    allTeamsIamAdmin.push(result.id.toString());
                 });
                 _.each(results[2], function(result, index) {
-                    allTeams.push(result.id.toString());
+                    allTeamsIamMember.push(result.id.toString());
                 });
 
-                if(_.indexOf(allTeams, request.params.id ) < 0) {
-                    throw new Error("user " + request.user.id + " does not have access to team " + request.params.id);
+                if(_.indexOf(allMyTeams, request.params.id) >=0 ) {
+                    access = 'OWN';
+                } else if(_.indexOf(allTeamsIamAdmin, request.params.id) >= 0 ) {
+                    access = 'ADMIN';
+                } else if(_.indexOf(allTeamsIamMember, request.params.id) >= 0 ) {
+                    access = 'MEMBER';
                 } else {
-                    return model.readAsync(request.params.id);
+                    throw new Error("User " + request.user.id + " does not have access to team " + request.params.id);
                 }
+
+                return model.readAsync(request.params.id);
+
             })
             .then(function(result) {
                 team = result;
@@ -320,6 +330,7 @@ var teamService = {
 
         promiseResolutions.push(auth.myTeamsAsync(request.user.id));
         promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+        promiseResolutions.push(model.readAsync(request.params.teamid));
 
         promises.all(promiseResolutions)
             .then(function(results) {
@@ -332,6 +343,8 @@ var teamService = {
 
                 if(_.indexOf(allTeams, request.params.teamid ) < 0) {
                     throw new Error("user " + request.user.id + " does not have admin access to team " + request.params.teamid);
+                } else if (results[2].createdby == member.id) {
+                    throw new Error("Can not update owner of a team" + request.params.teamid);
                 } else {
                     return model.updateMemberAsync(team, member);
                 }
@@ -356,6 +369,8 @@ var teamService = {
 
         promiseResolutions.push(auth.myTeamsAsync(request.user.id));
         promiseResolutions.push(auth.teamsImoderateAsync(request.user.id));
+        promiseResolutions.push(model.readAsync(request.params.teamid));
+
 
         promises.all(promiseResolutions)
             .then(function(results) {
@@ -368,6 +383,8 @@ var teamService = {
 
                 if(_.indexOf(allTeams, request.params.teamid ) < 0) {
                     throw new Error("user " + request.user.id + " does not have admin access to team " + request.params.teamid);
+                } else if (results[2].createdby == memberid) {
+                    throw new Error("Can not remove owner of a team" + request.params.teamid);
                 } else {
                     return model.removeMemberAsync(teamid, memberid);
                 }
