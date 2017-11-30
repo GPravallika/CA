@@ -145,6 +145,7 @@ var teamService = {
             })
             .then(function(result) {
                 team = result;
+                team.access = access;
                 promiseResolutions = [];
 
                 promiseResolutions.push(model.getAllMembersAsync(team.id));
