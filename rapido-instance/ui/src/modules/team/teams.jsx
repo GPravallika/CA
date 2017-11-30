@@ -130,8 +130,14 @@ export default class extends React.Component{
           <CardTitle>{team.name}</CardTitle>
           <CardBlock>{team.description}</CardBlock>
           <CustomContent>
-            <Button onClick={this.teamDetails.bind(this,{team})}>Edit</Button>
-            <Button className="cardButtonSepMargin" onClick={this.deleteTeamToggleModal.bind(this,{team})}>Delete</Button>
+            <Button onClick={this.teamDetails.bind(this,{team})}>
+              {team.ownership == 'MEMBER' ? 'View' : 'Edit'}
+            </Button>
+            {team.ownership != 'MEMBER' ? (
+              <Button className="cardButtonSepMargin" onClick={this.deleteTeamToggleModal.bind(this,{team})}>Delete</Button>
+            ) : (
+              null
+            )}
           </CustomContent>
         </Card>
       );

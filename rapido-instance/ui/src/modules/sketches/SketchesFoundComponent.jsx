@@ -181,7 +181,11 @@ export default class extends React.Component{
           <CardBlock>{row.description}</CardBlock>
           <CustomContent>
             <Button onClick={this.navigateToDetails.bind(this,{row})}>{(row.ownership == 'READ') ? "View" : "Edit"}</Button>
-            <Button className="cardButtonSepMargin" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+            {row.ownership != 'READ' ? (
+              <Button className="cardButtonSepMargin" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+            ) : (
+              null
+            )}
           </CustomContent>
         </Card>
       );

@@ -16,7 +16,8 @@ export default class extends React.Component{
       this.state = {
         addMemberModalIsOpen: false,
         deleteMemberModalIsOpen: false,
-        membersList: []
+        membersList: [],
+        teamAccessOnMember: ''
       };
       this.alertOptions = AlertOptions;
       this.addMemberSuccess = this.addMemberSuccess.bind(this);
@@ -36,6 +37,9 @@ export default class extends React.Component{
         this.setState({
           membersList: responseData.memebers
         });
+        this.setState({
+          teamAccessOnMember: responseData.access
+        })
       } else {
         showAlert(this, (responseData.message) ? responseData.message : "Error occured");
         if(teamSrvGetTeamRes.status == 401) {
@@ -170,18 +174,25 @@ export default class extends React.Component{
       return (
         <Card key={member.id}>
           <CardTitle>{member.email}</CardTitle>
-          <CustomContent>
-            <select className="access-dropdown" value={member.access} onChange={(e) => this.handleChange(e, {member})}>
-              <option value="OWNER">Owner</option>
-              <option value="MEMBER">Member</option>
-            </select>
-            <Button onClick={this.deleteMemberToggleModal.bind(this,{member})}>Delete</Button>
-          </CustomContent>
+          <CardBlock>{member.access}</CardBlock>
+          {this.state.teamAccessOnMember != 'MEMBER' ? (
+            <CustomContent>
+              <select className="access-dropdown" value={member.access} onChange={(e) => this.handleChange(e, {member})}>
+                <option value="OWNER">Owner</option>
+                <option value="MEMBER">Member</option>
+              </select>
+              <Button onClick={this.deleteMemberToggleModal.bind(this,{member})}>Delete</Button>
+            </CustomContent>
+          ) : (
+            null
+          )}
         </Card>
       );
     }, this);
 
     const selectedTeam =  JSON.parse(sessionStorage.getItem('team')).team;
+
+    const addMemberBtn = (this.state.teamAccessOnMember != "MEMBER") ? <Button className="pull-right" onClick={this.addMemberToggleModal.bind(this)}>+ ADD MEMBER</Button> : null;
 
     return(
       <div>
@@ -194,7 +205,7 @@ export default class extends React.Component{
       </div>
       <div className="col-md-12">
         <span className={"selected-team"}>{selectedTeam.name}</span>
-        <Button className="pull-right" onClick={this.addMemberToggleModal.bind(this)}>+ ADD MEMBER</Button>
+        {addMemberBtn}
         <cardLayout className="cardLayout">
           {members}
         </cardLayout>
