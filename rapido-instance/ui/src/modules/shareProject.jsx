@@ -229,7 +229,7 @@ export default class extends React.Component{
       );
     }, this);
 
-    loadedComponent = <div>
+    loadedComponent = <div className={"" + (selectedSketch["ownership"] == "READ" ? 'sketchProjectDisabled' : '')}>
       <div className="col-md-3">
           <form className="col-md-12 addTeamToPrjForm" noValidate>
             <h3>Add Team</h3>
