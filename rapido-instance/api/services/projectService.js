@@ -448,6 +448,9 @@ var projectService = {
                     var apiData = project.apidetails;
                     var swaggerObj = new exportJson();
                     var resultData = swaggerObj.createSwagger(apiData, request.protocol, request.get('host'));
+                    resultData.info.title = project.name;
+                    resultData.info.description project.description;
+                    
                     if (request.query.download == 'true') {
                         var fileName = project.name + "-swagger.json";
                         response.setHeader('Content-disposition', 'attachment; filename=' + fileName);
