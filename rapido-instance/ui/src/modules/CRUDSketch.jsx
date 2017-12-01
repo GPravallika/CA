@@ -38,15 +38,8 @@ export default class extends React.Component{
   componentWillMount() {
 
     let sketchId = sessionStorage.getItem('sketchId');
-    let vocabularyData;
-    let storedVocabulary = JSON.parse(sessionStorage.getItem('vocabularyInfo'));
-    if(storedVocabulary) {
-      vocabularyData = storedVocabulary;
-    } else {
-      vocabularyData = []
-    }
     if(sketchId === 'null') {
-      addEmptySketch(this, vocabularyData)
+      addEmptySketch(this)
     } else {
       loadProjectDetails(ProjectService, this, sketchId)
     }

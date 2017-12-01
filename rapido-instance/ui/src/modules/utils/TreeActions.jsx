@@ -129,7 +129,7 @@ export function updateProjectHeaders(data, mode, component) {
   }
 }
 
-export function addEmptySketch (component, vocabularyData) {
+export function addEmptySketch (component) {
   component.state = {
     parentWidth: 0,
     width: '100%',
@@ -158,7 +158,7 @@ export function addEmptySketch (component, vocabularyData) {
       rootNodeData: {},
       childNodeData: {},
       apiExportData: {},
-      vocabulary: vocabularyData
+      vocabulary: []
     },
     apidetails: {},
     exportAPI: {},
@@ -175,14 +175,12 @@ export function loadProjectDetails (ProjectService, component, sketchId) {
     })
     .then((responseData) => {
       if(prjSrvGetPrjDetRes.ok) {
-        let vocabularyData;
-        let storedVocabulary = JSON.parse(sessionStorage.getItem('vocabularyInfo'));
-        if(storedVocabulary) {
-          vocabularyData = storedVocabulary;
-        } else {
-          vocabularyData = responseData.vocabulary
-        }
         let updatedAPI = component.importSketchInfo(responseData.apidetails)
+        let tempVocabData = [];
+        responseData.vocabulary.map(function (vocab) {
+          tempVocabData.push({"name":vocab});
+        }, this);
+        console.log(tempVocabData);
         component.setState({
           parentWidth: 0,
           width: '100%',
@@ -207,14 +205,14 @@ export function loadProjectDetails (ProjectService, component, sketchId) {
             rootNodeData: {},
             childNodeData: {},
             apiExportData: responseData.apidetails,
-            vocabulary: responseData.vocabulary
+            vocabulary: tempVocabData
           },
           apidetails: updatedAPI,
-          vocabulary: vocabularyData,
+          vocabulary: tempVocabData,
           exportAPI: {},
           exportStatus: true
         })
-        sessionStorage.setItem('vocabularyInfo',JSON.stringify(vocabularyData))
+        sessionStorage.setItem('vocabularyInfo',JSON.stringify(tempVocabData))
       } else {
         component.showAlert(this, (responseData.message) ? responseData.message : "Error occured");
         if(prjSrvGetPrjDetRes.status == 401) {
