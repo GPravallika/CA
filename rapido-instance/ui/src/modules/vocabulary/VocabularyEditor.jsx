@@ -164,7 +164,7 @@ export default class extends React.Component{
         addOption = <input className="btn btn-default disabled" value="Add" type="button" />
       }
 
-      loadedComponent = <div className="vocabulary-wrapper">
+      loadedComponent = <div className={"vocabulary-wrapper " + (this.state.selectedSketch["ownership"] == "READ" ? 'sketchProjectDisabled' : '')}>
         <form className="col-md-12" noValidate>
           <div className="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
             <div className="col-md-10 col-sm-10">
