@@ -97,6 +97,7 @@ export default class extends React.Component{
   /* Method to handle sketch click */
   navigateToDetails(row) {
     sessionStorage.setItem('sketchId',row.row.id);
+    sessionStorage.setItem('selectedSketch',JSON.stringify(row.row));
     sessionStorage.setItem('sketchName',row.row.name);
     sessionStorage.removeItem('vocabularyInfo');
     browserHistory.push('/vocabulary');
@@ -179,8 +180,12 @@ export default class extends React.Component{
           <CardTitle>{row.name}</CardTitle>
           <CardBlock>{row.description}</CardBlock>
           <CustomContent>
-            <Button onClick={this.navigateToDetails.bind(this,{row})}>Edit</Button>
-            <Button className="cardButtonSepMargin" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+            <Button onClick={this.navigateToDetails.bind(this,{row})}>{(row.ownership == 'READ') ? "View" : "Edit"}</Button>
+            {row.ownership != 'READ' ? (
+              <Button className="cardButtonSepMargin" onClick={this.toggleModal.bind(this,{row})}>Delete</Button>
+            ) : (
+              null
+            )}
           </CustomContent>
         </Card>
       );
