@@ -16,7 +16,8 @@ export default class extends React.Component{
       this.state = {
         teamList: [],
         addTeamModalIsOpen: false,
-        deleteTeamModalIsOpen: false
+        deleteTeamModalIsOpen: false,
+        userObj: {}
       };
       this.alertOptions = AlertOptions;
       this.addTeamSuccess = this.addTeamSuccess.bind(this);
@@ -24,6 +25,11 @@ export default class extends React.Component{
   
   /* Component Initialisation */
   componentDidMount() {
+    let userObj = JSON.parse(sessionStorage.getItem('user'));
+    console.log(userObj);
+    this.setState({
+          userObj
+    });
     let teamSrvGetTeamsRes = null;
     teamService.getTeams()
     .then((response) => {
@@ -143,16 +149,24 @@ export default class extends React.Component{
       );
     }, this);
 
+    var userDetailsSection = <div className="mainSection">
+      <div className="nameSection">{this.state.userObj.firstname} {this.state.userObj.lastname}</div>
+      <div className="emailSection">{this.state.userObj.email}</div>
+    </div>
+
     return(
       <div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-      <div className="tabsContainer tabsProfilePage">
-        <ul className="tabs">
-          <li className={this.props.location.pathname === '/profile' ? 'tab active-tab': 'tab'}><Link to="/profile">Profile</Link></li>
-          <li className={this.props.location.pathname === '/teams' ? 'tab active-tab': 'tab'}><Link to="/teams">Teams</Link></li>
+      <div className="userDetailsSection">
+        {userDetailsSection}
+      </div>
+      <div className="tabsContainer teamsPageTabsSection">
+        <ul className="tabs teamsPageTabs">
+          <li className={this.props.location.pathname === '/profile' ? 'tab teamsPageTab active-tab': 'tab teamsPageTab'}><Link to="/profile">Profile</Link></li>
+          <li className={this.props.location.pathname === '/teams' ? 'tab teamsPageTab active-tab': 'tab teamsPageTab'}><Link to="/teams">Teams</Link></li>
         </ul>
       </div>
-      <div className="col-md-12">
+      <div className="col-md-12 teamsPageTabMainSection">
         <Button className="pull-right" onClick={this.addTeamToggleModal.bind(this)}>+ ADD TEAM</Button>
         <cardLayout className="cardLayout">
           {teamCards}

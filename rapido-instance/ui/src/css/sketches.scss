@@ -303,11 +303,10 @@
 }
 
 .tabs {
-  width: 100%;
+  list-style: none;
+  display: inline-block;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  list-style: none;
   .tab {
     float: left;
     margin-right: 30px;

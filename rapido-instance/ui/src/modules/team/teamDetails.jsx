@@ -194,17 +194,20 @@ export default class extends React.Component{
 
     const addMemberBtn = (this.state.teamAccessOnMember != "MEMBER") ? <Button className="pull-right" onClick={this.addMemberToggleModal.bind(this)}>+ ADD MEMBER</Button> : null;
 
+    console.log(selectedTeam);
+
+    var teamDetailsSection = <div className="mainSection">
+      <div className="nameSection">{selectedTeam.name}</div>
+      <div className="emailSection">{selectedTeam.description}</div>
+    </div>
+
     return(
       <div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-      <div className="tabsContainer tabsProfilePage">
-        <ul className="tabs">
-          <li className={this.props.location.pathname === '/profile' ? 'tab active-tab': 'tab'}><Link to="/profile">Profile</Link></li>
-          <li className={this.props.location.pathname === '/team' ? 'tab active-tab': 'tab'}><Link to="/teams">Teams</Link></li>
-        </ul>
+      <div className="teamDetailsSection">
+        {teamDetailsSection}
       </div>
-      <div className="col-md-12">
-        <span className={"selected-team"}>{selectedTeam.name}</span>
+      <div className="col-md-12 teamDetailsMainSection">
         {addMemberBtn}
         <cardLayout className="cardLayout">
           {members}

@@ -174,16 +174,24 @@ export default class extends React.Component{
     if (!this.props.fromDashboard) {
       creationLabel = <h3>Create an account</h3>
     }
+    var userDetailsSection = <div className="mainSection">
+      <div className="nameSection">{this.state.firstName} {this.state.lastName}</div>
+      <div className="emailSection">{this.state.email}</div>
+    </div>
+
     return(
       <div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-      <div className="tabsContainer tabsProfilePage">
-        <ul className="tabs">
-          <li className={this.props.location.pathname === '/profile' ? 'tab active-tab': 'tab'}><Link to="/profile">Profile</Link></li>
-          <li className={this.props.location.pathname === '/teams' ? 'tab active-tab': 'tab'}><Link to="/teams">Teams</Link></li>
+      <div className="userDetailsSection">
+        {userDetailsSection}
+      </div>
+      <div className="tabsContainer profilePageTabsSection">
+        <ul className="tabs profilePageTabs">
+          <li className={this.props.location.pathname === '/profile' ? 'tab profilePageTab active-tab': 'tab profilePageTab'}><Link to="/profile">Profile</Link></li>
+          <li className={this.props.location.pathname === '/teams' ? 'tab profilePageTab active-tab': 'tab profilePageTab'}><Link to="/teams">Teams</Link></li>
         </ul>
       </div>
-        <div className="col-md-12">
+        <div className="col-md-12 profilePageTabMainSection">
           <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
             <div className="form-group">
               <input className="form-control"

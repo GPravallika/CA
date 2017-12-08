@@ -141,9 +141,30 @@ a.header-logo-section {
   top: -100px;
 }
 
-.tabsProfilePage {
-  margin-top: 20px;
-  margin-bottom: 30px;
+.profilePageTabsSection, .teamsPageTabsSection {
+  margin: 0;
+  padding: 0 !important;
+  position: relative;
+  text-align: center;
+  background-color: #ebeff5;
+  border-bottom: 1px solid #d6dadc;
+}
+
+.profilePageTab, .teamsPageTab {
+  background: #d6dadc !important;
+  padding: 10px;
+  border: none !important;
+  position: relative;
+  top: 1px;
+  margin-right: 10px !important;
+}
+
+.profilePageTab.active-tab, .teamsPageTab.active-tab {
+  background: white !important;
+}
+
+.profilePageTabMainSection, .teamsPageTabMainSection, .teamDetailsMainSection {
+  margin-top: 30px;
 }
 
 .access-dropdown {
@@ -234,4 +255,20 @@ a.header-logo-section {
     padding-bottom: 3px;
     margin-bottom: 20px;
     display: inline-block;
+}
+
+.userDetailsSection, .teamDetailsSection {
+  background: #ebeff5;
+  margin-top: 10px;
+  .mainSection {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 25px;
+    position: relative;
+  }
+  .nameSection {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
 }
