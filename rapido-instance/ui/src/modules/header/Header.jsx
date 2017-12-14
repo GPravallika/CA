@@ -49,8 +49,13 @@ export default class extends React.Component{
   }
 
   /* Method to handle profile page */
-  handleEditProfile() {
+  handleProfileClick() {
     browserHistory.push('/profile');
+  }
+
+  /* Method to handle teams page */
+  handleTeamsClick() {
+    browserHistory.push('/teams');
   }
 
   /* Method to navigate to tree Node details */
@@ -137,8 +142,12 @@ export default class extends React.Component{
       {
         items: [
           {
-            text: 'Settings',
-            onClick: event => { this.handleEditProfile(); }
+            text: 'Profile',
+            onClick: event => { this.handleProfileClick(); }
+          },
+          {
+            text: 'Teams',
+            onClick: event => { this.handleTeamsClick(); }
           },
           {
             text: 'Logout',
