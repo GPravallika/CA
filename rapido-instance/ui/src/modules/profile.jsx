@@ -26,9 +26,9 @@ export default class extends React.Component{
 
   /* Component Initialisation */
   componentDidMount() {
-    this.refs["password"].pattern = this.state.passwordConfig.passwordFields.pattern;
-    this.refs["password"].minLength = this.state.passwordConfig.passwordFields.minLength;
-    this.refs["password"].maxLength = this.state.passwordConfig.passwordFields.maxLength;
+    //this.refs["password"].pattern = this.state.passwordConfig.passwordFields.pattern;
+    //this.refs["password"].minLength = this.state.passwordConfig.passwordFields.minLength;
+    //this.refs["password"].maxLength = this.state.passwordConfig.passwordFields.maxLength;
     let userObj = JSON.parse(sessionStorage.getItem('user'));
     if(userObj) {
       this.setState({
@@ -46,9 +46,9 @@ export default class extends React.Component{
         this.refs["password"].disabled = true;
         this.refs["passwordConfirm"].disabled = true;
       } else {
-        this.refs["oldPassword"].disabled = false;
-        this.refs["password"].disabled = false;
-        this.refs["passwordConfirm"].disabled = false;
+        //this.refs["oldPassword"].disabled = false;
+        //this.refs["password"].disabled = false;
+        //this.refs["passwordConfirm"].disabled = false;
       }
     }
   }
@@ -191,6 +191,9 @@ export default class extends React.Component{
           <li className={this.props.location.pathname === '/teams' ? 'tab profilePageTab active-tab': 'tab profilePageTab'}><Link to="/teams">Teams</Link></li>
         </ul>
       </div>
+      <div className="profilePageHeader">
+        Account Basic Details
+      </div>
         <div className="col-md-12 profilePageTabMainSection">
           <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
             <div className="form-group">
@@ -216,53 +219,13 @@ export default class extends React.Component{
               <div className="error" id="lastNameError"></div>
             </div>
             <div className="form-group">
-              <input className="form-control"
-                type="email"
-                name="email"
-                ref="email"
-                placeholder="Email *"
-                value={ this.state.email }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="emailError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password"
-                name="oldPassword"
-                ref="oldPassword"
-                placeholder="Old Password *"
-                value={ this.state.oldPassword }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="oldPasswordError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password"
-                name="password"
-                ref="password"
-                placeholder="New Password *"
-                value={ this.state.password }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="passwordError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password"
-                name="passwordConfirm"
-                ref="passwordConfirm"
-                placeholder="New Password Confirm *"
-                value={ this.state.passwordConfirm }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="passwordConfirmError" />
-            </div>
-            <div className="form-group">
               <button className="btn btn-default form-control" onClick={ this.handleSubmit }>Update</button>
             </div>
           </form>
+        </div>
+        <div className="profilePageSeprator">
+          <div className="profileLinks">Change Email Address</div>
+          <div className="profileLinks">Change Password</div>
         </div>
       </div>
     )

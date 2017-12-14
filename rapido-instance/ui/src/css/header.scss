@@ -257,6 +257,29 @@ a.header-logo-section {
     display: inline-block;
 }
 
+.profilePageHeader {
+    margin: 0 30px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-top: 30px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.profilePageSeprator {
+    clear: both;
+    border-top: 1px solid #ccc;
+    margin: 0 30px;
+    padding-top: 20px;
+}
+
+.profileLinks {
+    margin: 10px 0;
+    color: #09AEEF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .userDetailsSection, .teamDetailsSection {
   background: #ebeff5;
   margin-top: 10px;
