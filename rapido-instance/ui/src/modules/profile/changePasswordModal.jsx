@@ -1,6 +1,7 @@
 import React from 'react';
 //import teamService from './teamServices'
 import AlertContainer from 'react-alert'
+import PasswordConfig from '../passwordConfig.js'
 import RegistrationService from '../register/RegistrationServices'
 import {showAlert, AlertOptions} from '../utils/AlertActions'
 
@@ -9,7 +10,10 @@ class Modal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: ''
+      password: '',
+      passwordConfirm: '',
+      oldPassword: '',
+      passwordConfig: PasswordConfig
     };
     this.alertOptions = AlertOptions;
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
@@ -49,19 +53,37 @@ class Modal extends React.Component {
   showInputErrorEmail(refName) {
     const validity = this.refs[refName].validity;
 
-    const error = document.getElementById(`${refName}Error`);
-
     var label = "";
-    if (refName == "email") {
-      label = "Email";
+    if (refName == "password") {
+      label = "Password";
+    } else if (refName == "passwordConfirm") {
+      label = "Confirm Password";
+    } else if (refName == "oldPassword") {
+      label = "Old Password";
+    }
+
+    const error = document.getElementById(`${refName}Error`);
+    const isPassword = refName.indexOf('password') !== -1;
+    const isPasswordConfirm = refName === 'passwordConfirm';
+
+    if (isPasswordConfirm) {
+      if (this.refs.password.value !== this.refs.passwordConfirm.value) {
+        this.refs.passwordConfirm.setCustomValidity('Passwords do not match');
+      } else {
+        this.refs.passwordConfirm.setCustomValidity('');
+      }
     }
 
     if (!validity.valid) {
       if (validity.valueMissing) {
         error.textContent = `It's a required field`; 
-      } else if (validity.typeMismatch) {
-        error.textContent = `${label} should be a valid email address`;
-      }
+      } else if (isPassword && validity.patternMismatch) {
+        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
+      } else if (isPassword && (validity.tooShort || validity.tooLong)) {
+        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
+      } else if (isPasswordConfirm && validity.customError) {
+        error.textContent = 'Passwords do not match';
+      } 
       return false;
     }
     
@@ -128,8 +150,8 @@ class Modal extends React.Component {
       backgroundColor: '#fff',
       borderRadius: 5,
       maxWidth: 500,
-      minHeight: 150,
-      maxHeight: 200,
+      minHeight: 275,
+      maxHeight: 325,
       zIndex: 1000,
       margin: '30 auto',
       padding: 20,
@@ -144,24 +166,45 @@ class Modal extends React.Component {
             Change Email Address
           </h4>
           <form className="col-md-12 changeEmailForm" noValidate>
-            <div className="form-group">
-              <div className="col-md-9">
-                <input className="form-control"
-                type="email"
-                name="email"
-                ref="email"
-                placeholder="Email *"
-                value={ this.state.email } 
-                onChange={ this.handleChangeEmail }
-                required />
-                <div className="error" id="emailError"></div>
-              </div>
+            <div className="form-group">    
+               <input className="form-control"   
+                 type="password"   
+                 name="oldPassword"    
+                 ref="oldPassword"   
+                 placeholder="Old Password *"    
+                 value={ this.state.oldPassword }    
+                 onChange={ this.handleChange }    
+                 required />   
+               <div className="error" id="oldPasswordError" />   
+             </div>    
+             <div className="form-group">    
+               <input className="form-control"   
+                 type="password"   
+                 name="password"   
+                 ref="password"
+                 pattern={this.state.passwordConfig.passwordFields.pattern}
+                 minLength={this.state.passwordConfig.passwordFields.minLength}
+                 maxLength={this.state.passwordConfig.passwordFields.maxLength}
+                 placeholder="New Password *"    
+                 value={ this.state.password }   
+                 onChange={ this.handleChange }    
+                 required />   
+               <div className="error" id="passwordError" />    
+             </div>    
+             <div className="form-group">    
+               <input className="form-control"   
+                 type="password"   
+                 name="passwordConfirm"    
+                ref="passwordConfirm"   
+                 placeholder="New Password Confirm *"    
+                 value={ this.state.passwordConfirm }    
+                 onChange={ this.handleChange }    
+                 required />   
+               <div className="error" id="passwordConfirmError" />   
+             </div>
               <div className="form-group">
-                <button className="btn btn-default" onClick={this.handleSubmit}>
-                  Update
-                </button>
+                <button className="btn btn-default form-control" onClick={ this.handleSubmit }>Update</button>
               </div>
-            </div>
           </form>
           <div className="form-group pull-right">
               <button className="btn btn-default cancel-button changeEmailModalCloseBtn" onClick={this.props.onClose}>

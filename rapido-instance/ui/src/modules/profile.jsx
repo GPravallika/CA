@@ -2,6 +2,7 @@ import React from 'react';
 import AlertContainer from 'react-alert'
 import RegistrationService from './register/RegistrationServices'
 import ChangeEmailModal from './profile/changeEmailModal';
+import ChangePasswordModal from './profile/ChangePasswordModal';
 import {showAlert, AlertOptions} from './utils/AlertActions'
 import { Link } from 'react-router'
 
@@ -14,16 +15,19 @@ export default class extends React.Component{
         firstName: '',
         lastName: '',
         email: '',
-        changeEmailModalIsOpen: false
+        changeEmailModalIsOpen: false,
+        changePasswordModalIsOpen: false
       };
       this.alertOptions = AlertOptions;
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.changeEmailSuccess = this.changeEmailSuccess.bind(this);
+      this.changePasswordSuccess = this.changePasswordSuccess.bind(this);
   }
 
   /* Component Initialisation */
   componentDidMount() {
+    console.log(this.refs);
     let userObj = JSON.parse(sessionStorage.getItem('user'));
     if(userObj) {
       this.setState({
@@ -38,6 +42,12 @@ export default class extends React.Component{
   changeEmailToggleModal() {
     this.setState({
       changeEmailModalIsOpen: !this.state.changeEmailModalIsOpen
+    });
+  }
+
+  changePasswordToggleModal() {
+    this.setState({
+      changePasswordModalIsOpen: !this.state.changePasswordModalIsOpen
     });
   }
 
@@ -136,6 +146,10 @@ export default class extends React.Component{
     });
   }
 
+  changePasswordSuccess() {
+
+  }
+
   /* Render Method */
   render() {
     let creationLabel;
@@ -193,12 +207,16 @@ export default class extends React.Component{
         </div>
         <div className="profilePageSeprator">
           <div className="profileLinks" onClick={this.changeEmailToggleModal.bind(this)}>Change Email Address</div>
-          <div className="profileLinks">Change Password</div>
+          <div className="profileLinks" onClick={this.changePasswordToggleModal.bind(this)}>Change Password</div>
         </div>
         <ChangeEmailModal show={this.state.changeEmailModalIsOpen}
         onClose={this.changeEmailToggleModal.bind(this)}
         onConfirm={this.changeEmailSuccess}>
         </ChangeEmailModal>
+        <ChangePasswordModal show={this.state.changePasswordModalIsOpen}
+        onClose={this.changePasswordToggleModal.bind(this)}
+        onConfirm={this.changePasswordSuccess}>
+        </ChangePasswordModal>
       </div>
     )
   }
