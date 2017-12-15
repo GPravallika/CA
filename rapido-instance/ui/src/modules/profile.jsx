@@ -1,7 +1,7 @@
 import React from 'react';
 import AlertContainer from 'react-alert'
 import RegistrationService from './register/RegistrationServices'
-import PasswordConfig from './passwordConfig.js'
+import ChangeEmailModal from './profile/changeEmailModal';
 import {showAlert, AlertOptions} from './utils/AlertActions'
 import { Link } from 'react-router'
 
@@ -14,21 +14,16 @@ export default class extends React.Component{
         firstName: '',
         lastName: '',
         email: '',
-        password: '',
-        passwordConfirm: '',
-        oldPassword: '',
-        passwordConfig: PasswordConfig
+        changeEmailModalIsOpen: false
       };
       this.alertOptions = AlertOptions;
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.changeEmailSuccess = this.changeEmailSuccess.bind(this);
   }
 
   /* Component Initialisation */
   componentDidMount() {
-    //this.refs["password"].pattern = this.state.passwordConfig.passwordFields.pattern;
-    //this.refs["password"].minLength = this.state.passwordConfig.passwordFields.minLength;
-    //this.refs["password"].maxLength = this.state.passwordConfig.passwordFields.maxLength;
     let userObj = JSON.parse(sessionStorage.getItem('user'));
     if(userObj) {
       this.setState({
@@ -36,21 +31,14 @@ export default class extends React.Component{
         "firstName": userObj.firstname,
         "lastName": userObj.lastname,
         "email": userObj.email,
-        "password": "",
-        passwordConfirm: "",
-        oldPassword: "",
       })
-
-      if(userObj.hasPassword == false) {
-        this.refs["oldPassword"].disabled = true;
-        this.refs["password"].disabled = true;
-        this.refs["passwordConfirm"].disabled = true;
-      } else {
-        //this.refs["oldPassword"].disabled = false;
-        //this.refs["password"].disabled = false;
-        //this.refs["passwordConfirm"].disabled = false;
-      }
     }
+  }
+
+  changeEmailToggleModal() {
+    this.setState({
+      changeEmailModalIsOpen: !this.state.changeEmailModalIsOpen
+    });
   }
 
 
@@ -72,11 +60,8 @@ export default class extends React.Component{
       let regSrvUpdUsrDetails = null;
       let userObj = {
         "id": this.state.id,
-        "password": this.state.password,
-        "email": this.state.email,
         "firstname": this.state.firstName,
         "lastname": this.state.lastName,
-        "oldPassword": this.state.oldPassword,
       };
       RegistrationService.updateUserDetails(userObj)
       .then((response) => {
@@ -127,45 +112,28 @@ export default class extends React.Component{
       label = "First Name";
     } else if (refName == "lastName") {
       label = "Last Name";
-    } else if (refName == "email") {
-      label = "Email";
-    } else if (refName == "password") {
-      label = "Password";
-    } else if (refName == "passwordConfirm") {
-      label = "Confirm Password";
-    } else if (refName == "oldPassword") {
-      label = "Old Password";
     }
 
     const error = document.getElementById(`${refName}Error`);
-    const isPassword = refName.indexOf('password') !== -1;
-    const isPasswordConfirm = refName === 'passwordConfirm';
-
-    if (isPasswordConfirm) {
-      if (this.refs.password.value !== this.refs.passwordConfirm.value) {
-        this.refs.passwordConfirm.setCustomValidity('Passwords do not match');
-      } else {
-        this.refs.passwordConfirm.setCustomValidity('');
-      }
-    }
 
     if (!validity.valid) {
       if (validity.valueMissing) {
         error.textContent = `${label} is a required field`;
-      } else if (validity.typeMismatch) {
-        error.textContent = `${label} should be a valid email address`;
-      } else if (isPassword && validity.patternMismatch) {
-        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
-      } else if (isPassword && (validity.tooShort || validity.tooLong)) {
-        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
-      } else if (isPasswordConfirm && validity.customError) {
-        error.textContent = 'Passwords do not match';
       }
       return false;
     }
 
     error.textContent = '';
     return true;
+  }
+
+  changeEmailSuccess(userObj) {
+    this.setState({
+      "id": userObj.id,
+      "firstName": userObj.firstname,
+      "lastName": userObj.lastname,
+      "email": userObj.email,
+    });
   }
 
   /* Render Method */
@@ -224,9 +192,13 @@ export default class extends React.Component{
           </form>
         </div>
         <div className="profilePageSeprator">
-          <div className="profileLinks">Change Email Address</div>
+          <div className="profileLinks" onClick={this.changeEmailToggleModal.bind(this)}>Change Email Address</div>
           <div className="profileLinks">Change Password</div>
         </div>
+        <ChangeEmailModal show={this.state.changeEmailModalIsOpen}
+        onClose={this.changeEmailToggleModal.bind(this)}
+        onConfirm={this.changeEmailSuccess}>
+        </ChangeEmailModal>
       </div>
     )
   }
