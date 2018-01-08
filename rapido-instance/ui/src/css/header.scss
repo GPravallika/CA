@@ -8,7 +8,9 @@
   }
 }
 .rapido-header-wrapper {
-  padding: 10px 15px 0 15px;
+  padding: 10px 15px 10px 15px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1) !important;
+  background: #ffffff;
   .sketch-nav-options {
     padding-top:10px;
     .topnav {
@@ -101,6 +103,8 @@
     display: block;
     margin-left: 10px;
     margin-top: 10px;
+    font-size: 13px;
+    font-weight: 400;
 }
 
 a.header-logo-section {
@@ -118,6 +122,8 @@ a.header-logo-section {
     top: 22px;
     right: 10Px;
     color: #09AEEF;
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .cardLayout {
