@@ -150,8 +150,8 @@ class Modal extends React.Component {
       backgroundColor: '#fff',
       borderRadius: 5,
       maxWidth: 500,
-      minHeight: 275,
-      maxHeight: 325,
+      minHeight: 325,
+      maxHeight: 375,
       zIndex: 1000,
       margin: '30 auto',
       padding: 20,
@@ -173,7 +173,7 @@ class Modal extends React.Component {
                  ref="oldPassword"   
                  placeholder="Old Password *"    
                  value={ this.state.oldPassword }    
-                 onChange={ this.handleChange }    
+                 onChange={ this.handleChangeEmail }    
                  required />   
                <div className="error" id="oldPasswordError" />   
              </div>    
@@ -187,7 +187,7 @@ class Modal extends React.Component {
                  maxLength={this.state.passwordConfig.passwordFields.maxLength}
                  placeholder="New Password *"    
                  value={ this.state.password }   
-                 onChange={ this.handleChange }    
+                 onChange={ this.handleChangeEmail }    
                  required />   
                <div className="error" id="passwordError" />    
              </div>    
@@ -198,7 +198,7 @@ class Modal extends React.Component {
                 ref="passwordConfirm"   
                  placeholder="New Password Confirm *"    
                  value={ this.state.passwordConfirm }    
-                 onChange={ this.handleChange }    
+                 onChange={ this.handleChangeEmail }    
                  required />   
                <div className="error" id="passwordConfirmError" />   
              </div>
