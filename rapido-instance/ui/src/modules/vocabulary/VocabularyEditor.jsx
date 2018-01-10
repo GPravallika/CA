@@ -13,14 +13,6 @@ export default class extends React.Component{
   
   constructor() {
     super();
-    let vocabData;
-    var sessionData = sessionStorage.getItem('vocabularyInfo');
-    if(sessionData) {
-      vocabData = JSON.parse(sessionData)
-    } else {
-      vocabData = []
-    }
-
     this.state = {
       searchColumn: 'all',
       selectedSketch: {},
@@ -53,7 +45,7 @@ export default class extends React.Component{
           visible: true
         }
       ],
-      vocabularyData: vocabData
+      vocabularyData: []
     };
 
     this.onRow = this.onRow.bind(this);
@@ -67,17 +59,59 @@ export default class extends React.Component{
     this.setState({
         selectedSketch: JSON.parse(sessionStorage.getItem('selectedSketch'))
     });
+    let prjSrvGetPrjDetRes = null;
+    ProjectService.getProjectDetails(sessionStorage.getItem('sketchId'))
+    .then((response) => {
+      prjSrvGetPrjDetRes = response.clone();
+      return response.json();
+    })
+    .then((responseData) => {
+      if(prjSrvGetPrjDetRes.ok) {
+        let tempVocabData = [];
+        responseData.vocabulary.map(function (vocab) {
+          tempVocabData.push({"name":vocab});
+        }, this);
+        this.setState({
+          vocabularyData: tempVocabData
+        });
+      } else {
+        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+        if(prjSrvGetPrjDetRes.status == 401) {
+          sessionStorage.removeItem('user')
+          sessionStorage.removeItem('token')
+        }
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   /* Method to remove vocabulary */
   onRemove(name) {
     const vocabularyData = cloneDeep(this.state.vocabularyData);
     const idx = findIndex(vocabularyData, { name });
-
-    // this could go through flux etc.
-    vocabularyData.splice(idx, 1);
-    this.setState({ vocabularyData });
-    sessionStorage.setItem('vocabularyInfo',JSON.stringify(vocabularyData));
+    let prjSrvDelVocabRes = null;
+    ProjectService.deleteVocabularyFromProject(name, this.state.selectedSketch["id"])
+    .then((response) => {
+      prjSrvDelVocabRes = response.clone();
+      return response.json();
+    })
+    .then((responseData) => {
+      if(prjSrvDelVocabRes.ok) {
+        vocabularyData.splice(idx, 1);
+        this.setState({ vocabularyData });
+      } else {
+        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+        if(prjSrvDelVocabRes.status == 401) {
+          sessionStorage.removeItem('user')
+          sessionStorage.removeItem('token')
+        }
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   onRow(row, { rowIndex, rowKey }) {
@@ -95,14 +129,34 @@ export default class extends React.Component{
 
   /* Method to add vocabulary */
   addVocabulary (e) {
-    var pushObj = {name: this.state.query.all}
-    this.state.vocabularyData.push(pushObj)
-    sessionStorage.setItem('vocabularyInfo',JSON.stringify(this.state.vocabularyData))
-    this.setState({
-      query: {},
-      vocabularyData: this.state.vocabularyData
-    })
     e.preventDefault();
+    let prjSrvAddVocabRes = null;
+    let vocabArray = [];
+    vocabArray.push(this.state.query.all);
+    ProjectService.addVocabularyToProject(vocabArray, this.state.selectedSketch["id"])
+    .then((response) => {
+      prjSrvAddVocabRes = response.clone();
+      return response.json();
+    })
+    .then((responseData) => {
+      if(prjSrvAddVocabRes.ok) {
+        let tempVocabArr = this.state.vocabularyData;
+        tempVocabArr.push({"name":this.state.query.all});
+        this.setState({
+          query: {},
+          vocabularyData: tempVocabArr
+        })
+      } else {
+        showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+        if(prjSrvAddVocabRes.status == 401) {
+          sessionStorage.removeItem('user')
+          sessionStorage.removeItem('token')
+        }
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   /* Render method */

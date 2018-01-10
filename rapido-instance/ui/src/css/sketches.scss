@@ -1,9 +1,9 @@
 .sketch-component-wrapper {
-  padding: 0;
+  .sketch-found-section {
+    padding: 0 40px;
+  }
   .sketch-sort-section {
-    padding: 20px 5px 20px 5px;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 20px;
+    padding: 30px 5px 15px 5px;
     button {
       float: right;
       margin-left: 10px;
@@ -265,32 +265,46 @@
 .titleContainer {
   position: relative;
   overflow: hidden;
-  padding: 50px 35px 60px;
+  padding: 55px 50px 0px;
   h2, h3 {
-    font-weight: 200;
-    color: #20465F;
-    font-size: 36px;
+    font-weight: 300;
+    color: #48575F;
+    font-size: 25px;
+    line-height: 25px;
+    font-weight: 300;
   }
   h3 {
     font-size: 18px;
   }
 }
 
-.firstTime {
-  text-align: center;
-  margin-top: 50px;
-  .first-time-sketch-btn {
+.personalSketchesCont, .teamSketchesCont {
+  margin: auto;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  clear: both;
+  float: left;
+  .mainContainer {
+    margin: 30px 0;
+    clear: both;
+    float: left;
+    .personalImg {
+      width: 48px;
+      height: 48px;
+      margin-right: 10px;
+    }
+    .teamImg {
+      width: 48px;
+      height: 48px;
+      margin-right: 10px;
+    }
+  }
+  .btn {
     padding: 7px 5px;
     border-radius: 0;
-    margin-top: 50px;
+    margin-left: 30px;
   }
-}
-
-.sketch-list-wrapper {
-  background-color: #FAFAFA;
-  height: auto!important;
-  height: 100%;
-  min-height: 100%;
 }
 
 .search-sketch-input {
@@ -298,16 +312,15 @@
     padding: 5px;
     border: 0;
     border-bottom: 1px solid #09AEEF;
-    background: #fafafa;
+    background: #f7f7f7;
     width: 150px;
 }
 
 .tabs {
-  width: 100%;
+  list-style: none;
+  display: inline-block;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  list-style: none;
   .tab {
     float: left;
     margin-right: 30px;

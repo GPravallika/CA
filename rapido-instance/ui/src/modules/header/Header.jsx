@@ -49,8 +49,13 @@ export default class extends React.Component{
   }
 
   /* Method to handle profile page */
-  handleEditProfile() {
+  handleProfileClick() {
     browserHistory.push('/profile');
+  }
+
+  /* Method to handle teams page */
+  handleTeamsClick() {
+    browserHistory.push('/teams');
   }
 
   /* Method to navigate to tree Node details */
@@ -137,8 +142,12 @@ export default class extends React.Component{
       {
         items: [
           {
-            text: 'Settings',
-            onClick: event => { this.handleEditProfile(); }
+            text: 'Profile',
+            onClick: event => { this.handleProfileClick(); }
+          },
+          {
+            text: 'Teams',
+            onClick: event => { this.handleTeamsClick(); }
           },
           {
             text: 'Logout',
@@ -154,7 +163,7 @@ export default class extends React.Component{
         <div className="col-md-4 col-sm-3 pull-left">
           <Link className="header-logo-section" to="/sketches">
             {logoImg}
-            <span className="logo-text">Live API Design</span>
+            <span className="logo-text">CA Live API Design</span>
           </Link>
         </div>
         <div className="col-md-8 col-sm-9">

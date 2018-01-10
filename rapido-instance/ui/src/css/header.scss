@@ -8,7 +8,9 @@
   }
 }
 .rapido-header-wrapper {
-  padding: 10px 15px 0 15px;
+  padding: 10px 15px 10px 15px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1) !important;
+  background: #ffffff;
   .sketch-nav-options {
     padding-top:10px;
     .topnav {
@@ -101,6 +103,8 @@
     display: block;
     margin-left: 10px;
     margin-top: 10px;
+    font-size: 13px;
+    font-weight: 400;
 }
 
 a.header-logo-section {
@@ -118,6 +122,8 @@ a.header-logo-section {
     top: 22px;
     right: 10Px;
     color: #09AEEF;
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .cardLayout {
@@ -141,9 +147,30 @@ a.header-logo-section {
   top: -100px;
 }
 
-.tabsProfilePage {
-  margin-top: 20px;
-  margin-bottom: 30px;
+.profilePageTabsSection, .teamsPageTabsSection {
+  margin: 0;
+  padding: 0 !important;
+  position: relative;
+  text-align: center;
+  background-color: #ebeff5;
+  border-bottom: 1px solid #d6dadc;
+}
+
+.profilePageTab, .teamsPageTab {
+  background: #d6dadc !important;
+  padding: 10px;
+  border: none !important;
+  position: relative;
+  top: 1px;
+  margin-right: 10px !important;
+}
+
+.profilePageTab.active-tab, .teamsPageTab.active-tab {
+  background: white !important;
+}
+
+.profilePageTabMainSection, .teamsPageTabMainSection, .teamDetailsMainSection {
+  margin-top: 30px;
 }
 
 .access-dropdown {
@@ -208,7 +235,7 @@ a.header-logo-section {
   margin: 20px 0px;
 }
 
-.addMembersModalCloseBtn {
+.addMembersModalCloseBtn, .changeEmailModalCloseBtn {
   position: absolute;
   bottom: 25px;
   right: 25px;
@@ -234,4 +261,43 @@ a.header-logo-section {
     padding-bottom: 3px;
     margin-bottom: 20px;
     display: inline-block;
+}
+
+.profilePageHeader {
+    margin: 0 30px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-top: 30px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.profilePageSeprator {
+    clear: both;
+    border-top: 1px solid #ccc;
+    margin: 0 30px;
+    padding-top: 20px;
+}
+
+.profileLinks {
+    margin: 10px 0;
+    color: #09AEEF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.userDetailsSection, .teamDetailsSection {
+  background: #ebeff5;
+  margin-top: 10px;
+  .mainSection {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 25px;
+    position: relative;
+  }
+  .nameSection {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
 }

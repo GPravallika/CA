@@ -1,7 +1,8 @@
 import React from 'react';
 import AlertContainer from 'react-alert'
 import RegistrationService from './register/RegistrationServices'
-import PasswordConfig from './passwordConfig.js'
+import ChangeEmailModal from './profile/changeEmailModal';
+import ChangePasswordModal from './profile/ChangePasswordModal';
 import {showAlert, AlertOptions} from './utils/AlertActions'
 import { Link } from 'react-router'
 
@@ -14,21 +15,19 @@ export default class extends React.Component{
         firstName: '',
         lastName: '',
         email: '',
-        password: '',
-        passwordConfirm: '',
-        oldPassword: '',
-        passwordConfig: PasswordConfig
+        changeEmailModalIsOpen: false,
+        changePasswordModalIsOpen: false
       };
       this.alertOptions = AlertOptions;
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.changeEmailSuccess = this.changeEmailSuccess.bind(this);
+      this.changePasswordSuccess = this.changePasswordSuccess.bind(this);
   }
 
   /* Component Initialisation */
   componentDidMount() {
-    this.refs["password"].pattern = this.state.passwordConfig.passwordFields.pattern;
-    this.refs["password"].minLength = this.state.passwordConfig.passwordFields.minLength;
-    this.refs["password"].maxLength = this.state.passwordConfig.passwordFields.maxLength;
+    console.log(this.refs);
     let userObj = JSON.parse(sessionStorage.getItem('user'));
     if(userObj) {
       this.setState({
@@ -36,21 +35,20 @@ export default class extends React.Component{
         "firstName": userObj.firstname,
         "lastName": userObj.lastname,
         "email": userObj.email,
-        "password": "",
-        passwordConfirm: "",
-        oldPassword: "",
       })
-
-      if(userObj.hasPassword == false) {
-        this.refs["oldPassword"].disabled = true;
-        this.refs["password"].disabled = true;
-        this.refs["passwordConfirm"].disabled = true;
-      } else {
-        this.refs["oldPassword"].disabled = false;
-        this.refs["password"].disabled = false;
-        this.refs["passwordConfirm"].disabled = false;
-      }
     }
+  }
+
+  changeEmailToggleModal() {
+    this.setState({
+      changeEmailModalIsOpen: !this.state.changeEmailModalIsOpen
+    });
+  }
+
+  changePasswordToggleModal() {
+    this.setState({
+      changePasswordModalIsOpen: !this.state.changePasswordModalIsOpen
+    });
   }
 
 
@@ -72,11 +70,8 @@ export default class extends React.Component{
       let regSrvUpdUsrDetails = null;
       let userObj = {
         "id": this.state.id,
-        "password": this.state.password,
-        "email": this.state.email,
         "firstname": this.state.firstName,
         "lastname": this.state.lastName,
-        "oldPassword": this.state.oldPassword,
       };
       RegistrationService.updateUserDetails(userObj)
       .then((response) => {
@@ -127,39 +122,13 @@ export default class extends React.Component{
       label = "First Name";
     } else if (refName == "lastName") {
       label = "Last Name";
-    } else if (refName == "email") {
-      label = "Email";
-    } else if (refName == "password") {
-      label = "Password";
-    } else if (refName == "passwordConfirm") {
-      label = "Confirm Password";
-    } else if (refName == "oldPassword") {
-      label = "Old Password";
     }
 
     const error = document.getElementById(`${refName}Error`);
-    const isPassword = refName.indexOf('password') !== -1;
-    const isPasswordConfirm = refName === 'passwordConfirm';
-
-    if (isPasswordConfirm) {
-      if (this.refs.password.value !== this.refs.passwordConfirm.value) {
-        this.refs.passwordConfirm.setCustomValidity('Passwords do not match');
-      } else {
-        this.refs.passwordConfirm.setCustomValidity('');
-      }
-    }
 
     if (!validity.valid) {
       if (validity.valueMissing) {
         error.textContent = `${label} is a required field`;
-      } else if (validity.typeMismatch) {
-        error.textContent = `${label} should be a valid email address`;
-      } else if (isPassword && validity.patternMismatch) {
-        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
-      } else if (isPassword && (validity.tooShort || validity.tooLong)) {
-        error.textContent = `${label} should be between ${this.refs.password.minLength}-${this.refs.password.maxLength} characters`;
-      } else if (isPasswordConfirm && validity.customError) {
-        error.textContent = 'Passwords do not match';
       }
       return false;
     }
@@ -168,22 +137,46 @@ export default class extends React.Component{
     return true;
   }
 
+  changeEmailSuccess(userObj) {
+    this.setState({
+      "id": userObj.id,
+      "firstName": userObj.firstname,
+      "lastName": userObj.lastname,
+      "email": userObj.email,
+    });
+  }
+
+  changePasswordSuccess() {
+
+  }
+
   /* Render Method */
   render() {
     let creationLabel;
     if (!this.props.fromDashboard) {
       creationLabel = <h3>Create an account</h3>
     }
+    var userDetailsSection = <div className="mainSection">
+      <div className="nameSection">{this.state.firstName} {this.state.lastName}</div>
+      <div className="emailSection">{this.state.email}</div>
+    </div>
+
     return(
       <div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-      <div className="tabsContainer tabsProfilePage">
-        <ul className="tabs">
-          <li className={this.props.location.pathname === '/profile' ? 'tab active-tab': 'tab'}><Link to="/profile">Profile</Link></li>
-          <li className={this.props.location.pathname === '/teams' ? 'tab active-tab': 'tab'}><Link to="/teams">Teams</Link></li>
+      <div className="userDetailsSection">
+        {userDetailsSection}
+      </div>
+      <div className="tabsContainer profilePageTabsSection">
+        <ul className="tabs profilePageTabs">
+          <li className={this.props.location.pathname === '/profile' ? 'tab profilePageTab active-tab': 'tab profilePageTab'}><Link to="/profile">Profile</Link></li>
+          <li className={this.props.location.pathname === '/teams' ? 'tab profilePageTab active-tab': 'tab profilePageTab'}><Link to="/teams">Teams</Link></li>
         </ul>
       </div>
-        <div className="col-md-12">
+      <div className="profilePageHeader">
+        Account Basic Details
+      </div>
+        <div className="col-md-12 profilePageTabMainSection">
           <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
             <div className="form-group">
               <input className="form-control"
@@ -208,54 +201,22 @@ export default class extends React.Component{
               <div className="error" id="lastNameError"></div>
             </div>
             <div className="form-group">
-              <input className="form-control"
-                type="email"
-                name="email"
-                ref="email"
-                placeholder="Email *"
-                value={ this.state.email }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="emailError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password"
-                name="oldPassword"
-                ref="oldPassword"
-                placeholder="Old Password *"
-                value={ this.state.oldPassword }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="oldPasswordError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password"
-                name="password"
-                ref="password"
-                placeholder="New Password *"
-                value={ this.state.password }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="passwordError" />
-            </div>
-            <div className="form-group">
-              <input className="form-control"
-                type="password"
-                name="passwordConfirm"
-                ref="passwordConfirm"
-                placeholder="New Password Confirm *"
-                value={ this.state.passwordConfirm }
-                onChange={ this.handleChange }
-                required />
-              <div className="error" id="passwordConfirmError" />
-            </div>
-            <div className="form-group">
               <button className="btn btn-default form-control" onClick={ this.handleSubmit }>Update</button>
             </div>
           </form>
         </div>
+        <div className="profilePageSeprator">
+          <div className="profileLinks" onClick={this.changeEmailToggleModal.bind(this)}>Change Email Address</div>
+          <div className="profileLinks" onClick={this.changePasswordToggleModal.bind(this)}>Change Password</div>
+        </div>
+        <ChangeEmailModal show={this.state.changeEmailModalIsOpen}
+        onClose={this.changeEmailToggleModal.bind(this)}
+        onConfirm={this.changeEmailSuccess}>
+        </ChangeEmailModal>
+        <ChangePasswordModal show={this.state.changePasswordModalIsOpen}
+        onClose={this.changePasswordToggleModal.bind(this)}
+        onConfirm={this.changePasswordSuccess}>
+        </ChangePasswordModal>
       </div>
     )
   }
