@@ -90,7 +90,7 @@ var projectService = {
 
     },
     'fetch': function(request, response, next) {
-        var allProjects = [],
+        var allProjects = {"personal": [], "team": {}},
             allProjectIds = [],
             promiseResolutions = [];
 
@@ -101,27 +101,35 @@ var projectService = {
         promises.all(promiseResolutions)
             .then(function(results) {
                 _.each(results[0], function(project, index) {
-                    allProjectIds.push(project.id);
+                    allProjectIds.push(project.projectid);
                     project.ownership = 'OWN';
-                    allProjects.push(project);
+                    allProjects.personal.push(project);
                 });
                 _.each(results[1], function(project, index) {
-                    if(_.indexOf(allProjectIds, project.id) >=0) {
+                    if(_.indexOf(allProjectIds, project.projectid) >=0) {
                         return;
                         // Thats means he has got his own project shared via some team
                         // Duplicate
                     }
+                    allProjectIds.push(project.projectid);
                     project.ownership = 'WRITE';
-                    allProjects.push(project);
+                    if(!allProjects.team[project.teamid]) {
+                        allProjects.team[project.teamid] = [];
+                    }
+                    allProjects.team[project.teamid].push(project);
                 });
                 _.each(results[2], function(project, index) {
-                    if(_.indexOf(allProjectIds, project.id) >=0) {
+                    if(_.indexOf(allProjectIds, project.projectid) >=0) {
                         return;
-                        // Thats means he has got his own project shared via some team
+                        // Thats means he has got his  own project shared via some team
                         // Duplicate
                     }
+                    allProjectIds.push(project.projectid);
                     project.ownership = 'READ';
-                    allProjects.push(project);
+                    if(!allProjects.team[project.teamid]) {
+                        allProjects.team[project.teamid] = [];
+                    }
+                    allProjects.team[project.teamid].push(project)
                 });
                 response.status(200).json(allProjects);
             })
@@ -149,13 +157,13 @@ var projectService = {
         promises.all(promiseResolutions)
             .then(function(results) {
                 _.each(results[0], function(project, index) {
-                    allProjectsIownIds.push(project.id.toString());
+                    allProjectsIownIds.push(project.projectid.toString());
                 });
                 _.each(results[1], function(project, index) {
-                    allProjectsIcanEditIds.push(project.id.toString());
+                    allProjectsIcanEditIds.push(project.projectid.toString());
                 });
                 _.each(results[2], function(project, index) {
-                    allProjectsIcanViewIds.push(project.id.toString());
+                    allProjectsIcanViewIds.push(project.projectid.toString());
                 });
                 if(_.indexOf(allProjectsIownIds, request.params.id) >=0 ) {
                     access = 'OWN';
@@ -242,17 +250,17 @@ var projectService = {
             .then(function(results) {
 
                 _.each(results[0], function(result, index) {
-                    if (result.name == project.name && project.id != result.id) {
-                        throw new Error("project " + project.name + " already exists for different project id " + result.id);
+                    if (result.name == project.name && project.id != result.projectid) {
+                        throw new Error("project " + project.name + " already exists for different project id " + result.projectid);
                     }
-                    allProjectIds.push(result.id.toString());
+                    allProjectIds.push(result.projectid.toString());
                 });
                 _.each(results[1], function(result, index) {
-                    allProjectIds.push(result.id.toString());
+                    allProjectIds.push(result.projectid.toString());
                 });
 
                 if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
-                    throw new Error("user " + request.user.id + " does not have permission to update project " + project.id);
+                    throw new Error("user " + request.user.id + " does not have permission to update project " + project.projectid);
                 } else {
                     project.treedata = JSON.stringify(project.treedata);
                     project.vocabulary = JSON.stringify(project.vocabulary);
@@ -291,10 +299,10 @@ var projectService = {
         .then(function(results) {
 
             _.each(results[0], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
             _.each(results[1], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
 
             if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
@@ -329,10 +337,10 @@ var projectService = {
         .then(function(results) {
 
             _.each(results[0], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
             _.each(results[1], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
 
             if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
@@ -370,10 +378,10 @@ var projectService = {
         .then(function(results) {
 
             _.each(results[0], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
             _.each(results[1], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
 
             if(_.indexOf(allProjectIds, request.params.projectid) < 0 ) {
@@ -411,10 +419,10 @@ var projectService = {
         .then(function(results) {
 
             _.each(results[0], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
             _.each(results[1], function(result, index) {
-                allProjectIds.push(result.id.toString());
+                allProjectIds.push(result.projectid.toString());
             });
 
             if(_.indexOf(allProjectIds, request.params.projectid) < 0 ) {
@@ -519,10 +527,10 @@ var projectService = {
             .then(function(results) {
 
                 _.each(results[0], function(result, index) {
-                    allProjectIds.push(result.id.toString());
+                    allProjectIds.push(result.projectid.toString());
                 });
                 _.each(results[1], function(result, index) {
-                    allProjectIds.push(result.id.toString());
+                    allProjectIds.push(result.projectid.toString());
                 });
 
                 if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
@@ -557,10 +565,10 @@ var projectService = {
             .then(function(results) {
 
                 _.each(results[0], function(result, index) {
-                    allProjectIds.push(result.id.toString());
+                    allProjectIds.push(result.projectid.toString());
                 });
                 _.each(results[1], function(result, index) {
-                    allProjectIds.push(result.id.toString());
+                    allProjectIds.push(result.projectid.toString());
                 });
 
                 if(_.indexOf(allProjectIds, request.params.id) < 0 ) {

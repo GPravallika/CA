@@ -76,9 +76,9 @@ describe('Project APIs', function() {
     it('Get all user projects', function(done) {
         projectflow.getUserProjectsAsync(user)
         .then(function(response){
-            assert.equal(2, response.length, "There should be exactly two projects");
-            assert.isTrue((response[0].name == projects[0].name || response[0].name == projects[1].name), "Project name mismatch" + response[0].name);
-            assert.isTrue((response[1].name == projects[0].name || response[1].name == projects[1].name), "Project name mismatch" + response[1].name);
+            assert.equal(2, response.personal.length, "There should be exactly two projects");
+            assert.isTrue((response.personal[0].name == projects[0].name || response.personal[0].name == projects[1].name), "Project name mismatch" + response.personal[0].name);
+            assert.isTrue((response.personal[1].name == projects[0].name || response.personal[1].name == projects[1].name), "Project name mismatch" + response.personal[1].name);
             done();
         })
         .catch(function(err){
@@ -121,8 +121,8 @@ describe('Project APIs', function() {
     it('Get all project should exclude the deleted project', function(done) {
         projectflow.getUserProjectsAsync(user)
         .then(function(response){
-            assert.equal(1, response.length, "There should be exactly one projects");
-            assert.isTrue((response[0].name == projects[1].name ), "Project name mismatch" + response[0].name);
+            assert.equal(1, response.personal.length, "There should be exactly one projects");
+            assert.isTrue((response.personal[0].name == projects[1].name ), "Project name mismatch" + response.personal[0].name);
             done();
         })
         .catch(function(err){

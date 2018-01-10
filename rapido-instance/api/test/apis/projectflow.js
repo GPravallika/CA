@@ -50,7 +50,7 @@ var getUserProjects = function(user, done) {
     httpRequest.getAsync(options)
         .then(function(response) {
             response = JSON.parse(response);
-            assert.isArray(response, "User projects should be an array");
+            assert.isObject(response, "User projects should be an object");
             done(null,response);
         })
         .catch(function(err) {
