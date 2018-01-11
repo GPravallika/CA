@@ -43,7 +43,7 @@ exports.auth = {
     "myteams": "select id, name, description from teams where createdby=?",
     "teamsImoderate": "select id, name, description from teams where id in (select teamid from user_team where access = 'ADMIN' and userid = ?)",
     "teamsIbelong": "select id, name, description from teams where id in (select teamid from user_team where access = 'MEMBER' and userid = ?)",
-    "myProjects": "select id, name, description from projects where createdby=?",
-    "projectsIcanEdit": "select id, name, description from projects where id in (select projectid from team_project where access = 'WRITE' and teamid in ((select teamid from user_team where userid = ?) UNION (select id from teams where createdby= ?)))",
-    "projectsIcanView": "select id, name, description from projects where id in (select projectid from team_project where access = 'READ' and teamid in ((select teamid from user_team where userid = ?) UNION (select id from teams where createdby= ?)))"
+    "myProjects": "select id as projectid, name, description from projects where createdby=?",
+    "projectsIcanEdit": "select P.id as projectid, P.name, P.description, T.teamid from projects P join (select projectid, teamid from team_project where access = 'WRITE' and teamid in ((select teamid from user_team where userid = ?) UNION (select id from teams where createdby= ?))) T on P.id = T.projectid",
+    "projectsIcanView": "select P.id as projectid, P.name, P.description, T.teamid from projects P join (select projectid, teamid from team_project where access = 'READ' and teamid in ((select teamid from user_team where userid = ?) UNION (select id from teams where createdby= ?))) T on P.id = T.projectid"
 };
