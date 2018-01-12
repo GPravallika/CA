@@ -26,6 +26,12 @@ export default class extends React.Component{
 
   componentDidMount() {
    let projectInfo = JSON.parse(sessionStorage.getItem('projectInfo'));
+   let teamId = JSON.parse(sessionStorage.getItem('teamId'));
+    if(teamId) {
+      this.setState({
+          teamId: teamId
+      })
+    }
     if(projectInfo) {
       this.setState({
         projectInfo: {

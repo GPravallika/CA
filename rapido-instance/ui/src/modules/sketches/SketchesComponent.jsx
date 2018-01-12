@@ -3,6 +3,7 @@ import SketchesFound from './SketchesFoundComponent'
 import SketchService from './SketchServices'
 import { browserHistory } from 'react-router'
 import AlertContainer from 'react-alert'
+import AddTeamModal from '../team/addTeamModal';
 import {showAlert, AlertOptions} from '../utils/AlertActions'
 
 export default class extends React.Component{
@@ -10,20 +11,23 @@ export default class extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      filteredData: {},
-      sketchesData: {},
+      allSketchesData: [],
+      filteredSketchesData: [],
+      personalData: [],
+      teamsData: [],
       sortType: '',
-      query: ''
+      query: '',
+      addTeamModalIsOpen: false,
     };
-    sessionStorage.removeItem('projectInfo');
     this.alertOptions = AlertOptions;
     this.handleChange = this.handleChange.bind(this);
+    this.addTeamSuccess = this.addTeamSuccess.bind(this);
   }
 
   /* Method to handle search */
   handleChange(event) {
     var queryResult=[];
-    this.props.sketchesData.forEach(function(sketch){
+    this.state.allSketchesData.forEach(function(sketch){
       if(sketch.name.toLowerCase().indexOf(event.target.value)!=-1)
         queryResult.push(sketch);
       if(sketch.description.toLowerCase().indexOf(event.target.value)!=-1)
@@ -36,14 +40,24 @@ export default class extends React.Component{
     )
     this.setState({
       query: event.target.value,
-      filteredData: queryResult
+      filteredSketchesData: queryResult
     });
+  }
+
+  addTeamToggleModal(type) {
+      this.setState({
+        addTeamModalIsOpen: !this.state.addTeamModalIsOpen
+      });
+  }
+
+  addTeamSuccess(team) {
+    console.log(team);
   }
 
   /* Method to handle search */
   sortSketchCardBy(event) {
   
-    let lastActiveId = null;
+    /*let lastActiveId = null;
     if(document.querySelector(".sortByBtn.active")) {
       lastActiveId = document.querySelector(".sortByBtn.active").id;
       document.querySelector(".sortByBtn.active").className = document.querySelector(".sortByBtn.active").className.replace(/\bactive\b/,'');
@@ -60,7 +74,7 @@ export default class extends React.Component{
 
     if(activeNow == "sortByNameBtn") {
       activeSort = 'name';
-      queryResult = this.props.sketches.sort(function(a, b){
+      queryResult = this.state.sketches.sort(function(a, b){
         if(a.name < b.name) return -1;
         if(a.name > b.name) return 1;
         return 0;
@@ -69,7 +83,7 @@ export default class extends React.Component{
 
     if(activeNow == "sortByModifiedBtn") {
       activeSort = 'modified';
-      queryResult = this.props.sketches.sort(function(a, b){
+      queryResult = this.state.sketches.sort(function(a, b){
         if(a.modifiedat < b.modifiedat) return -1;
         if(a.modifiedat > b.modifiedat) return 1;
         return 0;
@@ -78,7 +92,7 @@ export default class extends React.Component{
 
     if(activeNow == "sortByCreatedBtn") {
       activeSort = 'created';
-      queryResult = this.props.sketches.sort(function(a, b){
+      queryResult = this.state.sketches.sort(function(a, b){
         if(a.createdat < b.createdat) return -1;
         if(a.createdat > b.createdat) return 1;
         return 0;
@@ -88,7 +102,7 @@ export default class extends React.Component{
     this.setState({
       sortType: (activeSort !== null) ? activeSort : '',
       filteredData: (activeSort !== null) ? queryResult : this.state.sketches
-    })
+    })*/
   }
 
   /* Component Initialisation */
@@ -102,9 +116,21 @@ export default class extends React.Component{
       })
       .then((responseData) => {
         if(sktGetPrjSrvRes.ok) {
+          var allSketches = responseData.personal;
+          var teamsDataArr = [];
+          Object.keys(responseData.team).forEach(function(team) {
+            responseData.team[team].forEach(function(teamSketchObj){
+              teamSketchObj["teamname"] = "test"+teamSketchObj.name
+              teamSketchObj["teamdesc"] = "test"+teamSketchObj.description
+              allSketches.push(teamSketchObj);
+              teamsDataArr.push(teamSketchObj);
+            });
+          });
+          console.log(teamsDataArr);
           this.setState({
-            "sketchesData" : responseData,
-            "filteredData" : responseData
+            "allSketchesData" : allSketches,
+            "personalData": responseData.personal,
+            "teamsData": teamsDataArr
           });
         } else {
           showAlert(this, (responseData.message) ? responseData.message : "Error occured");
@@ -119,6 +145,10 @@ export default class extends React.Component{
       });
   }
 
+  navigateToMemmbers() {
+    browserHistory.push('/team?teamId=13');
+  }
+
   /* Method to add new sketch */
   addNewSketch() {
     sessionStorage.setItem('sketchId','null');
@@ -127,35 +157,82 @@ export default class extends React.Component{
     browserHistory.push('/nodes/add');
   }
 
+  addNewSketchFromTeam() {
+    sessionStorage.setItem('sketchId','null');
+    sessionStorage.setItem('sketchName','null');
+    sessionStorage.removeItem('vocabularyInfo');
+    sessionStorage.setItem('teamId',"13");
+    browserHistory.push('/nodes/add');
+  }
+
   /* Render Method */
   render() {
 
     let content; 
+    const personalImg = <img className="personalImg" src="data:image/png;base64,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" />;
+    const teamImg = <img className="teamImg" src="data:image/png;base64,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" />;
     const userNotLoggedIn =  <div className="text-center loading-project-details">Loading...</div>
+    const teamNotFound = <div className="teamSketchesCont">
+      <div className="mainContainer">
+        {teamImg}
+        <span>Team Sketches</span>
+        <button className="btn btn-default first-time-sketch-btn" onClick={this.addTeamToggleModal.bind(this)}>New Team</button>
+      </div>
+    </div>;
+    const personalSketchesNotFound = <div className="personalSketchesCont">
+      <div className="mainContainer">
+        {personalImg}
+        <span>Personal Sketches</span>
+        <button onClick={this.addNewSketch.bind(this)} className="btn btn-default first-time-sketch-btn">New Sketch</button>
+      </div>
+    </div>;
     const sketchesNotFound = <div className="titleContainer firstTime">
       <h2>Welcome to CA Live API Design!</h2>
       <h3>Looks like you are getting started. Go ahead and start off with creating a new sketch or team below.</h3>
-      <div className="personalSketchesCont">
-        <div className="mainContainer">
-          <img className="personalImg" src="data:image/png;base64,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" />
-          <span>Personal Sketches</span>
-          <button onClick={this.addNewSketch.bind(this)} className="btn btn-default first-time-sketch-btn">New Sketch</button>
-        </div>
-      </div>
-      <div className="teamSketchesCont">
-        <div className="mainContainer">
-          <img className="teamImg" src="data:image/png;base64,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" />
-          <span>Team Sketches</span>
-          <button className="btn btn-default first-time-sketch-btn">New Team</button>
-        </div>
-      </div>
+      {personalSketchesNotFound}
+      {teamNotFound}
     </div>
 
-    if(this.state && this.state.sketchesData ) {
+    if(this.state && this.state.allSketchesData ) {
       var sketchesContent;
-      var team1Sketches = [{"id":16,"name":"test-team1","description":"test-team1","ownership":"OWN"},{"id":18,"name":"test-team1111","description":"test-team11111","ownership":"OWN"}];
-      var team2Sketches = [{"id":17,"name":"test-team2","description":"test-team2","ownership":"OWN"}];
-      if (this.state.sketchesData && this.state.sketchesData.length > 0) {
+
+      if (this.state.allSketchesData && this.state.allSketchesData.length > 0 && this.state.filteredSketchesData.length == 0) {
+
+        var personalSketchesList = null;
+        var personalSection;
+
+        if(this.state.personalData && this.state.personalData.length > 0) {
+          personalSection = <div className="personalSketchesCont">
+            <div className="mainContainer">
+              {personalImg}
+              <span>Personal Sketches</span>
+              <button onClick={this.addNewSketchFromTeam.bind(this)} className="btn btn-default">New Sketch</button>
+            </div>
+              <SketchesFound sketches={this.state.personalData} />
+            </div>;
+        } else {
+          personalSection = <div>{personalSketchesNotFound}</div>
+        }
+
+        var teamSketchesList = null;
+        var teamSketches = [];
+        var teamSection;
+
+        if(this.state.teamsData && this.state.teamsData.length > 0) {
+          teamSection = <div className="teamSketchesCont">
+            <div className="mainContainer">
+              {teamImg}
+              <span>Team 1 Sketches</span>
+              <button className="btn btn-default" onClick={this.addNewSketch.bind(this)}>New Sketch</button>
+              <button className="btn btn-default" onClick={this.navigateToMemmbers.bind(this)}>Members</button>
+              <button className="btn btn-default">Settings</button>
+            </div>
+            <SketchesFound sketches={this.state.teamsData} />
+          </div>
+        } else {
+          teamSection = <div>{teamNotFound}</div>
+        }
+
         sketchesContent = <div className="sketch-found-section">
           <div className="col-md-12 sketch-sort-section">
             <input className="search-sketch-input" placeholder="Search" type="text" value={this.state.query} onChange={this.handleChange} />
@@ -163,35 +240,11 @@ export default class extends React.Component{
             <button id="sortByModifiedBtn" className={(this.state.sortType == 'modified') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Modified</button>
             <button id="sortByNameBtn" className={(this.state.sortType == 'name') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Name</button>
           </div>
-          <div className="personalSketchesCont">
-            <div className="mainContainer">
-              <img className="personalImg" src="data:image/png;base64,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" />
-              <span>Personal Sketches</span>
-              <button onClick={this.addNewSketch.bind(this)} className="btn btn-default">New Sketch</button>
-            </div>
-            <SketchesFound sketches={this.state.filteredData} />
-          </div>
-          <div className="teamSketchesCont">
-            <div className="mainContainer">
-              <img className="teamImg" src="data:image/png;base64,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" />
-              <span>Team 1 Sketches</span>
-              <button className="btn btn-default">New Sketch</button>
-              <button className="btn btn-default">Members</button>
-              <button className="btn btn-default">Settings</button>
-            </div>
-            <SketchesFound sketches={team1Sketches} />
-          </div>
-          <div className="teamSketchesCont">
-            <div className="mainContainer">
-              <img className="teamImg" src="data:image/png;base64,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" />
-              <span>Team 2 Sketches</span>
-              <button className="btn btn-default">New Sketch</button>
-              <button className="btn btn-default">Members</button>
-              <button className="btn btn-default">Settings</button>
-            </div>
-            <SketchesFound sketches={team2Sketches} />
-          </div>
+          {personalSection}
+          {teamSection}
         </div>
+      } else if(this.state.allSketchesData && this.state.allSketchesData.length > 0 && this.state.filteredSketchesData.length > 0) {
+        sketchesContent = <div>Search Results</div>
       } else {
         sketchesContent = <div>{sketchesNotFound}</div>
       }
@@ -206,6 +259,10 @@ export default class extends React.Component{
       <div>
         <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
         {content}
+        <AddTeamModal show={this.state.addTeamModalIsOpen}
+          onClose={this.addTeamToggleModal.bind(this)}
+          onConfirm={this.addTeamSuccess}>
+        </AddTeamModal>
       </div>
     )
   }

@@ -26,7 +26,7 @@ class Modal extends React.Component {
 
   /* Method to show Form Errors */
   showFormErrors() {
-    const inputs = document.querySelectorAll('input');
+    const inputs = document.getElementById("addTeamModal").querySelectorAll('input');
     let isFormValid = true;
     
     inputs.forEach(input => {
@@ -45,6 +45,7 @@ class Modal extends React.Component {
 
   /* Method to show Input Errors */
   showInputError(refName) {
+    console.log(this.refs);
     const validity = this.refs[refName].validity;
 
     var label = "";
@@ -136,7 +137,7 @@ class Modal extends React.Component {
           <h4 className="text-center">
             Add Team
           </h4>
-          <form className="col-md-12" noValidate>
+          <form id="addTeamModal" className="col-md-12" noValidate>
             <div className="form-group">
               <input className="form-control"
                 type="text"

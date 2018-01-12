@@ -20,7 +20,7 @@ export default class extends React.Component{
 
   /* Method to handle sketch click */
   navigateToDetails(row) {
-    sessionStorage.setItem('sketchId',row.row.id);
+    sessionStorage.setItem('sketchId',row.row.projectid);
     sessionStorage.setItem('selectedSketch',JSON.stringify(row.row));
     sessionStorage.setItem('sketchName',row.row.name);
     sessionStorage.removeItem('vocabularyInfo');
@@ -39,7 +39,7 @@ export default class extends React.Component{
   toggleModal(row) {
     this.setState({
       isOpen: !this.state.isOpen,
-      projectId: (row.row) ? row.row.id : null
+      projectId: (row.row) ? row.row.projectid : null
     });
   }
 
