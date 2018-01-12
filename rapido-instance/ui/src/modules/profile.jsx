@@ -2,7 +2,7 @@ import React from 'react';
 import AlertContainer from 'react-alert'
 import RegistrationService from './register/RegistrationServices'
 import ChangeEmailModal from './profile/changeEmailModal';
-import ChangePasswordModal from './profile/ChangePasswordModal';
+import ChangePasswordModal from './profile/changePasswordModal';
 import {showAlert, AlertOptions} from './utils/AlertActions'
 import { Link } from 'react-router'
 
