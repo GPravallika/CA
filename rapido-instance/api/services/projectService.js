@@ -71,8 +71,16 @@ var projectService = {
                 return model.createAsync(project);
             })
             .then(function(data) {
+                project.id = data.id;
+                if(request.body.teamid) {
+                    return model.addTeamAsync(project.id, {'id': request.body.teamid });
+                } else {
+                    return ;
+                }
+            })
+            .then(function() {
                 response.status(200).json({
-                    "id": data.id
+                    "id": project.id
                 });
             })
             .catch(function(err) {

@@ -88,7 +88,7 @@ var model = {
             });
     },
     'addTeam': function(projectid, team, callback) {
-        db.executeAsync(queries.addTeam, [team.id, projectid, team.access || 'READ'])
+        db.executeAsync(queries.addTeam, [team.id, projectid, team.access || 'WRITE'])
             .then(function(data) {
                 logger.debug("Team", team.id, "added to project", projectid);
                 return callback(null, true);
@@ -99,7 +99,7 @@ var model = {
             });
     },
     'updateTeam': function(projectid, team, callback) {
-        db.executeAsync(queries.updateTeam, [team.access  || 'READ' , projectid, team.id])
+        db.executeAsync(queries.updateTeam, [team.access  || 'WRITE' , projectid, team.id])
             .then(function(data) {
                 logger.debug("Team details for project", projectid, "updated");
                 return callback(null, true);
