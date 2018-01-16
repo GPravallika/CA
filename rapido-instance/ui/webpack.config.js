@@ -1,5 +1,6 @@
 var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var nodeExternals = require('webpack-node-externals');
 
 module.exports = {
     target: 'web',
@@ -13,6 +14,7 @@ module.exports = {
     plugins: [new HtmlWebpackPlugin({
       template: 'ui/index.html'
     })],
+    externals: [nodeExternals()],
     module: {
         loaders: [
             {
