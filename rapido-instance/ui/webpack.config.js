@@ -5,7 +5,7 @@ var CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
     target: 'web',
-    entry: './ui/src/index.jsx',
+    entry: ['whatwg-fetch','./ui/src/index.jsx'],
     output: {
         path: __dirname + '/build',
         filename: 'rapido-web.js',
@@ -15,7 +15,6 @@ module.exports = {
     plugins: [new HtmlWebpackPlugin({
       template: 'ui/index.html'
     }),
-    new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new CompressionPlugin({
       asset: "[path].gz[query]",
