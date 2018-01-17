@@ -1,10 +1,11 @@
 var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var nodeExternals = require('webpack-node-externals');
+var webpack = require('webpack');
+var CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
     target: 'web',
-    entry: ['whatwg-fetch', './ui/src/index.jsx'],
+    entry: './ui/src/index.jsx',
     output: {
         path: __dirname + '/build',
         filename: 'rapido-web.js',
@@ -13,8 +14,16 @@ module.exports = {
     },
     plugins: [new HtmlWebpackPlugin({
       template: 'ui/index.html'
+    }),
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8
     })],
-    externals: [nodeExternals()],
     module: {
         loaders: [
             {

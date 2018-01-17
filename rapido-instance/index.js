@@ -105,6 +105,12 @@ server.use((req, res) => {
     res.sendFile(__dirname + '/ui/build/' + resource);
  }); // Parse urlencoded body with qs library
 
+server.get('*.js', function (req, res, next) {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  next();
+});
+
 server.listen(configurations['port'], function() {
     logger.info('Server started in', configurations['env'], 'mode.');
     logger.info('Database in use', configurations['database'].connection.host);
