@@ -93,23 +93,25 @@ fs.readdirSync(routes).forEach(file => {
 // Web server ( SPA ) routes
 
 logger.debug('Loading default router for SPA');
-server.use((req, res) => {
+server.use((req, res, next) => {
     var resource = 'index.html';
 
-    if(req.originalUrl.includes('.html') || req.originalUrl.includes('.js')
+    if(req.originalUrl.includes('.html')
         || req.originalUrl.includes('.woff2') || req.originalUrl.includes('.ttf')
         || req.originalUrl.includes('.eot') || req.originalUrl.includes('.svg')
     ) {
         resource = req.originalUrl.substring(req.originalUrl.lastIndexOf('/'));
+        res.sendFile(__dirname + '/ui/build/' + resource);
+    } else if(req.originalUrl.includes('.js')) {
+        resource = req.originalUrl.substring(req.originalUrl.lastIndexOf('/'));
+        resource = resource + '.gz';
+        res.set('Content-Encoding', 'gzip');
+        res.sendFile(__dirname + '/ui/build/' + resource);
+    } else {
+        res.sendFile(__dirname + '/ui/build/' + resource);
     }
-    res.sendFile(__dirname + '/ui/build/' + resource);
+    
  }); // Parse urlencoded body with qs library
-
-server.get('*.js', function (req, res, next) {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-  next();
-});
 
 server.listen(configurations['port'], function() {
     logger.info('Server started in', configurations['env'], 'mode.');
