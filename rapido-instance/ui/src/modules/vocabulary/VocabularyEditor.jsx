@@ -92,7 +92,7 @@ export default class extends React.Component{
     const vocabularyData = cloneDeep(this.state.vocabularyData);
     const idx = findIndex(vocabularyData, { name });
     let prjSrvDelVocabRes = null;
-    ProjectService.deleteVocabularyFromProject(name, this.state.selectedSketch["id"])
+    ProjectService.deleteVocabularyFromProject(name, this.state.selectedSketch["projectid"])
     .then((response) => {
       prjSrvDelVocabRes = response.clone();
       return response.json();
@@ -133,7 +133,7 @@ export default class extends React.Component{
     let prjSrvAddVocabRes = null;
     let vocabArray = [];
     vocabArray.push(this.state.query.all);
-    ProjectService.addVocabularyToProject(vocabArray, this.state.selectedSketch["id"])
+    ProjectService.addVocabularyToProject(vocabArray, this.state.selectedSketch["projectid"])
     .then((response) => {
       prjSrvAddVocabRes = response.clone();
       return response.json();

@@ -284,6 +284,8 @@ a.header-logo-section {
     color: #09AEEF;
     text-decoration: underline;
     cursor: pointer;
+    float: left;
+    clear: both;
 }
 
 .userDetailsSection, .teamDetailsSection {
