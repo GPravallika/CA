@@ -133,11 +133,13 @@ export default class {
       .attr("r", "15")
       .attr("class", function(d){
         if(!d.data.rootNode) {
-          if(d.data.url.length>1 && d.data.apiList.length>1) {
-            return "connector-out"
-          } else {
-            return "connector-out-disabled"
-          }
+          // TODO - child node changes 
+          //if(d.data.url.length>1 && d.data.apiList.length>1) {
+          //  return "connector-out"
+          //} else {
+          //  return "connector-out-disabled"
+          //}
+          return "connector-out"
         } else {
           return "connector-out"
         }

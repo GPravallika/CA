@@ -20,6 +20,10 @@ export default class extends React.Component{
         { exportType: 'Swagger', label: 'Swagger 2.0'},
         { exportType: 'Postman', label: 'Postman'},
       ],
+      oauthOptions: [
+        { oauthType: 'test1', label: 'oauth test1'},
+        { oauthType: 'test2', label: 'oauth test2'},
+      ],
       "exportType":"Swagger",
       projectDetailsData: {} 
     };
@@ -150,6 +154,12 @@ export default class extends React.Component{
     }
   }
 
+  changeOauthType(val) {
+    this.setState({
+      oauthType: val.oauthType
+    });
+  }
+
   /* Render Method */
   render() {
     let exportComponent;
@@ -162,8 +172,22 @@ export default class extends React.Component{
     if(this.state && this.state.apiData ) {
       exportComponent = 
         <div>
-          <div className="col-md-12 download-option">
-            <div className="col-md-2 col-md-offset-8">
+          <div className="col-md-12">
+            <div>
+              <div class="profilePageHeader">Settings</div>
+              <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <Select
+                    name="form-field-name"
+                    value={this.state.oauthType}
+                    valueKey='oauthType'
+                    options={this.state.oauthOptions}
+                    onChange={this.changeOauthType.bind(this)}
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="other-section-export">
               <Select
                 name="form-field-name"
                 value={this.state.exportType}
@@ -171,30 +195,7 @@ export default class extends React.Component{
                 options={this.state.options}
                 onChange={this.changeExportType.bind(this)}
               />
-              </div>
-            <div className="col-md-2">
               <button onClick={ this.handleDownload } className="btn btn-default">Download JSON</button>
-            </div>
-          </div>
-          <div className="col-md-12 ace-editor">
-            <div className="col-md-offset-1 col-md-8">
-              <AceEditor
-                mode="json"
-                theme="github"
-                width="100%"
-                height="100%"
-                setOptions={{
-                  tabSize: 2,
-                  fontSize: 14,
-                  showGutter: true,
-                  showPrintMargin: false,
-                  maxLines: 30
-                }}
-                readOnly = {true}
-                value={this.state.apiData}
-                name="other-request"
-                editorProps={{$blockScrolling: 'INFINITY'}}
-              />
             </div>
           </div>
         </div>
@@ -210,7 +211,6 @@ export default class extends React.Component{
         <ul className="tabs">
           <li className={this.props.location.pathname === '/vocabulary' ? 'tab active-tab': 'tab'}><Link to="/vocabulary">VOCABULARY</Link></li>
           <li className={this.props.location.pathname === '/nodes/edit' ? 'tab active-tab': 'tab'}><Link to="/nodes/edit">SKETCH</Link></li>
-          <li className={this.props.location.pathname === '/share' ? 'tab active-tab': 'tab'}><Link to="/share">TEAMS</Link></li>
           <li className={this.props.location.pathname === '/export' ? 'tab active-tab': 'tab'}><Link to="/export">EXPORT</Link></li>
         </ul>
       </div>
