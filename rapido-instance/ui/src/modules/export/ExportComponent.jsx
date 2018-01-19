@@ -21,9 +21,10 @@ export default class extends React.Component{
         { exportType: 'Postman', label: 'Postman'},
       ],
       oauthOptions: [
-        { oauthType: 'test1', label: 'oauth test1'},
-        { oauthType: 'test2', label: 'oauth test2'},
+        { oauthType: 'oauthEnabled', label: 'oauth Enabled'},
+        { oauthType: 'oauthDisabled', label: 'oauth Disabled'},
       ],
+      "oauthType": "oauthEnabled",
       "exportType":"Swagger",
       projectDetailsData: {},
       portalLoginForm : true,
@@ -186,7 +187,7 @@ export default class extends React.Component{
     }, 5000);
     setTimeout(() => {
       this.setState({
-        portalLoginForm : false,
+        portalLoginForm : true,
         portalConnectingSection: false,
         portalConnectionSuccess: false,
       });
