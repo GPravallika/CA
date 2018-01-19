@@ -170,7 +170,6 @@ export default class extends React.Component{
       <div className="tabsContainer profilePageTabsSection">
         <ul className="tabs profilePageTabs">
           <li className={this.props.location.pathname === '/profile' ? 'tab profilePageTab active-tab': 'tab profilePageTab'}><Link to="/profile">Profile</Link></li>
-          <li className={this.props.location.pathname === '/teams' ? 'tab profilePageTab active-tab': 'tab profilePageTab'}><Link to="/teams">Teams</Link></li>
         </ul>
       </div>
       <div className="profilePageHeader">
