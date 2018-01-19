@@ -173,9 +173,9 @@ export default class extends React.Component{
       exportComponent = 
         <div>
           <div className="col-md-12">
-            <div>
-              <div class="profilePageHeader">Settings</div>
-              <form className="col-md-4" noValidate onSubmit={this.handleSubmit}>
+            <div className="row">
+              <div className="exportPageHeader">Settings</div>
+              <form className="col-md-3 exportSettingsForm" noValidate onSubmit={this.handleSubmit}>
                 <div className="form-group">
                   <Select
                     name="form-field-name"
@@ -187,15 +187,33 @@ export default class extends React.Component{
                 </div>
               </form>
             </div>
-            <div class="other-section-export">
-              <Select
-                name="form-field-name"
-                value={this.state.exportType}
-                valueKey='exportType'
-                options={this.state.options}
-                onChange={this.changeExportType.bind(this)}
-              />
-              <button onClick={ this.handleDownload } className="btn btn-default">Download JSON</button>
+            <div className="row">
+              <div className="exportPageHeader">Download Options</div>
+              <div className="otherExportSettings">
+                <div className="col-md-3">
+                  <Select
+                    name="form-field-name"
+                    value={this.state.exportType}
+                    valueKey='exportType'
+                    options={this.state.options}
+                    onChange={this.changeExportType.bind(this)}
+                  />
+                </div>
+                <div className="col-md-3">
+                  <button onClick={ this.handleDownload } className="btn btn-default">Download JSON</button>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="exportPageHeader">Publish Options</div>
+              <div className="otherExportSettings">
+                <div className="col-md-2">
+                  <button className="btn btn-default">Publish to CA PORTAL</button>
+                </div>
+                <div className="col-md-2">
+                  <button className="btn btn-default">Push to GitHub</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

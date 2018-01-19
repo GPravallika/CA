@@ -118,7 +118,7 @@ export default class extends React.Component{
     const cardLayout = createStyledComponent('div');
 
     return(
-      <div className="sketch-list-wrapper">
+      <div>
         <cardLayout className="cardLayout">
           {sketchItems}
         </cardLayout>
