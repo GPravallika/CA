@@ -187,6 +187,37 @@ button:focus {
     margin-left: 30px;
 }
 
+.modalBackdropStyle{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.3);
+    padding: 50;
+    height: 100%;
+    z-index: 1000;
+}
+
+.modalStyle {
+    background: #fff;
+    max-width: 500;
+    height: 250;
+    z-index: 1000;
+    margin: 30 auto;
+    display: block;
+    padding: 20;
+    border-radius: 5px; 
+}
+
+.portalPublishConnetionStatus {
+    margin: 85px 15px;
+}
+
+.modalExportPage {
+    display: none;
+}
+
 .sketch-list-wrapper {
     background: white;
     height: auto;

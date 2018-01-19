@@ -25,10 +25,15 @@ export default class extends React.Component{
         { oauthType: 'test2', label: 'oauth test2'},
       ],
       "exportType":"Swagger",
-      projectDetailsData: {} 
+      projectDetailsData: {},
+      portalLoginForm : true,
+      portalConnectingSection: false,
+      portalConnectionSuccess: false,
     };
     this.alertOptions = AlertOptions;
     this.handleDownload = this.handleDownload.bind(this);
+    this.handlePortalPublish = this.handlePortalPublish.bind(this);
+    this.openPublishToPortal = this.openPublishToPortal.bind(this);
   }
 
   /* Component Initialisation */
@@ -160,6 +165,35 @@ export default class extends React.Component{
     });
   }
 
+  openPublishToPortal() {
+    document.querySelector(".modalExportPage").style.display = "block";
+  }
+
+  handlePortalPublish(event) {
+    // TODO remove this only for demo
+    event.preventDefault();
+    this.setState({
+      portalLoginForm : false,
+      portalConnectingSection: true,
+      portalConnectionSuccess: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        portalLoginForm : false,
+        portalConnectingSection: false,
+        portalConnectionSuccess: true,
+      });
+    }, 5000);
+    setTimeout(() => {
+      this.setState({
+        portalLoginForm : false,
+        portalConnectingSection: false,
+        portalConnectionSuccess: false,
+      });
+      document.querySelector(".modalExportPage").style.display = "none";
+    }, 8000);
+  }
+
   /* Render Method */
   render() {
     let exportComponent;
@@ -208,7 +242,7 @@ export default class extends React.Component{
               <div className="exportPageHeader">Publish Options</div>
               <div className="otherExportSettings">
                 <div className="col-md-2">
-                  <button className="btn btn-default">Publish to CA PORTAL</button>
+                  <button className="btn btn-default" onClick={this.openPublishToPortal}>Publish to CA PORTAL</button>
                 </div>
                 <div className="col-md-2">
                   <button className="btn btn-default">Push to GitHub</button>
@@ -220,6 +254,55 @@ export default class extends React.Component{
     } else {
       exportComponent = <div className="text-center loading-project-details">Loading...</div>
     }
+
+    let modalContent;
+    if(this.state.portalLoginForm) {
+      modalContent = <div className="portalLoginForm">
+            <h4 className="text-center">
+              Publish To CA Portal
+            </h4>
+            <form id="addTeamModal" className="col-md-12" noValidate>
+            <div className="form-group">
+              <input className="form-control"
+                type="text"
+                name="portalUserName"
+                ref="portalUserName"
+                placeholder="Portal User Name"
+              />
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="text"
+                name="portalPassword"
+                ref="portalPassword"
+                placeholder="Portal Password"
+              />
+            </div>
+            <div className="form-group">
+              <input className="form-control"
+                type="text"
+                name="portalURL"
+                ref="portalURL"
+                placeholder="Portal URL"
+              />
+            </div>
+            <div className="form-group pull-right">
+              <button className="btn btn-default" onClick={this.handlePortalPublish}>
+                Publish
+              </button>
+            </div>
+            </form>
+          </div>;
+    } else if(this.state.portalConnectingSection) {
+      modalContent = <div className="portalConnectionSection">
+            <h4 className="portalPublishConnetionStatus">Connecting to Portal...</h4>
+          </div>;
+    } else if(this.state.portalConnectionSuccess) {
+      modalContent = <div className="portalConnectionSuccess">
+            <h4 className="portalPublishConnetionStatus">Connection successful, Publishing to CA PORTAL.</h4>
+          </div>;
+    }
+
     return (<div>
       <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
       <div className="titleContainer sketchPage">
@@ -234,6 +317,11 @@ export default class extends React.Component{
       </div>
       <div className="col-md-12 sketch-list-wrapper">
         {exportComponent}
+      </div>
+      <div className="modalBackdropStyle modalExportPage">
+        <div className="modal col-md-12" className="modalStyle">
+          {modalContent}
+        </div>
       </div>
     </div>)
   }
