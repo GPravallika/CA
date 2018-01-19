@@ -14,8 +14,82 @@ export default class extends React.Component{
     super(props);
     this.state = {
       filteredData: this.props.sketches,
-      isOpen: false
+      sketches: this.props.sketches,
+      isOpen: false,
+      sortType: '',
+      query: ''
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.sortSketchCardBy = this.sortSketchCardBy.bind(this);
+  }
+
+  /* Method to handle search */
+  handleChange(event) {   
+    var queryResult=[];   
+    this.props.sketches.forEach(function(sketch){   
+      if(sketch.name.toLowerCase().indexOf(event.target.value)!=-1)   
+        queryResult.push(sketch);   
+      if(sketch.description.toLowerCase().indexOf(event.target.value)!=-1)    
+        queryResult.push(sketch);   
+    });   
+    queryResult = queryResult.filter((sketch, index, self) =>   
+      index === self.findIndex((s) => (   
+        s.id === sketch.id && s.name === sketch.name    
+      ))    
+    )   
+    this.setState({   
+      query: event.target.value,    
+      filteredData: queryResult   
+    });   
+  }
+
+  sortSketchCardBy(event) {      
+     let lastActiveId = null;    
+     if(document.querySelector(".sortByBtn.active")) {   
+       lastActiveId = document.querySelector(".sortByBtn.active").id;    
+       document.querySelector(".sortByBtn.active").className = document.querySelector(".sortByBtn.active").className.replace(/\bactive\b/,'');   
+     }   
+     if(lastActiveId !== event.target.id)    
+       event.target.className = event.target.className + " active";    
+     
+     let activeNow = null;   
+     let activeSort = null;    
+     if(document.querySelector(".sortByBtn.active"))   
+       activeNow = document.querySelector(".sortByBtn.active").id;   
+     
+     var queryResult=[];   
+     
+     if(activeNow == "sortByNameBtn") {    
+       activeSort = 'name';    
+       queryResult = this.props.sketches.sort(function(a, b){    
+         if(a.name < b.name) return -1;    
+         if(a.name > b.name) return 1;   
+         return 0;   
+       });   
+     }   
+     
+     if(activeNow == "sortByModifiedBtn") {    
+       activeSort = 'modified';    
+       queryResult = this.props.sketches.sort(function(a, b){    
+         if(a.modifiedat < b.modifiedat) return -1;    
+         if(a.modifiedat > b.modifiedat) return 1;   
+         return 0;   
+       });   
+     }   
+     
+     if(activeNow == "sortByCreatedBtn") {   
+       activeSort = 'created';   
+       queryResult = this.props.sketches.sort(function(a, b){    
+         if(a.createdat < b.createdat) return -1;    
+         if(a.createdat > b.createdat) return 1;   
+         return 0;   
+       });   
+     }   
+     
+     this.setState({   
+       sortType: (activeSort !== null) ? activeSort : '',    
+       filteredData: (activeSort !== null) ? queryResult : this.state.sketches   
+     })    
   }
 
   /* Method to handle sketch click */
@@ -119,6 +193,13 @@ export default class extends React.Component{
 
     return(
       <div>
+        <BlueButton onClick={this.addNewSketch.bind(this)} className="new-sketch-label">+ CREATE PROJECT</BlueButton>
+        <div className="col-md-12 sketch-sort-section">
+          <input className="search-sketch-input" placeholder="Search" type="text" value={this.state.query} onChange={this.handleChange} />
+          <button id="sortByCreatedBtn" className={(this.state.sortType == 'created') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Created</button>
+          <button id="sortByModifiedBtn" className={(this.state.sortType == 'modified') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Modified</button>
+          <button id="sortByNameBtn" className={(this.state.sortType == 'name') ? "sortByBtn active" : "sortByBtn"} onClick={this.sortSketchCardBy}>Name</button>   
+        </div>
         <cardLayout className="cardLayout">
           {sketchItems}
         </cardLayout>
