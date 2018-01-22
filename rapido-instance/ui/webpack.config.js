@@ -1,6 +1,5 @@
 var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var webpack = require('webpack');
 var CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
@@ -14,10 +13,6 @@ module.exports = {
     },
     plugins: [new HtmlWebpackPlugin({
       template: 'ui/index.html'
-    }),
-    new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-         sourceMap: true
     }),
     new CompressionPlugin({
       asset: "[path].gz[query]",
@@ -72,7 +67,7 @@ module.exports = {
         poll: true
       }
     },
-    devtool: "source-map",
+    devtool: "cheap-eval-source-map",
     node: {
         child_process : 'empty',
         fs: 'empty'
