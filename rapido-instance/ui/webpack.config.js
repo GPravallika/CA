@@ -16,13 +16,17 @@ module.exports = {
       template: 'ui/index.html'
     }),
     new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+         sourceMap: true
+    }),
     new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
       test: /\.js$|\.css$|\.html$/,
       threshold: 10240,
       minRatio: 0.8
-    })],
+    })
+    ],
     module: {
         loaders: [
             {
@@ -68,7 +72,7 @@ module.exports = {
         poll: true
       }
     },
-    devtool: "cheap-eval-source-map",
+    devtool: "source-map",
     node: {
         child_process : 'empty',
         fs: 'empty'
