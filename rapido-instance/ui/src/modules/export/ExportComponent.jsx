@@ -30,6 +30,8 @@ export default class extends React.Component{
       portalLoginForm : true,
       portalConnectingSection: false,
       portalConnectionSuccess: false,
+      githubPushSuccess: false,
+      githubIntialization: false,
     };
     this.alertOptions = AlertOptions;
     this.handleDownload = this.handleDownload.bind(this);
@@ -170,6 +172,37 @@ export default class extends React.Component{
     document.querySelector(".modalExportPage").style.display = "block";
   }
 
+  handleGitHubPush(){
+    document.querySelector(".modalExportPage").style.display = "block";
+    this.setState({
+      portalLoginForm : false,
+      portalConnectingSection: false,
+      portalConnectionSuccess: false,
+      githubPushSuccess: false,
+      githubIntialization: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        portalLoginForm : false,
+        portalConnectingSection: false,
+        portalConnectionSuccess: false,
+        githubPushSuccess: true,
+        githubIntialization: false,
+      });
+    }, 3000);
+    setTimeout(() => {
+      this.setState({
+        portalLoginForm : true,
+        portalConnectingSection: false,
+        portalConnectionSuccess: false,
+        githubPushSuccess: false,
+        githubIntialization: false,
+      });
+      document.querySelector(".modalExportPage").style.display = "none";
+    }, 5000);
+  }
+
+
   handlePortalPublish(event) {
     // TODO remove this only for demo
     event.preventDefault();
@@ -177,12 +210,16 @@ export default class extends React.Component{
       portalLoginForm : false,
       portalConnectingSection: true,
       portalConnectionSuccess: false,
+      githubPushSuccess: false,
+      githubIntialization: false,
     });
     setTimeout(() => {
       this.setState({
         portalLoginForm : false,
         portalConnectingSection: false,
         portalConnectionSuccess: true,
+        githubPushSuccess: false,
+        githubIntialization: false,
       });
     }, 5000);
     setTimeout(() => {
@@ -190,6 +227,8 @@ export default class extends React.Component{
         portalLoginForm : true,
         portalConnectingSection: false,
         portalConnectionSuccess: false,
+        githubPushSuccess: false,
+        githubIntialization: false,
       });
       document.querySelector(".modalExportPage").style.display = "none";
     }, 8000);
@@ -246,7 +285,7 @@ export default class extends React.Component{
                   <button className="btn btn-default" onClick={this.openPublishToPortal}>Publish to CA PORTAL</button>
                 </div>
                 <div className="col-md-2">
-                  <button className="btn btn-default">Push to GitHub</button>
+                  <button className="btn btn-default" onClick={this.handleGitHubPush.bind(this)}>Push to GitHub</button>
                 </div>
               </div>
             </div>
@@ -301,6 +340,14 @@ export default class extends React.Component{
     } else if(this.state.portalConnectionSuccess) {
       modalContent = <div className="portalConnectionSuccess">
             <h4 className="portalPublishConnetionStatus">Connection successful, Publishing to CA PORTAL.</h4>
+          </div>;
+    } else if(this.state.githubIntialization) {
+      modalContent = <div className="githubIntialization">
+            <h4 className="githubIntializationText">Connecting to GitHub, Validating..</h4>
+          </div>;
+    } else if(this.state.githubPushSuccess) {
+      modalContent = <div className="githubPushSuccess">
+            <h4 className="githubPushSuccessText">Push to GitHub, Successful.</h4>
           </div>;
     }
 
