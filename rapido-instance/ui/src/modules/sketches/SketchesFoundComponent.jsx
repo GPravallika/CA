@@ -6,7 +6,7 @@ import SketchService from './SketchServices'
 import Card, { CardBlock, CardTitle } from 'mineral-ui/Card';
 import { createStyledComponent } from 'mineral-ui/styles';
 import { createThemedComponent } from 'mineral-ui/themes';
-import IconModeEdit from 'mineral-ui/Icon';
+
 
 export default class extends React.Component{
   

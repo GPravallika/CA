@@ -55,7 +55,7 @@
     "jsonwebtoken": "^8.0.1",
     "knex": "^0.13.0",
     "loadash": "^1.0.0",
-    "mineral-ui": "^0.10.0-413-react-updates.0",
+    "mineral-ui": "^0.17.0",
     "moment": "^2.17.1",
     "passport": "^0.4.0",
     "passport-github2": "^0.1.11",
