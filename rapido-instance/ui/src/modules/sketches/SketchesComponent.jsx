@@ -132,6 +132,7 @@ export default class extends React.Component{
     if(this.state && this.state.sketchesData ) {
       if (this.state.sketchesData && this.state.sketchesData.length > 0) {  
         content = <div className="col-md-12 sketch-component-wrapper">
+          <button onClick={this.addNewSketch.bind(this)} className="btn btn-default new-sketch-btn">New Sketch</button>
           <SketchesFound sketches={this.state.sketchesData} />
         </div>
       } else {

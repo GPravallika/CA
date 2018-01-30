@@ -10,6 +10,7 @@ import {showAlert, AlertOptions} from '../utils/AlertActions'
 import 'brace/mode/json'
 import 'brace/theme/github'
 import apiObj from '../utils/ApiServices'
+import ExportGithubModal from './ExportGithub'
 
 export default class extends React.Component{
 
@@ -37,6 +38,12 @@ export default class extends React.Component{
     this.handleDownload = this.handleDownload.bind(this);
     this.handlePortalPublish = this.handlePortalPublish.bind(this);
     this.openPublishToPortal = this.openPublishToPortal.bind(this);
+  }
+
+  ExportGithubToggleModal(type) {
+      this.setState({
+        ExportGithubModalIsOpen: !this.state.ExportGithubModalIsOpen
+      });
   }
 
   /* Component Initialisation */
@@ -172,36 +179,6 @@ export default class extends React.Component{
     document.querySelector(".modalExportPage").style.display = "block";
   }
 
-  handleGitHubPush(){
-    document.querySelector(".modalExportPage").style.display = "block";
-    this.setState({
-      portalLoginForm : false,
-      portalConnectingSection: false,
-      portalConnectionSuccess: false,
-      githubPushSuccess: false,
-      githubIntialization: true,
-    });
-    setTimeout(() => {
-      this.setState({
-        portalLoginForm : false,
-        portalConnectingSection: false,
-        portalConnectionSuccess: false,
-        githubPushSuccess: true,
-        githubIntialization: false,
-      });
-    }, 3000);
-    setTimeout(() => {
-      this.setState({
-        portalLoginForm : true,
-        portalConnectingSection: false,
-        portalConnectionSuccess: false,
-        githubPushSuccess: false,
-        githubIntialization: false,
-      });
-      document.querySelector(".modalExportPage").style.display = "none";
-    }, 5000);
-  }
-
 
   handlePortalPublish(event) {
     // TODO remove this only for demo
@@ -285,7 +262,7 @@ export default class extends React.Component{
                   <button className="btn btn-default" onClick={this.openPublishToPortal}>Publish to CA PORTAL</button>
                 </div>
                 <div className="col-md-2">
-                  <button className="btn btn-default" onClick={this.handleGitHubPush.bind(this)}>Push to GitHub</button>
+                  <button className="btn btn-default" onClick={this.ExportGithubToggleModal.bind(this)}>Push to GitHub</button>
                 </div>
               </div>
             </div>
@@ -366,6 +343,9 @@ export default class extends React.Component{
       <div className="col-md-12 sketch-list-wrapper">
         {exportComponent}
       </div>
+      <ExportGithubModal show={this.state.ExportGithubModalIsOpen}
+          onClose={this.ExportGithubToggleModal.bind(this)}>
+      </ExportGithubModal>
       <div className="modalBackdropStyle modalExportPage">
         <div className="modal col-md-12" className="modalStyle">
           {modalContent}
