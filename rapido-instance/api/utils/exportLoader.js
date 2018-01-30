@@ -14,7 +14,6 @@ exportJson.prototype.createSwagger = function(obj, reqProtocol, reqHost) {
             version : '1.0.0',
             description: 'Develop new apis',
         },
-        tags : [{"name": "Sketch","description": "Sketch"}],
         schemes : [reqProtocol],
         host : reqHost,
         basePath : '/',

@@ -49,6 +49,7 @@
     "ejs": "^2.5.7",
     "express": "*",
     "express-mailer": "^0.3.1",
+    "github-api": "^3.0.0",
     "glamor": "^2.20.40",
     "glamorous": "^4.10.0",
     "jquery": "^2.2.3",
@@ -65,7 +66,6 @@
     "react": "^15.6.2",
     "react-ace": "~4.1.1",
     "react-addons-css-transition-group": "^15.4.2",
-    "reactabular-resizable": "^8.4.0",
     "react-alert": "^1.0.14",
     "react-autosuggest": "^9.0.0",
     "react-d3-wrap": "^2.1.2",
@@ -74,14 +74,15 @@
     "react-router": "^2.4.0",
     "react-select": "^1.0.0-rc.3",
     "reactabular-easy": "^9.2.0",
+    "reactabular-resizable": "^8.4.0",
     "reactabular-table": "^8.6.0",
     "searchtabular": "^1.4.0",
     "table-resolver": "^3.1.0",
     "uuid": "^3.1.0",
     "webpack": "^2.2.0",
+    "webpack-node-externals": "^1.6.0",
     "whatwg-fetch": "^2.0.3",
-    "winston": "*",
-    "webpack-node-externals": "^1.6.0"
+    "winston": "*"
   },
   "devDependencies": {
     "babel-core": "^6.5.1",

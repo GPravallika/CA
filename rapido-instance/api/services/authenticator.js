@@ -37,7 +37,7 @@ passport.use(new jwtPassport.Strategy(localOpts, function(payload, callback) {
 
 // Add github Strategy
 passport.use(new githubPassport.Strategy(configurations.github, function(accessToken, refreshToken, profile, callback) {
-    callback(null, {'firstname': profile.displayName, 'email': profile.emails[0].value});
+    callback(null, {'firstname': profile.displayName, 'email': profile.emails[0].value, 'accessToken': accessToken, 'username': profile.username});
 }));
 
 var authService = {
@@ -153,7 +153,9 @@ var authService = {
             .then(function() {
                 var token = jwt.sign({
                     "id": user.id,
-                    "secret": user.secret
+                    "secret": user.secret,
+                    "githubToken": request.user.accessToken,
+                    "githubUser": request.user.username
                 }, configurations.jwt.secret, {
                     "expiresIn": configurations.jwt.expiry
                 });
@@ -170,9 +172,10 @@ var authService = {
 
     'authenticateViaGithub': function(request,response,next) {
         passport.authenticate("github", {
-            'scope': [ 'user:email' ],
+            'scope': [ 'user:email', 'repo' ],
             "session": false
         }, function(err, user, info) {
+            logger.info('#####', user,'######');
             if (err) {
                 return next(err);
             }

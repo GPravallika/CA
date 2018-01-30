@@ -34,4 +34,6 @@ router.delete('/:projectid/team/:teamid', authenticator.authenticate, projectSer
 // Export functionality
 router.get('/:id/export', authenticator.authenticate, projectService.export);
 
+router.put('/:id/publishToGithub', authenticator.authenticate, projectService.publishToGithub);
+
 module.exports = router;

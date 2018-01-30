@@ -13,7 +13,8 @@ var logger = import_utils('logger.js').getLoggerObject(),
     model = require(__dirname + "/models/project.js"),
     auth = require(__dirname + "/models/authorize.js"),
     promises = require('bluebird'),
-    exportJson = import_utils('exportLoader.js');
+    exportJson = import_utils('exportLoader.js'),
+    GitHub = require('github-api');
 
 var projectService = {
     'create': function(request, response, next) {
@@ -101,6 +102,9 @@ var projectService = {
         var allProjects = {"personal": [], "team": {}},
             allProjectIds = [],
             promiseResolutions = [];
+
+
+        logger.info('+++++ from fetch +++++', request.user, '++++++++');
 
         promiseResolutions.push(auth.myProjectsAsync(request.user.id));
         promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
@@ -599,6 +603,73 @@ var projectService = {
                 response.status(httpCode).json(err);
             });
     },
+
+    'publishToGithub' : function(request, response, next) {
+
+        if(!request.user.githubToken) {
+            logger.error('User is not github user');
+            var err = {
+                "code": 500,
+                "message": "User is not logged into github"
+            }
+            response.status(httpCode).json(err);
+            return;
+        }
+
+        var allProjectIds = [],
+            promiseResolutions = [];
+
+        promiseResolutions.push(auth.myProjectsAsync(request.user.id));
+        promiseResolutions.push(auth.projectsIcanEditAsync(request.user.id));
+
+        promises.all(promiseResolutions)
+            .then(function(results) {
+                _.each(results[0], function(result, index) {
+                    allProjectIds.push(result.projectid.toString());
+                });
+                _.each(results[1], function(result, index) {
+                    allProjectIds.push(result.projectid.toString());
+                });
+
+                if(_.indexOf(allProjectIds, request.params.id) < 0 ) {
+                    throw new Error("user " + request.user.id + " does not have permission to update project " + request.params.id);
+                } else {
+                    return model.readAsync(request.params.id);
+                }
+            })
+            .then(function(project) {
+                var apiData = project.apidetails;
+                var swaggerObj = new exportJson();
+                var resultData = swaggerObj.createSwagger(apiData, request.protocol, request.get('host'));
+                resultData.info.title = project.name;
+                resultData.info.description = project.description;
+
+                var githubObj = new GitHub({
+                  token: request.user.githubToken
+                });
+
+                var githubRepo = githubObj.getRepo(request.user.githubUser, request.body.repository);
+                var githubRepoAsync = promises.promisifyAll(githubRepo);
+
+                return githubRepoAsync.writeFileAsync('master', project.name + '-swagger.json', JSON.stringify(resultData), request.body.message || 'publish from rapido', {'encode':true});
+
+            })
+            .then(function(data) {
+                response.status(200).json({
+                    "id": request.params.id
+                });
+            })
+            .catch(function(err) {
+                logger.error(err);
+                var httpCode = 500;
+                err = {
+                    "code": err.code,
+                    "message": "Can not push to github for project" + request.params.id
+                }
+                response.status(httpCode).json(err);
+            });
+
+    }
 };
 
 module.exports = projectService;
