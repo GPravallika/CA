@@ -61,6 +61,21 @@ const ProjectApiCall = {
     });
   },
 
+  publishToGithub(repoName, commitMessage, projectId) {
+    var token  = sessionStorage.getItem("token");
+      return fetch(apiObj.endPoint + 'project/' + projectId + '/publishToGithub', { 
+      method: 'PUT', 
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        "repository": repoName,
+        "message": commitMessage
+      })
+    });
+  },
+
   deleteTeamFromProject(team, projectId) {
     var token  = sessionStorage.getItem("token");
     

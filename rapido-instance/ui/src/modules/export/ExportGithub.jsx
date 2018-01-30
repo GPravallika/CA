@@ -1,4 +1,5 @@
 import React from 'react';
+import ProjectService from '../d3/ProjectServices'
 
 class Modal extends React.Component {
 
@@ -68,7 +69,26 @@ class Modal extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     if (this.showFormErrors()) {
-      
+      let prjServpublishToGithub = null;
+      ProjectService.publishToGithub(this.state.repoName, this.state.commitMessage, sessionStorage.getItem('sketchId'))
+        .then((response) => {
+          prjServpublishToGithub = response.clone();
+          return response.json();
+        })
+        .then((responseData) => {
+          if(prjServpublishToGithub.ok ) {
+            this.props.onClose();
+          } else {
+            showAlert(this, (responseData.message) ? responseData.message : "Error occured");
+            if(prjServpublishToGithub.status == 401) {
+              sessionStorage.removeItem('user')
+              sessionStorage.removeItem('token')
+            }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }
 

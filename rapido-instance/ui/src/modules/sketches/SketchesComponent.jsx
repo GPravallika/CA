@@ -90,7 +90,6 @@ export default class extends React.Component{
           this.setState({
             "sketchesData" : responseData.personal
           });
-          console.log(this.state.sketchesData);
         } else {
           showAlert(this, (responseData.message) ? responseData.message : "Error occured");
           if(sktGetPrjSrvRes.status == 401) {
