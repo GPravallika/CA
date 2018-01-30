@@ -218,6 +218,14 @@ button:focus {
     display: none;
 }
 
+.new-sketch-btn {
+    position: relative;
+    top: 30px;
+    margin-bottom: 20px;
+    right: 10px;
+    float: right;
+}
+
 .sketch-list-wrapper {
     background: white;
     height: auto;
