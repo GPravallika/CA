@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router'
 import RegistrationForm from '../register/RegistrationForm'
 
 export default class extends React.Component{
@@ -14,8 +15,10 @@ export default class extends React.Component{
       <div className="home-page-main-section">
         <div className="home-page-section-one">
           <span className="home-page-section-one-span">
-            API designer is a tool that facilitates the sketching phase of design
-            <button className="btn btn-default">Start Trial Today</button>
+            CA Live API Design is a tool that facilitates the sketching phase of API design
+            <Link to="/register" className="register-button">
+              <button className="btn btn-default">Start Trial Today</button>
+            </Link>
           </span>
         </div>
         <div className="home-page-section-two">
@@ -65,7 +68,7 @@ export default class extends React.Component{
           <div className="container">
             <div className="row">
               <div className="col-md-12">
-                <p className="footer-text">CA API Designer | © 2017 CA Technologies.</p>
+                <p className="footer-text">CA Live API Design | © 2018 CA Technologies.</p>
               </div>
             </div>
           </div>
