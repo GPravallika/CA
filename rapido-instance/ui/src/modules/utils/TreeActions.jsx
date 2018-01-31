@@ -250,7 +250,7 @@ export function createSketch(component, savedVocabulary, ProjectService, browser
         sessionStorage.setItem('selectedSketch',JSON.stringify({
           "name": projectData.name,
           "description": projectData.description,
-          "id": responseData.id
+          "projectid": responseData.id
         }))
         browserHistory.push('/vocabulary');
       } else {
