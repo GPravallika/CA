@@ -1,5 +1,6 @@
 import React from 'react';
 import ProjectService from '../d3/ProjectServices'
+import {showAlert, AlertOptions} from '../utils/AlertActions'
 
 class Modal extends React.Component {
 
@@ -11,6 +12,7 @@ class Modal extends React.Component {
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.alertOptions = AlertOptions;
   }
 
   /* Method to handle input change */
