@@ -81,8 +81,8 @@ class Modal extends React.Component {
         })
         .then((responseData) => {
           if(prjServpublishToGithub.ok ) {
-            this.props.onClose();
             showAlert(this, "Push to GitHub Successful");
+            this.props.onClose();
           } else {
             showAlert(this, (responseData.message) ? responseData.message : "Error occured");
             if(prjServpublishToGithub.status == 401) {
