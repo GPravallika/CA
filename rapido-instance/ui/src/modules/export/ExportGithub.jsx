@@ -1,6 +1,8 @@
 import React from 'react';
 import ProjectService from '../d3/ProjectServices'
 import {showAlert, AlertOptions} from '../utils/AlertActions'
+import AlertContainer from 'react-alert'
+
 
 class Modal extends React.Component {
 
@@ -128,6 +130,8 @@ class Modal extends React.Component {
     };
 
     return (
+      <div>
+      <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
       <div style={backdropStyle}>
         <div className="modal col-md-12" style={modalStyle}>
           <h4 className="text-center">
@@ -143,6 +147,7 @@ class Modal extends React.Component {
                 value={ this.state.repoName } 
                 onChange={ this.handleChange }
                 required />
+              <div className="inputNoteMessage">Enter existing GitHub Repo Name</div>
               <div className="error" id="repoNameError"></div>
             </div>
             <div className="form-group">
@@ -166,6 +171,7 @@ class Modal extends React.Component {
             </div>
           </form>
         </div>
+      </div>
       </div>
     );
   }
