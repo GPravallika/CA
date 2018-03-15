@@ -1,3 +1,3 @@
 module.exports = {
-  endPoint: '/api/'
+  endPoint: 'http://rapido.dev.ca.com/api/'
 }

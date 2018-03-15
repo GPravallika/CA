@@ -123,7 +123,7 @@ export default class extends React.Component{
     const userNotLoggedIn =  <div className="text-center loading-project-details">Loading...</div>
     
     const sketchesNotFound = <div className="titleContainer firstTime">
-      <h2>Welcome to CA Live API Design!</h2>
+      <h2>Welcome to CA API Design!</h2>
       <h3>Looks like you are getting started. Go ahead and start off with creating a new sketch or team below.</h3>
       <button onClick={this.addNewSketch.bind(this)} className="btn btn-default first-time-sketch-btn">New Sketch</button>
     </div>

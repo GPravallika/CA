@@ -15,7 +15,7 @@ export default class extends React.Component{
       <div className="home-page-main-section">
         <div className="home-page-section-one">
           <span className="home-page-section-one-span">
-            CA Live API Design is a tool that facilitates the sketching phase of API design
+            CA API Design is a tool that facilitates the sketching phase of API design
             <Link to="/register" className="register-button">
               <button className="btn btn-default">Start Trial Today</button>
             </Link>
@@ -68,7 +68,7 @@ export default class extends React.Component{
           <div className="container">
             <div className="row">
               <div className="col-md-12">
-                <p className="footer-text">CA Live API Design | © 2018 CA Technologies.</p>
+                <p className="footer-text">CA API Design | © 2018 CA Technologies.</p>
               </div>
             </div>
           </div>

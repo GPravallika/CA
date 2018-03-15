@@ -13,6 +13,7 @@ import ForgotPassword from './modules/register/ForgotPasswordComponent'
 import ResetPassword from './modules/register/ResetPasswordComponent'
 import MailVerification from './modules/register/MailVerificationComponent'
 import Sketches from './modules/sketches/SketchesComponent'
+import MainLayoutComponent from './modules/newsketches/MainLayoutComponent'
 import Profile from './modules/profile'
 import ShareProject from './modules/shareProject'
 import Teams from './modules/team/teams'
@@ -40,6 +41,7 @@ render(<Router history={browserHistory}>
     <Route path="/verify(/:pathParam1)" component={Verification} />
     <Route path="/mailVerification" component={MailVerification} />
     <Route path="/sketches" component={Sketches} onEnter={checkSession}/>
+    <Route path="/newsketches" component={MainLayoutComponent} onEnter={checkSession}/>
     <Route path="/profile" component={Profile} onEnter={checkSession}/>
     <Route path="/teams" component={Teams} onEnter={checkSession}/>
     <Route path="/nodes" onEnter={checkSession}>

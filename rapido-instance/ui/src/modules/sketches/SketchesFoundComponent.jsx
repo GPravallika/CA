@@ -27,9 +27,9 @@ export default class extends React.Component{
   handleChange(event) {   
     var queryResult=[];   
     this.props.sketches.forEach(function(sketch){   
-      if(sketch.name.toLowerCase().indexOf(event.target.value)!=-1)   
+      if(sketch.name.toLowerCase().indexOf(event.target.value.toLowerCase())!=-1)   
         queryResult.push(sketch);   
-      if(sketch.description.toLowerCase().indexOf(event.target.value)!=-1)    
+      if(sketch.description.toLowerCase().indexOf(event.target.value.toLowerCase())!=-1)    
         queryResult.push(sketch);   
     });   
     queryResult = queryResult.filter((sketch, index, self) =>   

@@ -156,7 +156,7 @@ export default class extends React.Component{
                 <path fill="#20465F" d="M9.349 21.066c1.367 0 2.896-0.291 4.21-0.984-1-0.861-1.738-2.117-1.806-3.852-0.467 0.451-1.137 0.676-1.906 0.676-2.569 0-3.287-1.931-3.287-5.242 0-3.26 0.774-5.030 3.275-5.030 1.555 0 2.68 0.84 2.68 2.436h4.842c-0.356-4.179-3.665-6.32-7.695-6.32-5.553 0-8.813 3.921-8.813 9.334 0 5.202 3.159 8.985 8.5 8.985z"></path>
               </svg>
               </a>
-              <h3>Live API Design | Reset Password</h3>
+              <h3>API Design | Reset Password</h3>
               <div className="form-group">
                 <input className="form-control"
                   type="password" 

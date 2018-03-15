@@ -164,7 +164,7 @@ export default class extends React.Component{
         <div className="col-md-4 col-sm-3 pull-left">
           <Link className="header-logo-section" to="/sketches">
             {logoImg}
-            <span className="logo-text">CA Live API Design</span>
+            <span className="logo-text">CA API Design</span>
           </Link>
         </div>
         <div className="col-md-8 col-sm-9">

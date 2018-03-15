@@ -110,7 +110,7 @@ export default class extends React.Component{
       </p>;
     } else {
       forgotPassowrdContent = <div>
-        <h3>Live API Design | Forgot Password</h3>
+        <h3>API Design | Forgot Password</h3>
         <div className="form-group">
           <input className="form-control"
             type="email"

@@ -143,7 +143,7 @@ export default class extends React.Component{
           }
           if(!this.state.summaryInfo && todo.summary) {
             this.state.summaryInfo = todo.summary;
-          }
+          }        
           if(todo.id) {
             this.state.currentNodeId = todo.id;
           }
@@ -159,7 +159,7 @@ export default class extends React.Component{
                 <textarea rows="3" value={this.state.summaryInfo} onChange={(evt) => this.handleAPIChange("summary",evt)}></textarea>
               </div>
               
-            </div>
+            </div>           
             {requestLabel}
             <div className="col-md-6 ace-editor-wrapper">
               <AceEditor
