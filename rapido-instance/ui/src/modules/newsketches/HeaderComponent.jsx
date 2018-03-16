@@ -19,8 +19,8 @@ export class HeaderComponent extends React.Component {
   }
   /* Method to add new sketch */
   addNewSketch() {
-    sessionStorage.setItem('sketchId','null');
-    sessionStorage.setItem('sketchName','null');
+    sessionStorage.setItem('sketchId', 'null');
+    sessionStorage.setItem('sketchName', 'null');
     sessionStorage.removeItem('vocabularyInfo');
     browserHistory.push('/nodes/add');
   }

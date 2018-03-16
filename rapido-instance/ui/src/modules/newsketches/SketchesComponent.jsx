@@ -23,7 +23,7 @@ export class SketchesComponent extends React.Component {
         this.alertOptions = AlertOptions;
         this.handleChange = this.handleChange.bind(this);
     }
-   
+
     /* Method to handle search */
     handleChange(event) {
         var queryResult = [];
@@ -90,13 +90,13 @@ export class SketchesComponent extends React.Component {
     render() {
         console.log("Sketches List")
         console.log(this.props.sketches)
-    
+
         let { filteredData } = this.state;
-        if(filteredData == undefined){
+        if (filteredData == undefined) {
             filteredData = this.props.sketches;
         }
         let content;
-        let headerComponent = <HeaderComponent onChange={this.handleChange}/>;
+        let headerComponent = <HeaderComponent onChange={this.handleChange} />;
         const userNotLoggedIn = <div className="text-center loading-project-details">Loading...</div>
         const sketchesNotFound = <div className="titleContainer firstTime">
             <h2>Welcome to CA API Design!</h2>

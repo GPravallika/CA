@@ -40,8 +40,8 @@ render(<Router history={browserHistory}>
     <Route path="/auth" component={AuthComponent} />
     <Route path="/verify(/:pathParam1)" component={Verification} />
     <Route path="/mailVerification" component={MailVerification} />
-    <Route path="/sketches" component={Sketches} onEnter={checkSession}/>
-    <Route path="/newsketches" component={MainLayoutComponent} onEnter={checkSession}/>
+    <Route path="/oldsketches" component={Sketches} onEnter={checkSession}/>
+    <Route path="/sketches" component={MainLayoutComponent} onEnter={checkSession}/>
     <Route path="/profile" component={Profile} onEnter={checkSession}/>
     <Route path="/teams" component={Teams} onEnter={checkSession}/>
     <Route path="/nodes" onEnter={checkSession}>

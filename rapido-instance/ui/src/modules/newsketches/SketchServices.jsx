@@ -2,10 +2,10 @@ import apiObj from '../utils/ApiServices'
 
 const SketchApiCall = {
   getProjects(userId) {
-    var token  = sessionStorage.getItem("token");
-    
-    return fetch(apiObj.endPoint + 'project', { 
-      method: 'GET', 
+    var token = sessionStorage.getItem("token");
+
+    return fetch(apiObj.endPoint + 'project', {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -14,10 +14,10 @@ const SketchApiCall = {
   },
 
   deleteProject(projectId) {
-    var token  = sessionStorage.getItem("token");
-    
-    return fetch(apiObj.endPoint + 'project/'+ projectId, { 
-      method: 'DELETE', 
+    var token = sessionStorage.getItem("token");
+
+    return fetch(apiObj.endPoint + 'project/' + projectId, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
