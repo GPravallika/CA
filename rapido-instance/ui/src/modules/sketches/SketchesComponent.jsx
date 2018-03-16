@@ -10,7 +10,7 @@ export default class extends React.Component{
   
   constructor(props) {
     super(props);
-    this.state = {};
+        this.state = {};
     this.alertOptions = AlertOptions;
     this.addTeamSuccess = this.addTeamSuccess.bind(this);
   }
