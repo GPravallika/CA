@@ -435,7 +435,7 @@
         cursor: pointer;
         height: 30px;
         border-radius: 5px;
-        background-color: #ffffff;
+        background-color: #4a90e2;
         font-family: Helvetica;
         font-size: 14px;
         font-weight: normal;
@@ -444,13 +444,13 @@
         line-height: 2;
         letter-spacing: normal;
         text-align: left;
-        color: #4a4a4a;
+        color: #ffffff;
     }
     
     .button-inline {
         list-style-type: none;
-        margin-left: 0%;
-        float: right;
+        margin-left: -6%;
+        float: left;
     }
     
     .button-inline li {
@@ -461,7 +461,7 @@
         width: 150px;
         height: 30px;
         border-radius: 5px;
-        background-color: #ffffff;
+        /* background-color: #ffffff; */
         font-family: Helvetica;
         font-size: 14px;
         font-weight: normal;
@@ -787,4 +787,29 @@
     
     .cursor {
         cursor: pointer;
+    }
+    
+    .sketches-text {
+        font-family: Helvetica;
+        font-size: 28px;
+        font-weight: bold;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        text-align: left;
+        color: #4a4a4a;
+        padding-left: 0px;
+    }
+    
+    .border-bottom {
+        border-bottom: 1px solid #d4d4d4;
+        padding-top: 30px;
+        padding-bottom: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    
+    .xs-pr-15 {
+        padding-right: 15px;
     }

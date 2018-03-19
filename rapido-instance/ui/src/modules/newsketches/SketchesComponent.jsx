@@ -96,7 +96,8 @@ export class SketchesComponent extends React.Component {
             filteredData = this.props.sketches;
         }
         let content;
-        let headerComponent = <HeaderComponent onChange={this.handleChange} />;
+        let headerComponent = <HeaderComponent  />;
+        let sortComponent = <SketchesSortComponent onChange={this.handleChange} />
         const userNotLoggedIn = <div className="text-center loading-project-details">Loading...</div>
         const sketchesNotFound = <div className="titleContainer firstTime">
             <h2>Welcome to CA API Design!</h2>
@@ -122,18 +123,19 @@ export class SketchesComponent extends React.Component {
                                 )}
                             <i className="wrapper-oval"><img src="/ui/src/images/share.png" alt="Alt text" /></i>
                         </div></div>;
-                    return (<div className="col-md-4 card-layout" key={row.projectid} >
+                    return (<div className="col-md-3 card-layout" key={row.projectid} >
                         <CardComponent title={row.name} block={cardBlock} />
                     </div>);
                 }, this)
             } else {
+                sortComponent = null;
                 content = <div>
                     {sketchesNotFound}
                 </div>
             }
         } else {
             content = <div>{userNotLoggedIn}</div>
-            headerComponent = null;
+            sortComponent = null;
         }
 
 
@@ -143,12 +145,12 @@ export class SketchesComponent extends React.Component {
 
         return (
             <div>
-                <div className="row main-content">
+               
                     {headerComponent}
-                </div>
+                
                 <br />
                 <div className="row xs-pl-15">
-                    <SketchesSortComponent />
+                    {sortComponent}
                 </div>
                 <br />
                 <div className="row main-content xs-pl-15">
@@ -157,20 +159,6 @@ export class SketchesComponent extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         {content}
-                        {/* <div className="col-md-4 card-layout">
-
-                            <CardComponent subtitle={"Updated : 02 19 2018"} title={"User Management"} block={cardBlock} />
-                        </div>
-
-                        <div className="col-md-4 card-layout">
-
-                            <CardComponent subtitle={"Updated : 02 19 2018"} title={"API Manager"} block={cardBlock} />
-                        </div>
-
-                        <div className="col-md-4 card-layout">
-
-                            <CardComponent subtitle={"Updated : 02 19 2018"} title={"CA API"} block={cardBlock} />
-                        </div>*/}
                     </div>
                 </div>
                 <br />
@@ -185,17 +173,17 @@ export class SketchesComponent extends React.Component {
 
                 <div className="row">
                     <div className="col-md-12">
-                        <div className="col-md-4">
+                        <div className="col-md-3">
 
                             <CardComponent subtitle={"Updated : 02 19 2018"} footer={cardFooter} title={"Risk Management"} block={"This is API management tool.."} />
                         </div>
 
-                        <div className="col-md-4">
+                        <div className="col-md-3">
 
                             <CardComponent subtitle={"Updated : 02 19 2018"} footer={cardFooter1} title={"Central Book Store"} block={"This is API Management Tool."} />
                         </div>
 
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <CardComponent subtitle={"Updated : 02 19 2018"} footer={cardFooter} title={"CA API"} block={"This is API Management Tool."} />
                         </div>
 

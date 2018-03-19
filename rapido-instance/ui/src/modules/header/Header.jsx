@@ -161,13 +161,19 @@ export default class extends React.Component{
     if(loggedIn) {
 
       headerSection = <div className="row rapido-header-wrapper">
-        <div className="col-md-4 col-sm-3 pull-left">
+        <div className="col-md-5 col-sm-4 pull-left">
           <Link className="header-logo-section" to="/sketches">
             {logoImg}
-            <span className="logo-text">CA API Design</span>
+            <span className="logo-text header-text">CA API Design</span>
           </Link>
         </div>
-        <div className="col-md-8 col-sm-9">
+        <div className="col-md-3">
+        <ul className="top-header-tabs">
+          <li className="active-tab">Sketches</li>
+            <li className="border-right inactive-tab">Team</li>
+          </ul>
+          </div>
+        <div className="col-md-4 col-sm-9">
           <div className="col-md-12 col-sm-12">
             <Dropdown placement="bottom-end" className="profileDropdown" data={profileDropdownItems}>
               <profileDropdownBtn>{this.props.userInfo.email} ▾</profileDropdownBtn>

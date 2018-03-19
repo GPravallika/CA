@@ -6,6 +6,7 @@ import Dropdown from 'mineral-ui/Dropdown';
 import Button from 'mineral-ui/Button';
 import { ThemeProvider } from 'mineral-ui/themes';
 import Select from 'react-select';
+import TextInput from 'mineral-ui/TextInput';
 
 export class SketchesSortComponent extends React.Component {
 
@@ -14,20 +15,32 @@ export class SketchesSortComponent extends React.Component {
     this.state = {};
     this.alertOptions = AlertOptions;
   }
-
+  openCloseSearch() {
+    this.setState({
+      isSearchOpen: !this.state.isSearchOpen
+    })
+  }
+  /* Method to add new sketch */
+  addNewSketch() {
+    sessionStorage.setItem('sketchId', 'null');
+    sessionStorage.setItem('sketchName', 'null');
+    sessionStorage.removeItem('vocabularyInfo');
+    browserHistory.push('/nodes/add');
+  }
 
   render() {
-    const options = [
-      { label: 'Chocolate', value: 'chocolate' },
-      { label: 'Vanilla', value: 'vanilla' },
-      { label: 'Strawberry', value: 'strawberry' },
-      { label: 'Caramel', value: 'caramel' },
-      { label: 'Cookies and Cream', value: 'cookiescream' },
-      { label: 'Peppermint', value: 'peppermint' },
-    ];
+
     return (
-      <div>
-        <div className="col-md-2">
+      <div className="col-md-12">
+
+        <div className="col-md-6 pull-left">
+          <ul className="button-inline">
+          <li  onClick={this.addNewSketch.bind(this)}><Button className="new-sketch-text"  variant="regular" primary>New Sketch</Button></li>
+            <li className="xs-pl-10"><TextInput type="text" className=" visible search-textbox" onChange={this.props.onChange} size="small"
+             placeholder="Search Sketches..." /></li>
+          </ul>
+        </div>
+        <div className=" pull-right">
           <label className="view-text">View&nbsp;&nbsp;:&nbsp;&nbsp;</label>
           <select
             name="form-field-name"
@@ -36,32 +49,25 @@ export class SketchesSortComponent extends React.Component {
             <option className="custom-select-option">Personal</option>
             <option className="custom-select-option">Shared</option>
           </select>
-        </div>
-        <div className="col-md-6">
+        <span className="xs-pl-10">
           <label className="view-text">Filter&nbsp;&nbsp;:&nbsp;&nbsp;</label>
-
-          {/* <Select
-					multi		
-					options={options}
-					
-      /> */}
           <select
             name="form-field-name"
             className="custom-select">
-            <option className="custom-select-option">All</option>
-            <option className="custom-select-option">Personal</option>
-            <option className="custom-select-option">Shared</option>
+            <option className="custom-select-option">Apps Team</option>
+            <option className="custom-select-option">Dev Team</option>
+            <option className="custom-select-option">API Experts</option>
           </select>
           <span className="anchor-tag"><a>&nbsp;&nbsp;Clear</a></span>
-        </div>
-
-        <div className="col-md-4">
+    </span> 
+      <span className="xs-pl-10 xs-pr-15">
           <label className="view-text">Sort By&nbsp;:&nbsp;</label>
           <span className="xs-pl-5"><Button className="activeButton" size="small" primary>Created</Button></span>
           <span className="xs-pl-5"><Button size="small" className="inactiveButton" disabled>Updated</Button></span>
           <span className="xs-pl-5"><Button size="small" className="inactiveButton" disabled>Name</Button></span>
+          </span>
         </div>
-
+    
       </div>
 
     )

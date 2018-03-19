@@ -43,14 +43,15 @@ export default class extends React.Component {
 
     render() {
         return (
-            <div className="col-md-12 new-sketch-containter main-content">
+            <div className="col-md-12 main-content">
                 <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-                <div className="col-md-9">
+                <div className="col-md-12">
                     <SketchesComponent sketches={this.state.sketchesData} />
                 </div>
-                <div className="col-md-3">
+               {/* <div className="col-md-3">
                     <TeamComponent />
                 </div>
+            */} 
 
             </div>
 
